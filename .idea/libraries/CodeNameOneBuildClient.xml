@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="CodeNameOneBuildClient">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/CodeNameOneBuildClient.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

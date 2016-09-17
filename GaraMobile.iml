@@ -8,5 +8,6 @@
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Codename One Libraries" level="project" />
+    <orderEntry type="library" name="CodeNameOneBuildClient (2)" level="application" />
   </component>
 </module>

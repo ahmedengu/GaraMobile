@@ -8,6 +8,8 @@ import com.codename1.maps.Coord;
 import com.codename1.maps.providers.GoogleMapsProvider;
 import com.codename1.ui.EncodedImage;
 import com.codename1.ui.Form;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 
 import java.io.IOException;
@@ -39,23 +41,25 @@ public class Map {
     }
 
     private static void destListener(final MapContainer map) {
-        map.addTapListener(evt -> {
-            destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
-            updateMarkers(map);
+        map.addTapListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
+                updateMarkers(map);
+            }
         });
     }
 
     private static void locationListener(final MapContainer map) {
         LocationManager.getLocationManager().setLocationListener(new LocationListener() {
-            @Override
+
             public void locationUpdated(Location location) {
                 // TODO: send location to server
                 if (System.currentTimeMillis() - lastLocationUpdate >= locationUpdateThreshold) {
-                    updateMarkers(map);
+                    updateMarkers(map, location);
                 }
             }
 
-            @Override
+
             public void providerStateChanged(int newState) {
                 //TODO: handle gps state
             }
@@ -63,25 +67,25 @@ public class Map {
     }
 
     private static Location updateMarkers(MapContainer map) {
-        map.clearMapLayers();
         Location currentLocation;
         try {
             currentLocation = LocationManager.getLocationManager().getCurrentLocation();
         } catch (IOException e) {
             currentLocation = LocationManager.getLocationManager().getLastKnownLocation();
-            e.printStackTrace();
         }
+        return updateMarkers(map, currentLocation);
+    }
 
-
-        if (currentLocation != null) {
-            map.addMarker(EncodedImage.createFromImage(fetchResourceFile().getImage("map-pin-green-hi.png"), false), new Coord(currentLocation.getLatitude(), currentLocation.getLongitude()), "Hi marker", "Optional long description", null);
+    private static Location updateMarkers(MapContainer map, Location location) {
+        map.clearMapLayers();
+        //TODO: edit the text and icon below
+        if (location != null) {
+            map.addMarker(EncodedImage.createFromImage(fetchResourceFile().getImage("map-pin-green-hi.png"), false), new Coord(location.getLatitude(), location.getLongitude()), "Hi marker", "Optional long description", null);
             lastLocationUpdate = System.currentTimeMillis();
         }
-
-        if (destCoord != null) {
+        if (destCoord != null)
             map.addMarker(EncodedImage.createFromImage(fetchResourceFile().getImage("map-pin-blue-hi.png"), false), destCoord, "Hi marker", "Optional long description", null);
 
-        }
-        return currentLocation;
+        return location;
     }
 }

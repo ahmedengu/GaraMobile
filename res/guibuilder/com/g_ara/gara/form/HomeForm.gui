@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" layout="BorderLayout" borderLayoutAbsoluteCenter="false"  title="Home" name="HomeForm">
+<component type="Form" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Home" name="HomeForm">
+    <command varName="Home" hasCode="true" name="Home" id="0" placement="Sidemenu"/>
+    <command varName="Chat" hasCode="true" name="Chat" id="1" placement="Sidemenu"/>
+    <command varName="Settings" hasCode="true" name="Settings" id="2" placement="Sidemenu"/>
+    <command varName="Profile" hasCode="true" name="Profile" id="3" placement="Sidemenu"/>
+    <command varName="Requests" hasCode="true" name="Requests" id="4" placement="Sidemenu"/>
+    <command varName="History" hasCode="true" name="History" id="5" placement="Sidemenu"/>
+    <command varName="Groups" hasCode="true" name="Community" id="6" placement="Sidemenu"/>
+    <command varName="Feed" hasCode="true" name="Feed" id="7" placement="Sidemenu"/>
+    <command varName="Wallet" hasCode="true" name="Wallet" id="8" placement="Sidemenu"/>
+    <command varName="Cars" hasCode="true" name="Cars" id="9" placement="Sidemenu"/>
 </component>
