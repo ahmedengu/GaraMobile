@@ -8,7 +8,6 @@ import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.form.LoginForm;
 
 public class Main {
 
@@ -28,13 +27,12 @@ public class Main {
     public void start() {
         AnalyticsService.setAppsMode(true);
         AnalyticsService.init("UA-80287405-1", "g-ara.com");
-
-        if(current != null){
+        if (current != null) {
             current.show();
             return;
         }
-        current = new LoginForm();
-        current.show();
+      //  new StateMachine("/theme");
+
 
     }
 

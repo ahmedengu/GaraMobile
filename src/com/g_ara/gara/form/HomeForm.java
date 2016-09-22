@@ -2,6 +2,7 @@ package com.g_ara.gara.form;
 
 import com.codename1.ui.Command;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.util.UIBuilder;
 import com.g_ara.gara.controller.Map;
 
 public class HomeForm extends com.codename1.ui.Form {
@@ -19,7 +20,9 @@ public class HomeForm extends com.codename1.ui.Form {
     }
 
     private void onCarsCommand(ActionEvent ev, Command command) {
-
+        new UIBuilder().showForm("CarsForm", null);
+//        CarsForm carsForm = new CarsForm();
+//        carsForm.show();
     }
 
     private void onWalletCommand(ActionEvent ev, Command command) {
