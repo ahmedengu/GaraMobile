@@ -1,0 +1,2284 @@
+/**
+ * This class contains generated code from the Codename One Designer, DO NOT MODIFY!
+ * This class is designed for subclassing that way the code generator can overwrite it
+ * anytime without erasing your changes which should exist in a subclass!
+ * For details about this file and how it works please read this blog post:
+ * http://codenameone.blogspot.com/2010/10/ui-builder-class-how-to-actually-use.html
+*/
+package generated;
+
+import com.codename1.ui.*;
+import com.codename1.ui.util.*;
+import com.codename1.ui.plaf.*;
+import java.util.Hashtable;
+import com.codename1.ui.events.*;
+
+public abstract class StateMachineBase extends UIBuilder {
+    private Container aboutToShowThisContainer;
+    /**
+     * this method should be used to initialize variables instead of
+     * the constructor/class scope to avoid race conditions
+     */
+    /**
+    * @deprecated use the version that accepts a resource as an argument instead
+    
+**/
+    protected void initVars() {}
+
+    protected void initVars(Resources res) {}
+
+    public StateMachineBase(Resources res, String resPath, boolean loadTheme) {
+        startApp(res, resPath, loadTheme);
+    }
+
+    public Container startApp(Resources res, String resPath, boolean loadTheme) {
+        initVars();
+        UIBuilder.registerCustomComponent("Container", com.codename1.ui.Container.class);
+        UIBuilder.registerCustomComponent("Form", com.codename1.ui.Form.class);
+        UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
+        UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
+        UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
+        UIBuilder.registerCustomComponent("MultiList", com.codename1.ui.list.MultiList.class);
+        UIBuilder.registerCustomComponent("SpanLabel", com.codename1.components.SpanLabel.class);
+        UIBuilder.registerCustomComponent("MultiButton", com.codename1.components.MultiButton.class);
+        UIBuilder.registerCustomComponent("ImageViewer", com.codename1.components.ImageViewer.class);
+        if(loadTheme) {
+            if(res == null) {
+                try {
+                    if(resPath.endsWith(".res")) {
+                        res = Resources.open(resPath);
+                        System.out.println("Warning: you should construct the state machine without the .res extension to allow theme overlays");
+                    } else {
+                        res = Resources.openLayered(resPath);
+                    }
+                } catch(java.io.IOException err) { err.printStackTrace(); }
+            }
+            initTheme(res);
+        }
+        if(res != null) {
+            setResourceFilePath(resPath);
+            setResourceFile(res);
+            initVars(res);
+            return showForm(getFirstFormName(), null);
+        } else {
+            Form f = (Form)createContainer(resPath, getFirstFormName());
+            initVars(fetchResourceFile());
+            beforeShow(f);
+            f.show();
+            postShow(f);
+            return f;
+        }
+    }
+
+    protected String getFirstFormName() {
+        return "Login";
+    }
+
+    public Container createWidget(Resources res, String resPath, boolean loadTheme) {
+        initVars();
+        UIBuilder.registerCustomComponent("Container", com.codename1.ui.Container.class);
+        UIBuilder.registerCustomComponent("Form", com.codename1.ui.Form.class);
+        UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
+        UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
+        UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
+        UIBuilder.registerCustomComponent("MultiList", com.codename1.ui.list.MultiList.class);
+        UIBuilder.registerCustomComponent("SpanLabel", com.codename1.components.SpanLabel.class);
+        UIBuilder.registerCustomComponent("MultiButton", com.codename1.components.MultiButton.class);
+        UIBuilder.registerCustomComponent("ImageViewer", com.codename1.components.ImageViewer.class);
+        if(loadTheme) {
+            if(res == null) {
+                try {
+                    res = Resources.openLayered(resPath);
+                } catch(java.io.IOException err) { err.printStackTrace(); }
+            }
+            initTheme(res);
+        }
+        return createContainer(resPath, "Login");
+    }
+
+    protected void initTheme(Resources res) {
+            String[] themes = res.getThemeResourceNames();
+            if(themes != null && themes.length > 0) {
+                UIManager.getInstance().setThemeProps(res.getTheme(themes[0]));
+            }
+    }
+
+    public StateMachineBase() {
+    }
+
+    public StateMachineBase(String resPath) {
+        this(null, resPath, true);
+    }
+
+    public StateMachineBase(Resources res) {
+        this(res, null, true);
+    }
+
+    public StateMachineBase(String resPath, boolean loadTheme) {
+        this(null, resPath, loadTheme);
+    }
+
+    public StateMachineBase(Resources res, boolean loadTheme) {
+        this(res, null, loadTheme);
+    }
+
+    public com.codename1.ui.Button findNew(Component root) {
+        return (com.codename1.ui.Button)findByName("New", root);
+    }
+
+    public com.codename1.ui.Button findNew() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("New", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("New", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findEmail(Component root) {
+        return (com.codename1.ui.TextField)findByName("Email", root);
+    }
+
+    public com.codename1.ui.TextField findEmail() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Email", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Email", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel(Component root) {
+        return (com.codename1.ui.Label)findByName("Label", root);
+    }
+
+    public com.codename1.ui.Label findLabel() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Container findContainer1(Component root) {
+        return (com.codename1.ui.Container)findByName("Container1", root);
+    }
+
+    public com.codename1.ui.Container findContainer1() {
+        com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("Container1", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Container)findByName("Container1", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Button findRecharge(Component root) {
+        return (com.codename1.ui.Button)findByName("Recharge", root);
+    }
+
+    public com.codename1.ui.Button findRecharge() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Recharge", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Recharge", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Component findHistory(Component root) {
+        return (com.codename1.ui.Component)findByName("History", root);
+    }
+
+    public com.codename1.ui.Component findHistory() {
+        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("History", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Component)findByName("History", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.MultiButton findMultiButton2(Component root) {
+        return (com.codename1.components.MultiButton)findByName("MultiButton2", root);
+    }
+
+    public com.codename1.components.MultiButton findMultiButton2() {
+        com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("MultiButton2", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.MultiButton)findByName("MultiButton2", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findName(Component root) {
+        return (com.codename1.ui.TextField)findByName("Name", root);
+    }
+
+    public com.codename1.ui.TextField findName() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Name", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Name", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.MultiButton findMultiButton1(Component root) {
+        return (com.codename1.components.MultiButton)findByName("MultiButton1", root);
+    }
+
+    public com.codename1.components.MultiButton findMultiButton1() {
+        com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("MultiButton1", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.MultiButton)findByName("MultiButton1", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Container findContainer(Component root) {
+        return (com.codename1.ui.Container)findByName("Container", root);
+    }
+
+    public com.codename1.ui.Container findContainer() {
+        com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("Container", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Container)findByName("Container", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Button findButton(Component root) {
+        return (com.codename1.ui.Button)findByName("Button", root);
+    }
+
+    public com.codename1.ui.Button findButton() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Button", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Button", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findTextField(Component root) {
+        return (com.codename1.ui.TextField)findByName("TextField", root);
+    }
+
+    public com.codename1.ui.TextField findTextField() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("TextField", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("TextField", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Button findFacebook(Component root) {
+        return (com.codename1.ui.Button)findByName("Facebook", root);
+    }
+
+    public com.codename1.ui.Button findFacebook() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Facebook", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Facebook", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Component findCars(Component root) {
+        return (com.codename1.ui.Component)findByName("Cars", root);
+    }
+
+    public com.codename1.ui.Component findCars() {
+        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("Cars", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Component)findByName("Cars", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Button findGoogle(Component root) {
+        return (com.codename1.ui.Button)findByName("Google", root);
+    }
+
+    public com.codename1.ui.Button findGoogle() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Google", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Google", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel10(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel10", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel10() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel10", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel10", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.list.MultiList findMultiList(Component root) {
+        return (com.codename1.ui.list.MultiList)findByName("MultiList", root);
+    }
+
+    public com.codename1.ui.list.MultiList findMultiList() {
+        com.codename1.ui.list.MultiList cmp = (com.codename1.ui.list.MultiList)findByName("MultiList", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.list.MultiList)findByName("MultiList", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Component findLogin(Component root) {
+        return (com.codename1.ui.Component)findByName("Login", root);
+    }
+
+    public com.codename1.ui.Component findLogin() {
+        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("Login", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Component)findByName("Login", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.ImageViewer findImageViewer(Component root) {
+        return (com.codename1.components.ImageViewer)findByName("ImageViewer", root);
+    }
+
+    public com.codename1.components.ImageViewer findImageViewer() {
+        com.codename1.components.ImageViewer cmp = (com.codename1.components.ImageViewer)findByName("ImageViewer", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.ImageViewer)findByName("ImageViewer", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel8(Component root) {
+        return (com.codename1.ui.Label)findByName("Label8", root);
+    }
+
+    public com.codename1.ui.Label findLabel8() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label8", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label8", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findCredit(Component root) {
+        return (com.codename1.ui.Label)findByName("Credit", root);
+    }
+
+    public com.codename1.ui.Label findCredit() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Credit", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Credit", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel5(Component root) {
+        return (com.codename1.ui.Label)findByName("Label5", root);
+    }
+
+    public com.codename1.ui.Label findLabel5() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label5", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label5", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel4(Component root) {
+        return (com.codename1.ui.Label)findByName("Label4", root);
+    }
+
+    public com.codename1.ui.Label findLabel4() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label4", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label4", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Component findGroups(Component root) {
+        return (com.codename1.ui.Component)findByName("Groups", root);
+    }
+
+    public com.codename1.ui.Component findGroups() {
+        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("Groups", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Component)findByName("Groups", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel7(Component root) {
+        return (com.codename1.ui.Label)findByName("Label7", root);
+    }
+
+    public com.codename1.ui.Label findLabel7() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label7", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label7", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel6(Component root) {
+        return (com.codename1.ui.Label)findByName("Label6", root);
+    }
+
+    public com.codename1.ui.Label findLabel6() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label6", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label6", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Component findChat(Component root) {
+        return (com.codename1.ui.Component)findByName("Chat", root);
+    }
+
+    public com.codename1.ui.Component findChat() {
+        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("Chat", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Component)findByName("Chat", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.MultiButton findMultiButton(Component root) {
+        return (com.codename1.components.MultiButton)findByName("MultiButton", root);
+    }
+
+    public com.codename1.components.MultiButton findMultiButton() {
+        com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("MultiButton", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.MultiButton)findByName("MultiButton", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findNotes(Component root) {
+        return (com.codename1.ui.TextField)findByName("Notes", root);
+    }
+
+    public com.codename1.ui.TextField findNotes() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Notes", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Notes", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findPassword(Component root) {
+        return (com.codename1.ui.TextField)findByName("Password", root);
+    }
+
+    public com.codename1.ui.TextField findPassword() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Password", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Password", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel1(Component root) {
+        return (com.codename1.ui.Label)findByName("Label1", root);
+    }
+
+    public com.codename1.ui.Label findLabel1() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label1", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label1", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel3(Component root) {
+        return (com.codename1.ui.Label)findByName("Label3", root);
+    }
+
+    public com.codename1.ui.Label findLabel3() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label3", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label3", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Label findLabel2(Component root) {
+        return (com.codename1.ui.Label)findByName("Label2", root);
+    }
+
+    public com.codename1.ui.Label findLabel2() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label2", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label2", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findMobile(Component root) {
+        return (com.codename1.ui.TextField)findByName("Mobile", root);
+    }
+
+    public com.codename1.ui.TextField findMobile() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Mobile", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Mobile", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel1(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel1", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel1() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel1", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel1", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findYear(Component root) {
+        return (com.codename1.ui.TextField)findByName("Year", root);
+    }
+
+    public com.codename1.ui.TextField findYear() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Year", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Year", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.TextField findUsername(Component root) {
+        return (com.codename1.ui.TextField)findByName("Username", root);
+    }
+
+    public com.codename1.ui.TextField findUsername() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Username", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Username", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Component findRegister(Component root) {
+        return (com.codename1.ui.Component)findByName("Register", root);
+    }
+
+    public com.codename1.ui.Component findRegister() {
+        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("Register", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Component)findByName("Register", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel6(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel6", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel6() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel6", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel6", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel7(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel7", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel7() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel7", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel7", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel8(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel8", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel8() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel8", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel8", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel9(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel9", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel9() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel9", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel9", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel2(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel2", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel2() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel2", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel2", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel3(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel3", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel3() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel3", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel3", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel4(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel4", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel4() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel4", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel4", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel5(Component root) {
+        return (com.codename1.components.SpanLabel)findByName("SpanLabel5", root);
+    }
+
+    public com.codename1.components.SpanLabel findSpanLabel5() {
+        com.codename1.components.SpanLabel cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel5", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.SpanLabel)findByName("SpanLabel5", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public static final int COMMAND_HomeSettings = 17;
+    public static final int COMMAND_HomeChat = 11;
+    public static final int COMMAND_HomeProfile = 16;
+    public static final int COMMAND_LoginRegister = 2;
+    public static final int COMMAND_HomeHome = 5;
+    public static final int COMMAND_CarSave = 10;
+    public static final int COMMAND_HomeHistory = 14;
+    public static final int COMMAND_HomeCars = 6;
+    public static final int COMMAND_HomeRequests = 15;
+    public static final int COMMAND_HomeLogout = 8;
+    public static final int COMMAND_HomeWallet = 12;
+    public static final int COMMAND_LoginLogin = 1;
+    public static final int COMMAND_RegisterRegister = 4;
+    public static final int COMMAND_RegisterLogin = 3;
+    public static final int COMMAND_HomeGroups = 13;
+
+    protected boolean onHomeSettings() {
+        return false;
+    }
+
+    protected boolean onHomeChat() {
+        return false;
+    }
+
+    protected boolean onHomeProfile() {
+        return false;
+    }
+
+    protected boolean onLoginRegister() {
+        return false;
+    }
+
+    protected boolean onHomeHome() {
+        return false;
+    }
+
+    protected boolean onCarSave() {
+        return false;
+    }
+
+    protected boolean onHomeHistory() {
+        return false;
+    }
+
+    protected boolean onHomeCars() {
+        return false;
+    }
+
+    protected boolean onHomeRequests() {
+        return false;
+    }
+
+    protected boolean onHomeLogout() {
+        return false;
+    }
+
+    protected boolean onHomeWallet() {
+        return false;
+    }
+
+    protected boolean onLoginLogin() {
+        return false;
+    }
+
+    protected boolean onRegisterRegister() {
+        return false;
+    }
+
+    protected boolean onRegisterLogin() {
+        return false;
+    }
+
+    protected boolean onHomeGroups() {
+        return false;
+    }
+
+    protected void processCommand(ActionEvent ev, Command cmd) {
+        switch(cmd.getId()) {
+            case COMMAND_HomeSettings:
+                if(onHomeSettings()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeChat:
+                if(onHomeChat()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeProfile:
+                if(onHomeProfile()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_LoginRegister:
+                if(onLoginRegister()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeHome:
+                if(onHomeHome()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_CarSave:
+                if(onCarSave()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeHistory:
+                if(onHomeHistory()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeCars:
+                if(onHomeCars()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeRequests:
+                if(onHomeRequests()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeLogout:
+                if(onHomeLogout()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeWallet:
+                if(onHomeWallet()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_LoginLogin:
+                if(onLoginLogin()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_RegisterRegister:
+                if(onRegisterRegister()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_RegisterLogin:
+                if(onRegisterLogin()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+            case COMMAND_HomeGroups:
+                if(onHomeGroups()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
+        }
+        if(ev.getComponent() != null) {
+            handleComponentAction(ev.getComponent(), ev);
+        }
+    }
+
+    protected void exitForm(Form f) {
+        if("History".equals(f.getName())) {
+            exitHistory(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Group".equals(f.getName())) {
+            exitGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            exitGroups(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            exitRegister(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            exitHome(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Settings".equals(f.getName())) {
+            exitSettings(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Cars".equals(f.getName())) {
+            exitCars(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Login".equals(f.getName())) {
+            exitLogin(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Profile".equals(f.getName())) {
+            exitProfile(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Chat".equals(f.getName())) {
+            exitChat(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Requests".equals(f.getName())) {
+            exitRequests(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Conversion".equals(f.getName())) {
+            exitConversion(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Car".equals(f.getName())) {
+            exitCar(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Wallet".equals(f.getName())) {
+            exitWallet(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+            return;
+    }
+
+
+    protected void exitHistory(Form f) {
+    }
+
+
+    protected void exitGroup(Form f) {
+    }
+
+
+    protected void exitGroups(Form f) {
+    }
+
+
+    protected void exitRegister(Form f) {
+    }
+
+
+    protected void exitHome(Form f) {
+    }
+
+
+    protected void exitSettings(Form f) {
+    }
+
+
+    protected void exitCars(Form f) {
+    }
+
+
+    protected void exitLogin(Form f) {
+    }
+
+
+    protected void exitProfile(Form f) {
+    }
+
+
+    protected void exitChat(Form f) {
+    }
+
+
+    protected void exitRequests(Form f) {
+    }
+
+
+    protected void exitConversion(Form f) {
+    }
+
+
+    protected void exitCar(Form f) {
+    }
+
+
+    protected void exitWallet(Form f) {
+    }
+
+    protected void beforeShow(Form f) {
+    aboutToShowThisContainer = f;
+        if("History".equals(f.getName())) {
+            beforeHistory(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Group".equals(f.getName())) {
+            beforeGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            beforeGroups(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            beforeRegister(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            beforeHome(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Settings".equals(f.getName())) {
+            beforeSettings(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Cars".equals(f.getName())) {
+            beforeCars(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Login".equals(f.getName())) {
+            beforeLogin(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Profile".equals(f.getName())) {
+            beforeProfile(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Chat".equals(f.getName())) {
+            beforeChat(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Requests".equals(f.getName())) {
+            beforeRequests(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Conversion".equals(f.getName())) {
+            beforeConversion(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Car".equals(f.getName())) {
+            beforeCar(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Wallet".equals(f.getName())) {
+            beforeWallet(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+            return;
+    }
+
+
+    protected void beforeHistory(Form f) {
+    }
+
+
+    protected void beforeGroup(Form f) {
+    }
+
+
+    protected void beforeGroups(Form f) {
+    }
+
+
+    protected void beforeRegister(Form f) {
+    }
+
+
+    protected void beforeHome(Form f) {
+    }
+
+
+    protected void beforeSettings(Form f) {
+    }
+
+
+    protected void beforeCars(Form f) {
+    }
+
+
+    protected void beforeLogin(Form f) {
+    }
+
+
+    protected void beforeProfile(Form f) {
+    }
+
+
+    protected void beforeChat(Form f) {
+    }
+
+
+    protected void beforeRequests(Form f) {
+    }
+
+
+    protected void beforeConversion(Form f) {
+    }
+
+
+    protected void beforeCar(Form f) {
+    }
+
+
+    protected void beforeWallet(Form f) {
+    }
+
+    protected void beforeShowContainer(Container c) {
+        aboutToShowThisContainer = c;
+        if("History".equals(c.getName())) {
+            beforeContainerHistory(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Group".equals(c.getName())) {
+            beforeContainerGroup(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(c.getName())) {
+            beforeContainerGroups(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(c.getName())) {
+            beforeContainerRegister(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(c.getName())) {
+            beforeContainerHome(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Settings".equals(c.getName())) {
+            beforeContainerSettings(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Cars".equals(c.getName())) {
+            beforeContainerCars(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Login".equals(c.getName())) {
+            beforeContainerLogin(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Profile".equals(c.getName())) {
+            beforeContainerProfile(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Chat".equals(c.getName())) {
+            beforeContainerChat(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Requests".equals(c.getName())) {
+            beforeContainerRequests(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Conversion".equals(c.getName())) {
+            beforeContainerConversion(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Car".equals(c.getName())) {
+            beforeContainerCar(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Wallet".equals(c.getName())) {
+            beforeContainerWallet(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+            return;
+    }
+
+
+    protected void beforeContainerHistory(Container c) {
+    }
+
+
+    protected void beforeContainerGroup(Container c) {
+    }
+
+
+    protected void beforeContainerGroups(Container c) {
+    }
+
+
+    protected void beforeContainerRegister(Container c) {
+    }
+
+
+    protected void beforeContainerHome(Container c) {
+    }
+
+
+    protected void beforeContainerSettings(Container c) {
+    }
+
+
+    protected void beforeContainerCars(Container c) {
+    }
+
+
+    protected void beforeContainerLogin(Container c) {
+    }
+
+
+    protected void beforeContainerProfile(Container c) {
+    }
+
+
+    protected void beforeContainerChat(Container c) {
+    }
+
+
+    protected void beforeContainerRequests(Container c) {
+    }
+
+
+    protected void beforeContainerConversion(Container c) {
+    }
+
+
+    protected void beforeContainerCar(Container c) {
+    }
+
+
+    protected void beforeContainerWallet(Container c) {
+    }
+
+    protected void postShow(Form f) {
+        if("History".equals(f.getName())) {
+            postHistory(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Group".equals(f.getName())) {
+            postGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            postGroups(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            postRegister(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            postHome(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Settings".equals(f.getName())) {
+            postSettings(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Cars".equals(f.getName())) {
+            postCars(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Login".equals(f.getName())) {
+            postLogin(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Profile".equals(f.getName())) {
+            postProfile(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Chat".equals(f.getName())) {
+            postChat(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Requests".equals(f.getName())) {
+            postRequests(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Conversion".equals(f.getName())) {
+            postConversion(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Car".equals(f.getName())) {
+            postCar(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Wallet".equals(f.getName())) {
+            postWallet(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+            return;
+    }
+
+
+    protected void postHistory(Form f) {
+    }
+
+
+    protected void postGroup(Form f) {
+    }
+
+
+    protected void postGroups(Form f) {
+    }
+
+
+    protected void postRegister(Form f) {
+    }
+
+
+    protected void postHome(Form f) {
+    }
+
+
+    protected void postSettings(Form f) {
+    }
+
+
+    protected void postCars(Form f) {
+    }
+
+
+    protected void postLogin(Form f) {
+    }
+
+
+    protected void postProfile(Form f) {
+    }
+
+
+    protected void postChat(Form f) {
+    }
+
+
+    protected void postRequests(Form f) {
+    }
+
+
+    protected void postConversion(Form f) {
+    }
+
+
+    protected void postCar(Form f) {
+    }
+
+
+    protected void postWallet(Form f) {
+    }
+
+    protected void postShowContainer(Container c) {
+        if("History".equals(c.getName())) {
+            postContainerHistory(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Group".equals(c.getName())) {
+            postContainerGroup(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(c.getName())) {
+            postContainerGroups(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(c.getName())) {
+            postContainerRegister(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(c.getName())) {
+            postContainerHome(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Settings".equals(c.getName())) {
+            postContainerSettings(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Cars".equals(c.getName())) {
+            postContainerCars(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Login".equals(c.getName())) {
+            postContainerLogin(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Profile".equals(c.getName())) {
+            postContainerProfile(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Chat".equals(c.getName())) {
+            postContainerChat(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Requests".equals(c.getName())) {
+            postContainerRequests(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Conversion".equals(c.getName())) {
+            postContainerConversion(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Car".equals(c.getName())) {
+            postContainerCar(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Wallet".equals(c.getName())) {
+            postContainerWallet(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+            return;
+    }
+
+
+    protected void postContainerHistory(Container c) {
+    }
+
+
+    protected void postContainerGroup(Container c) {
+    }
+
+
+    protected void postContainerGroups(Container c) {
+    }
+
+
+    protected void postContainerRegister(Container c) {
+    }
+
+
+    protected void postContainerHome(Container c) {
+    }
+
+
+    protected void postContainerSettings(Container c) {
+    }
+
+
+    protected void postContainerCars(Container c) {
+    }
+
+
+    protected void postContainerLogin(Container c) {
+    }
+
+
+    protected void postContainerProfile(Container c) {
+    }
+
+
+    protected void postContainerChat(Container c) {
+    }
+
+
+    protected void postContainerRequests(Container c) {
+    }
+
+
+    protected void postContainerConversion(Container c) {
+    }
+
+
+    protected void postContainerCar(Container c) {
+    }
+
+
+    protected void postContainerWallet(Container c) {
+    }
+
+    protected void onCreateRoot(String rootName) {
+        if("History".equals(rootName)) {
+            onCreateHistory();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Group".equals(rootName)) {
+            onCreateGroup();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(rootName)) {
+            onCreateGroups();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(rootName)) {
+            onCreateRegister();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(rootName)) {
+            onCreateHome();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Settings".equals(rootName)) {
+            onCreateSettings();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Cars".equals(rootName)) {
+            onCreateCars();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Login".equals(rootName)) {
+            onCreateLogin();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Profile".equals(rootName)) {
+            onCreateProfile();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Chat".equals(rootName)) {
+            onCreateChat();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Requests".equals(rootName)) {
+            onCreateRequests();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Conversion".equals(rootName)) {
+            onCreateConversion();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Car".equals(rootName)) {
+            onCreateCar();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Wallet".equals(rootName)) {
+            onCreateWallet();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+            return;
+    }
+
+
+    protected void onCreateHistory() {
+    }
+
+
+    protected void onCreateGroup() {
+    }
+
+
+    protected void onCreateGroups() {
+    }
+
+
+    protected void onCreateRegister() {
+    }
+
+
+    protected void onCreateHome() {
+    }
+
+
+    protected void onCreateSettings() {
+    }
+
+
+    protected void onCreateCars() {
+    }
+
+
+    protected void onCreateLogin() {
+    }
+
+
+    protected void onCreateProfile() {
+    }
+
+
+    protected void onCreateChat() {
+    }
+
+
+    protected void onCreateRequests() {
+    }
+
+
+    protected void onCreateConversion() {
+    }
+
+
+    protected void onCreateCar() {
+    }
+
+
+    protected void onCreateWallet() {
+    }
+
+    protected Hashtable getFormState(Form f) {
+        Hashtable h = super.getFormState(f);
+        if("History".equals(f.getName())) {
+            getStateHistory(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Group".equals(f.getName())) {
+            getStateGroup(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Groups".equals(f.getName())) {
+            getStateGroups(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Register".equals(f.getName())) {
+            getStateRegister(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Home".equals(f.getName())) {
+            getStateHome(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Settings".equals(f.getName())) {
+            getStateSettings(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Cars".equals(f.getName())) {
+            getStateCars(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Login".equals(f.getName())) {
+            getStateLogin(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Profile".equals(f.getName())) {
+            getStateProfile(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Chat".equals(f.getName())) {
+            getStateChat(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Requests".equals(f.getName())) {
+            getStateRequests(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Conversion".equals(f.getName())) {
+            getStateConversion(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Car".equals(f.getName())) {
+            getStateCar(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Wallet".equals(f.getName())) {
+            getStateWallet(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+            return h;
+    }
+
+
+    protected void getStateHistory(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateGroup(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateGroups(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateRegister(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateHome(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateSettings(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateCars(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateLogin(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateProfile(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateChat(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateRequests(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateConversion(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateCar(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateWallet(Form f, Hashtable h) {
+    }
+
+    protected void setFormState(Form f, Hashtable state) {
+        super.setFormState(f, state);
+        if("History".equals(f.getName())) {
+            setStateHistory(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Group".equals(f.getName())) {
+            setStateGroup(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            setStateGroups(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            setStateRegister(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            setStateHome(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Settings".equals(f.getName())) {
+            setStateSettings(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Cars".equals(f.getName())) {
+            setStateCars(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Login".equals(f.getName())) {
+            setStateLogin(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Profile".equals(f.getName())) {
+            setStateProfile(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Chat".equals(f.getName())) {
+            setStateChat(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Requests".equals(f.getName())) {
+            setStateRequests(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Conversion".equals(f.getName())) {
+            setStateConversion(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Car".equals(f.getName())) {
+            setStateCar(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Wallet".equals(f.getName())) {
+            setStateWallet(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+            return;
+    }
+
+
+    protected void setStateHistory(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateGroup(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateGroups(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateRegister(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateHome(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateSettings(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateCars(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateLogin(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateProfile(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateChat(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateRequests(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateConversion(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateCar(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateWallet(Form f, Hashtable state) {
+    }
+
+    protected boolean setListModel(List cmp) {
+        String listName = cmp.getName();
+        if("MultiList".equals(listName)) {
+            return initListModelMultiList(cmp);
+        }
+        return super.setListModel(cmp);
+    }
+
+    protected boolean initListModelMultiList(List cmp) {
+        return false;
+    }
+
+    protected void handleComponentAction(Component c, ActionEvent event) {
+        Container rootContainerAncestor = getRootAncestor(c);
+        if(rootContainerAncestor == null) return;
+        String rootContainerName = rootContainerAncestor.getName();
+        Container leadParentContainer = c.getParent().getLeadParent();
+        if(leadParentContainer != null && leadParentContainer.getClass() != Container.class) {
+            c = c.getParent().getLeadParent();
+        }
+        if(rootContainerName == null) return;
+        if(rootContainerName.equals("History")) {
+            if("History".equals(c.getName())) {
+                onHistory_HistoryAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Group")) {
+            if("Button".equals(c.getName())) {
+                onGroup_ButtonAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Groups")) {
+            if("New".equals(c.getName())) {
+                onGroups_NewAction(c, event);
+                return;
+            }
+            if("Groups".equals(c.getName())) {
+                onGroups_GroupsAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Register")) {
+            if("Name".equals(c.getName())) {
+                onRegister_NameAction(c, event);
+                return;
+            }
+            if("Username".equals(c.getName())) {
+                onRegister_UsernameAction(c, event);
+                return;
+            }
+            if("Email".equals(c.getName())) {
+                onRegister_EmailAction(c, event);
+                return;
+            }
+            if("Password".equals(c.getName())) {
+                onRegister_PasswordAction(c, event);
+                return;
+            }
+            if("Mobile".equals(c.getName())) {
+                onRegister_MobileAction(c, event);
+                return;
+            }
+            if("Register".equals(c.getName())) {
+                onRegister_RegisterAction(c, event);
+                return;
+            }
+            if("Login".equals(c.getName())) {
+                onRegister_LoginAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Settings")) {
+            if("MultiButton".equals(c.getName())) {
+                onSettings_MultiButtonAction(c, event);
+                return;
+            }
+            if("MultiButton1".equals(c.getName())) {
+                onSettings_MultiButton1Action(c, event);
+                return;
+            }
+            if("MultiButton2".equals(c.getName())) {
+                onSettings_MultiButton2Action(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Cars")) {
+            if("Cars".equals(c.getName())) {
+                onCars_CarsAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Login")) {
+            if("Username".equals(c.getName())) {
+                onLogin_UsernameAction(c, event);
+                return;
+            }
+            if("Password".equals(c.getName())) {
+                onLogin_PasswordAction(c, event);
+                return;
+            }
+            if("Login".equals(c.getName())) {
+                onLogin_LoginAction(c, event);
+                return;
+            }
+            if("Register".equals(c.getName())) {
+                onLogin_RegisterAction(c, event);
+                return;
+            }
+            if("Facebook".equals(c.getName())) {
+                onLogin_FacebookAction(c, event);
+                return;
+            }
+            if("Google".equals(c.getName())) {
+                onLogin_GoogleAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Chat")) {
+            if("Chat".equals(c.getName())) {
+                onChat_ChatAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Requests")) {
+            if("MultiList".equals(c.getName())) {
+                onRequests_MultiListAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Conversion")) {
+            if("TextField".equals(c.getName())) {
+                onConversion_TextFieldAction(c, event);
+                return;
+            }
+            if("Button".equals(c.getName())) {
+                onConversion_ButtonAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Car")) {
+            if("Name".equals(c.getName())) {
+                onCar_NameAction(c, event);
+                return;
+            }
+            if("Year".equals(c.getName())) {
+                onCar_YearAction(c, event);
+                return;
+            }
+            if("Notes".equals(c.getName())) {
+                onCar_NotesAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Wallet")) {
+            if("Recharge".equals(c.getName())) {
+                onWallet_RechargeAction(c, event);
+                return;
+            }
+        }
+    }
+
+      protected void onHistory_HistoryAction(Component c, ActionEvent event) {
+      }
+
+      protected void onGroup_ButtonAction(Component c, ActionEvent event) {
+      }
+
+      protected void onGroups_NewAction(Component c, ActionEvent event) {
+      }
+
+      protected void onGroups_GroupsAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRegister_NameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRegister_UsernameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRegister_EmailAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRegister_PasswordAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRegister_MobileAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRegister_RegisterAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRegister_LoginAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_MultiButtonAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_MultiButton1Action(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_MultiButton2Action(Component c, ActionEvent event) {
+      }
+
+      protected void onCars_CarsAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_UsernameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_PasswordAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_LoginAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_RegisterAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_FacebookAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_GoogleAction(Component c, ActionEvent event) {
+      }
+
+      protected void onChat_ChatAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRequests_MultiListAction(Component c, ActionEvent event) {
+      }
+
+      protected void onConversion_TextFieldAction(Component c, ActionEvent event) {
+      }
+
+      protected void onConversion_ButtonAction(Component c, ActionEvent event) {
+      }
+
+      protected void onCar_NameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onCar_YearAction(Component c, ActionEvent event) {
+      }
+
+      protected void onCar_NotesAction(Component c, ActionEvent event) {
+      }
+
+      protected void onWallet_RechargeAction(Component c, ActionEvent event) {
+      }
+
+}

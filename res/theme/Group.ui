@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Group" cloudDestinationProperty="Group" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Group" >
+  <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
+    <layoutConstraint value="Center" />
+    <component type="Label" name="Label" cloudDestinationProperty="Label" text="Label" >
+    </component>
+    <component type="Label" name="Label1" cloudDestinationProperty="Label1" text="Label" >
+    </component>
+    <component type="Label" name="Label2" cloudDestinationProperty="Label2" text="Label" >
+    </component>
+    <component type="SpanLabel" name="SpanLabel" cloudDestinationProperty="SpanLabel" >
+    </component>
+  </component>
+  <component type="Container" name="Container1" cloudDestinationProperty="Container1" >
+    <layoutConstraint value="South" />
+    <component type="Button" name="Button" cloudDestinationProperty="Button" text="Leave" >
+    </component>
+  </component>
+</component>

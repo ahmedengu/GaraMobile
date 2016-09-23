@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Profile" cloudDestinationProperty="Profile" layout="BoxLayout" boxLayoutAxis="Y" title="Profile" >
+  <component type="Label" name="Label" cloudDestinationProperty="Label" text="Label" >
+  </component>
+  <component type="Label" name="Label1" cloudDestinationProperty="Label1" text="Label" >
+  </component>
+  <component type="Label" name="Label2" cloudDestinationProperty="Label2" text="Label" >
+  </component>
+  <component type="Label" name="Label3" cloudDestinationProperty="Label3" text="Label" >
+  </component>
+  <component type="Label" name="Label4" cloudDestinationProperty="Label4" text="Label" >
+  </component>
+  <component type="Label" name="Label5" cloudDestinationProperty="Label5" text="Label" >
+  </component>
+  <component type="Label" name="Label6" cloudDestinationProperty="Label6" text="Label" >
+  </component>
+  <component type="Label" name="Label7" cloudDestinationProperty="Label7" text="Label" >
+  </component>
+  <component type="Label" name="Label8" cloudDestinationProperty="Label8" text="Label" >
+  </component>
+</component>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Register" cloudDestinationProperty="Register" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="Register" >
+  <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
+    <component type="TextField" name="Name" cloudBoundProperty="text" cloudDestinationProperty="Name" text="" hint="Name" >
+    </component>
+    <component type="TextField" name="Username" cloudBoundProperty="text" cloudDestinationProperty="Username" text="" hint="Username" >
+    </component>
+    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" text="" hint="Email" >
+    </component>
+    <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" text="" hint="Password" >
+    </component>
+    <component type="TextField" name="Mobile" cloudBoundProperty="text" cloudDestinationProperty="Mobile" text="" hint="Mobile" >
+    </component>
+    <component type="Button" name="Register" cloudDestinationProperty="Register" commandName="Register" commandId="4" commandAction="Home" commandBack="false" text="Register" >
+    </component>
+    <component type="Button" name="Login" cloudDestinationProperty="Login" commandName="Login" commandId="3" commandAction="Login" commandBack="false" text="Login" >
+    </component>
+  </component>
+</component>

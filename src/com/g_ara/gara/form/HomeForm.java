@@ -3,7 +3,6 @@ package com.g_ara.gara.form;
 import com.codename1.ui.Command;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.util.UIBuilder;
-import com.g_ara.gara.controller.Map;
 
 public class HomeForm extends com.codename1.ui.Form {
 
@@ -13,7 +12,7 @@ public class HomeForm extends com.codename1.ui.Form {
 
     public HomeForm(com.codename1.ui.util.Resources resourceObjectInstance) {
         initGuiBuilderComponents(resourceObjectInstance);
-        Map.initMap(this);
+//        new Map().initMap(this);
     }
 
     public void onHomeCommand(ActionEvent ev, Command cmd) {

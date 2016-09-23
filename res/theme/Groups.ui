@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Groups" cloudDestinationProperty="Groups" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Groups" >
+  <component type="Button" name="New" cloudDestinationProperty="New" text="New" >
+    <layoutConstraint value="South" />
+  </component>
+  <component type="MultiList" name="Groups" cloudDestinationProperty="Groups" >
+    <layoutConstraint value="Center" />
+    <mapItems>
+      <stringItem key="Line2" value="more..." />
+      <stringItem key="Line1" value="Entry 1" />
+    </mapItems>
+    <mapItems>
+      <stringItem key="Line2" value="more..." />
+      <stringItem key="Line1" value="Entry 2" />
+    </mapItems>
+    <mapItems>
+      <stringItem key="Line2" value="more..." />
+      <stringItem key="Line1" value="Entry 3" />
+    </mapItems>
+  </component>
+</component>

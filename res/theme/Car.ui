@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Car" cloudDestinationProperty="Car" layout="BoxLayout" boxLayoutAxis="Y" title="Car" >
+  <component type="ImageViewer" name="ImageViewer" cloudDestinationProperty="ImageViewer" >
+    <custom name="image" type="com.codename1.ui.Image" value="check.png" />
+    <custom name="imageList" type="com.codename1.ui.Image" array="true" dimensions="1" >
+      <str>arrow.png</str>
+      <str>BackButtonPressedCenter</str>
+      <str>BackButtonPressedRight</str>
+    </custom>
+    <custom name="swipePlaceholder" type="com.codename1.ui.Image" value="Dialog.borderTop:1" />
+  </component>
+  <component type="TextField" name="Name" cloudBoundProperty="text" cloudDestinationProperty="Name" text="Name" >
+  </component>
+  <component type="TextField" name="Year" cloudBoundProperty="text" cloudDestinationProperty="Year" text="Year" >
+  </component>
+  <component type="TextField" name="Notes" cloudBoundProperty="text" cloudDestinationProperty="Notes" text="Notes" >
+  </component>
+<command name="Save" id="10" action="" backCommand="true" /></component>

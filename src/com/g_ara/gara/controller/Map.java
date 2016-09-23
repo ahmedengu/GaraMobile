@@ -11,21 +11,24 @@ import com.codename1.ui.Form;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.util.Resources;
 
 import java.io.IOException;
-
-import static com.g_ara.gara.Main.fetchResourceFile;
 
 /**
  * Created by ahmedengu.
  */
-public class Map {
+public class Map{
     private static Coord destCoord;
     private static Long lastLocationUpdate = 0L;
     private static int locationUpdateThreshold = 3000;
+    private Resources theme;
 
+    public Map(Resources theme) {
+        this.theme = theme;
+    }
 
-    public static void initMap(Form f) {
+    public void initMap(Form f) {
         final MapContainer map = new MapContainer(new GoogleMapsProvider("AIzaSyAxlzXskkl3KKdjZUuFrV-j8oFjWOjtTIQ"));
         f.addComponent(BorderLayout.CENTER, map);
         map.setRotateGestureEnabled(true);
@@ -40,7 +43,7 @@ public class Map {
         destListener(map);
     }
 
-    private static void destListener(final MapContainer map) {
+    private void destListener(final MapContainer map) {
         map.addTapListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
@@ -49,7 +52,7 @@ public class Map {
         });
     }
 
-    private static void locationListener(final MapContainer map) {
+    private void locationListener(final MapContainer map) {
         LocationManager.getLocationManager().setLocationListener(new LocationListener() {
 
             public void locationUpdated(Location location) {
@@ -66,7 +69,7 @@ public class Map {
         });
     }
 
-    private static Location updateMarkers(MapContainer map) {
+    private Location updateMarkers(MapContainer map) {
         Location currentLocation;
         try {
             currentLocation = LocationManager.getLocationManager().getCurrentLocation();
@@ -76,15 +79,15 @@ public class Map {
         return updateMarkers(map, currentLocation);
     }
 
-    private static Location updateMarkers(MapContainer map, Location location) {
+    private Location updateMarkers(MapContainer map, Location location) {
         map.clearMapLayers();
         //TODO: edit the text and icon below
         if (location != null) {
-            map.addMarker(EncodedImage.createFromImage(fetchResourceFile().getImage("map-pin-green-hi.png"), false), new Coord(location.getLatitude(), location.getLongitude()), "Hi marker", "Optional long description", null);
+            map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-green-hi.png"), false), new Coord(location.getLatitude(), location.getLongitude()), "Hi marker", "Optional long description", null);
             lastLocationUpdate = System.currentTimeMillis();
         }
         if (destCoord != null)
-            map.addMarker(EncodedImage.createFromImage(fetchResourceFile().getImage("map-pin-blue-hi.png"), false), destCoord, "Hi marker", "Optional long description", null);
+            map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-blue-hi.png"), false), destCoord, "Hi marker", "Optional long description", null);
 
         return location;
     }
