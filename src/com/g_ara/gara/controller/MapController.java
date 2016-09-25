@@ -18,13 +18,14 @@ import java.io.IOException;
 /**
  * Created by ahmedengu.
  */
-public class Map{
-    private static Coord destCoord;
+public class MapController {
+
+    private static Coord destCoord,locationCoord;
     private static Long lastLocationUpdate = 0L;
     private static int locationUpdateThreshold = 3000;
     private Resources theme;
 
-    public Map(Resources theme) {
+    public MapController(Resources theme) {
         this.theme = theme;
     }
 
@@ -36,7 +37,8 @@ public class Map{
         Location currentLocation = updateMarkers(map);
 
         if (currentLocation != null) {
-            map.zoom(new Coord(currentLocation.getLatitude(), currentLocation.getLongitude()), 5);
+            locationCoord = new Coord(currentLocation.getLatitude(), currentLocation.getLongitude());
+            map.zoom(locationCoord, 5);
             map.setShowMyLocation(true);
         }
         locationListener(map);
@@ -83,12 +85,21 @@ public class Map{
         map.clearMapLayers();
         //TODO: edit the text and icon below
         if (location != null) {
-            map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-green-hi.png"), false), new Coord(location.getLatitude(), location.getLongitude()), "Hi marker", "Optional long description", null);
+            locationCoord = new Coord(location.getLatitude(), location.getLongitude());
+            map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-green-hi.png"), false), locationCoord, "Hi marker", "Optional long description", null);
             lastLocationUpdate = System.currentTimeMillis();
         }
         if (destCoord != null)
             map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-blue-hi.png"), false), destCoord, "Hi marker", "Optional long description", null);
 
         return location;
+    }
+
+    public static Coord getDestCoord() {
+        return destCoord;
+    }
+
+    public static Coord getLocationCoord() {
+        return locationCoord;
     }
 }

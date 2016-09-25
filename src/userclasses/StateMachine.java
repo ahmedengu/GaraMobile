@@ -7,17 +7,32 @@
 
 package userclasses;
 
+import com.codename1.components.ToastBar;
+import com.codename1.io.Preferences;
 import com.codename1.ui.Component;
+import com.codename1.ui.Container;
+import com.codename1.ui.Dialog;
 import com.codename1.ui.Form;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.controller.Map;
+import com.g_ara.gara.controller.MapController;
+import com.parse4cn1.Parse;
 import generated.StateMachineBase;
+
+import java.util.HashMap;
+
+import static com.g_ara.gara.controller.CarsController.*;
+import static com.g_ara.gara.controller.GroupsController.newGroup;
+import static com.g_ara.gara.controller.GroupsController.refreshGroups;
+import static com.g_ara.gara.controller.UserController.*;
 
 /**
  * @author Your name here
  */
 public class StateMachine extends StateMachineBase {
+    java.util.Map<String, Object> data = new HashMap<>();
+
     public StateMachine(String resFile) {
         super(resFile);
         // do not modify, write code in initVars and initialize class members there,
@@ -29,6 +44,8 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
+        Parse.initialize("http://localhost:1337/parse", "myAppId", "master");
+
     }
 
 
@@ -44,7 +61,8 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeHome(Form f) {
-        new Map(fetchResourceFile()).initMap(f);
+        f.setBackCommand(null);
+        new MapController(fetchResourceFile()).initMap(f);
     }
 
     @Override
@@ -67,6 +85,103 @@ public class StateMachine extends StateMachineBase {
     protected void onGroups_GroupsAction(Component c, ActionEvent event) {
         showForm("Group", null);
 
-    
+
     }
+
+    @Override
+    protected void onHome_RideAction(Component c, ActionEvent event) {
+        if (MapController.getDestCoord() == null) {
+            ToastBar.showErrorMessage("You should choose a destination");
+            return;
+        }
+        if (MapController.getLocationCoord() == null) {
+            ToastBar.showErrorMessage("GPS is required");
+            return;
+        }
+        Dialog.show("ride", "details", null, null);
+    }
+
+    @Override
+    protected void onHome_DriveAction(Component c, ActionEvent event) {
+        if (MapController.getDestCoord() == null) {
+            ToastBar.showErrorMessage("You should choose a destination");
+            return;
+        }
+        if (MapController.getLocationCoord() == null) {
+            ToastBar.showErrorMessage("GPS is required");
+            return;
+        }
+        if (Preferences.get("cars", "").length() == 0) {
+            ToastBar.showErrorMessage("You dont have any cars");
+            return;
+        }
+
+        Dialog.show("ride", "details", null, null);
+
+
+    }
+
+    @Override
+    protected boolean allowBackTo(String formName) {
+        if (formName.indexOf("Login") != -1 || formName.indexOf("Register") != -1)
+            return false;
+        return super.allowBackTo(formName);
+    }
+
+    @Override
+    protected void onLogin_LoginAction(Component c, ActionEvent event) {
+        login(findUsername(), findPassword(), this);
+    }
+
+    @Override
+    protected void onLogin_FacebookAction(Component c, ActionEvent event) {
+
+
+    }
+
+
+    @Override
+    protected void onRegister_PicAction(Component c, ActionEvent event) {
+        addPic(findPic());
+
+    }
+
+
+    @Override
+    protected void onRegister_RegisterAction(Component c, ActionEvent event) {
+        register(findUsername(), findPassword(), findName(), findEmail(), findMobile(), findPic(), this);
+    }
+
+
+    @Override
+    protected void beforeGroups(Form f) {
+        refreshGroups((MultiList) findGroups());
+        f.addPullToRefresh(() -> refreshGroups((MultiList) findGroups()));
+    }
+
+    @Override
+    protected void onNewGroup_NewAction(Component c, ActionEvent event) {
+        newGroup(findEmail(), this);
+    }
+
+
+    @Override
+    protected void onCar_SaveAction(Component c, ActionEvent event) {
+        addCar(findName(), findYear(), ((Container) findPics()), this);
+    }
+
+
+    @Override
+    protected void onCar_AddAction(Component c, ActionEvent event) {
+        addCarPic(((Container) findPics()));
+    }
+
+
+    @Override
+    protected void beforeCars(Form f) {
+        refreshCars(((MultiList) findCars()));
+        f.addPullToRefresh(() -> refreshCars(((MultiList) findCars())));
+    }
+
+
 }

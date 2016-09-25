@@ -3,17 +3,8 @@
 <component type="Form" name="Cars" cloudDestinationProperty="Cars" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Cars" >
   <component type="MultiList" name="Cars" cloudDestinationProperty="Cars" >
     <layoutConstraint value="Center" />
-    <mapItems>
-      <stringItem key="Line2" value="more..." />
-      <stringItem key="Line1" value="Entry 1" />
-    </mapItems>
-    <mapItems>
-      <stringItem key="Line2" value="more..." />
-      <stringItem key="Line1" value="Entry 2" />
-    </mapItems>
-    <mapItems>
-      <stringItem key="Line2" value="more..." />
-      <stringItem key="Line1" value="Entry 3" />
-    </mapItems>
+  </component>
+  <component type="Button" name="New" cloudDestinationProperty="New" commandName="New" commandId="19" commandAction="Car" commandBack="false" text="New" >
+    <layoutConstraint value="South" />
   </component>
 </component>

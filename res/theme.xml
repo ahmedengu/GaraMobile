@@ -53,7 +53,6 @@
     <image name="empty.png"  />
     <image name="ForwardMedia.png" type="multi"  />
     <image name="gray_line.jpg"  />
-    <ui name="Group" />
     <image name="GroupElement.borderBottom:1" type="multi"  />
     <image name="GroupElement.borderBottomL:1" type="multi"  />
     <image name="GroupElement.borderBottomR:1" type="multi"  />
@@ -572,6 +571,7 @@
     <ui name="Login" />
     <image name="map-pin-blue-hi.png" type="multi"  />
     <image name="map-pin-green-hi.png" type="multi"  />
+    <ui name="newGroup" />
     <image name="PlayMedia.png" type="multi"  />
     <image name="Popup_arrow.png" type="multi"  />
     <image name="Popup_arrow_bottom.png" type="multi"  />
@@ -596,6 +596,7 @@
     <image name="PopupDialogTitle.borderTopL_1.png" type="multi"  />
     <image name="PopupDialogTitle.borderTopR_1.png" type="multi"  />
     <ui name="Profile" />
+    <image name="profile_icon.png" type="multi"  />
     <ui name="Register" />
     <ui name="Requests" />
     <ui name="Settings" />

@@ -6,7 +6,7 @@
     </component>
     <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" text="" hint="Password" >
     </component>
-    <component type="Button" name="Login" cloudDestinationProperty="Login" commandName="Login" commandId="1" commandAction="Home" commandBack="false" text="Login" >
+    <component type="Button" name="Login" cloudDestinationProperty="Login" commandName="Login" commandId="1" commandAction="" commandBack="false" text="Login" >
     </component>
     <component type="Button" name="Register" cloudDestinationProperty="Register" commandName="Register" commandId="2" commandAction="Register" commandBack="false" text="Register" >
     </component>

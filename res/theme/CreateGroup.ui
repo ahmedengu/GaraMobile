@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="CreateGroup" cloudDestinationProperty="CreateGroup" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="Create Group" >
+  <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
+    <component type="TextField" name="Name" cloudBoundProperty="text" cloudDestinationProperty="name" text="" hint="name" >
+    </component>
+    <component type="TextField" name="Domain" cloudBoundProperty="text" cloudDestinationProperty="domain" text="" hint="domain" >
+    </component>
+    <component type="TextArea" name="Description" cloudBoundProperty="text" cloudDestinationProperty="description" text="" hint="description" >
+    </component>
+    <component type="Button" name="Create" cloudDestinationProperty="create" text="create" >
+    </component>
+  </component>
+</component>
