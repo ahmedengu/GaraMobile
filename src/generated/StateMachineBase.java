@@ -204,18 +204,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.components.MultiButton findMultiButton2(Component root) {
-        return (com.codename1.components.MultiButton)findByName("MultiButton2", root);
-    }
-
-    public com.codename1.components.MultiButton findMultiButton2() {
-        com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("MultiButton2", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.components.MultiButton)findByName("MultiButton2", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.TextField findName(Component root) {
         return (com.codename1.ui.TextField)findByName("Name", root);
     }
@@ -224,18 +212,6 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Name", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.TextField)findByName("Name", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.components.MultiButton findMultiButton1(Component root) {
-        return (com.codename1.components.MultiButton)findByName("MultiButton1", root);
-    }
-
-    public com.codename1.components.MultiButton findMultiButton1() {
-        com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("MultiButton1", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.components.MultiButton)findByName("MultiButton1", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -336,6 +312,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.Button findRate(Component root) {
+        return (com.codename1.ui.Button)findByName("Rate", root);
+    }
+
+    public com.codename1.ui.Button findRate() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Rate", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Rate", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.list.MultiList findMultiList(Component root) {
         return (com.codename1.ui.list.MultiList)findByName("MultiList", root);
     }
@@ -396,6 +384,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.Button findWebsite(Component root) {
+        return (com.codename1.ui.Button)findByName("Website", root);
+    }
+
+    public com.codename1.ui.Button findWebsite() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Website", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Website", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.Label findLabel8(Component root) {
         return (com.codename1.ui.Label)findByName("Label8", root);
     }
@@ -428,6 +428,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label5", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Label)findByName("Label5", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Button findFeedback(Component root) {
+        return (com.codename1.ui.Button)findByName("Feedback", root);
+    }
+
+    public com.codename1.ui.Button findFeedback() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Feedback", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Feedback", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -488,18 +500,6 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("Chat", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Component)findByName("Chat", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.components.MultiButton findMultiButton(Component root) {
-        return (com.codename1.components.MultiButton)findByName("MultiButton", root);
-    }
-
-    public com.codename1.components.MultiButton findMultiButton() {
-        com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("MultiButton", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.components.MultiButton)findByName("MultiButton", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -596,6 +596,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Mobile", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.TextField)findByName("Mobile", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.MultiButton findAnalytics(Component root) {
+        return (com.codename1.components.MultiButton)findByName("Analytics", root);
+    }
+
+    public com.codename1.components.MultiButton findAnalytics() {
+        com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("Analytics", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.MultiButton)findByName("Analytics", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -2205,16 +2217,20 @@ public abstract class StateMachineBase extends UIBuilder {
             }
         }
         if(rootContainerName.equals("Settings")) {
-            if("MultiButton".equals(c.getName())) {
-                onSettings_MultiButtonAction(c, event);
+            if("Analytics".equals(c.getName())) {
+                onSettings_AnalyticsAction(c, event);
                 return;
             }
-            if("MultiButton1".equals(c.getName())) {
-                onSettings_MultiButton1Action(c, event);
+            if("Website".equals(c.getName())) {
+                onSettings_WebsiteAction(c, event);
                 return;
             }
-            if("MultiButton2".equals(c.getName())) {
-                onSettings_MultiButton2Action(c, event);
+            if("Rate".equals(c.getName())) {
+                onSettings_RateAction(c, event);
+                return;
+            }
+            if("Feedback".equals(c.getName())) {
+                onSettings_FeedbackAction(c, event);
                 return;
             }
         }
@@ -2351,13 +2367,16 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onHome_DriveAction(Component c, ActionEvent event) {
       }
 
-      protected void onSettings_MultiButtonAction(Component c, ActionEvent event) {
+      protected void onSettings_AnalyticsAction(Component c, ActionEvent event) {
       }
 
-      protected void onSettings_MultiButton1Action(Component c, ActionEvent event) {
+      protected void onSettings_WebsiteAction(Component c, ActionEvent event) {
       }
 
-      protected void onSettings_MultiButton2Action(Component c, ActionEvent event) {
+      protected void onSettings_RateAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_FeedbackAction(Component c, ActionEvent event) {
       }
 
       protected void onCars_CarsAction(Component c, ActionEvent event) {

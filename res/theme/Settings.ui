@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <component type="Form" name="Settings" cloudDestinationProperty="Settings" layout="BoxLayout" boxLayoutAxis="Y" title="Settings" >
-  <component type="MultiButton" name="MultiButton" cloudDestinationProperty="MultiButton" >
-    <custom name="line1" type="java.lang.String" value="Setting Item" />
-    <custom name="line2" type="java.lang.String" value="Descripton" />
-    <custom name="checkBox" type="java.lang.Boolean" value="true" />
-  </component>
-  <component type="MultiButton" name="MultiButton1" cloudDestinationProperty="MultiButton1" >
-    <custom name="line1" type="java.lang.String" value="Other Item" />
-    <custom name="line2" type="java.lang.String" value="Description For Other Item" />
+  <component type="MultiButton" name="Analytics" cloudDestinationProperty="MultiButton" >
+    <custom name="line1" type="java.lang.String" value="Analytics" />
+    <custom name="line2" type="java.lang.String" value="Send anonymous usage information to improve the app" />
+    <custom name="checkBox" type="java.lang.Boolean" value="false" />
     <custom name="radioButton" type="java.lang.Boolean" value="true" />
+    <custom name="selected" type="java.lang.Boolean" value="true" />
   </component>
-  <component type="Label" name="Label" cloudDestinationProperty="Label" uiid="TitleLabel" text="Subtitle" >
+  <component type="Label" name="Label" cloudDestinationProperty="Label" text="About" >
   </component>
-  <component type="MultiButton" name="MultiButton2" cloudDestinationProperty="MultiButton2" >
-    <custom name="line1" type="java.lang.String" value="Other Things" />
-    <custom name="line2" type="java.lang.String" value="More Data" />
-    <custom name="checkBox" type="java.lang.Boolean" value="true" />
+  <component type="Button" name="Website" cloudDestinationProperty="Website" text="Website" >
+  </component>
+  <component type="Button" name="Rate" cloudDestinationProperty="Rate" text="Rate" >
+  </component>
+  <component type="Button" name="Feedback" cloudDestinationProperty="Feedback" text="Feedback" >
   </component>
 </component>

@@ -1,10 +1,7 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.capture.Capture;
-import com.codename1.ui.Button;
-import com.codename1.ui.Container;
-import com.codename1.ui.Image;
-import com.codename1.ui.TextField;
+import com.codename1.ui.*;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.ImageIO;
@@ -92,5 +89,10 @@ public class CarsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void beforeCarsForm(Form f, MultiList cars) {
+        refreshCars(cars);
+        f.addPullToRefresh(() -> refreshCars(cars));
     }
 }

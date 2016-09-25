@@ -1,5 +1,6 @@
 package com.g_ara.gara.controller;
 
+import com.codename1.ui.Form;
 import com.codename1.ui.TextField;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
@@ -70,5 +71,10 @@ public class GroupsController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void beforeGroupsForm(Form f, MultiList groups) {
+        refreshGroups(groups);
+        f.addPullToRefresh(() -> refreshGroups(groups));
     }
 }
