@@ -182,4 +182,39 @@ public class StateMachine extends StateMachineBase {
     }
 
 
+    @Override
+    protected void onProfile_SaveAction(Component c, ActionEvent event) {
+        saveUser(findUsername(), findPassword(), findMobile(), findPic(), this);
+
+    }
+
+
+    @Override
+    protected void beforeProfile(Form f) {
+        beforeProffileForm(findName(), findUsername(), findPassword(), findMobile(), findPic(), findEmail());
+    }
+
+
+    @Override
+    protected void onProfile_PicAction(Component c, ActionEvent event) {
+        addPic(findPic());
+    }
+
+    @Override
+    protected void onLogin_ResetAction(Component c, ActionEvent event) {
+        resetPassword(findUsername());
+    }
+
+    @Override
+    protected boolean onHomeLogout() {
+        logout(this);
+        return true;
+    }
+
+
+    @Override
+    protected void postLogin(Form f) {
+        onStart(this);
+
+    }
 }

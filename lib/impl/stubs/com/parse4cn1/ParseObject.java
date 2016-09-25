@@ -417,7 +417,7 @@ public class ParseObject implements Parse.IPersistable {
 	}
 
 	/**
-	 *  Checks the validity of this object's state just before a save operation 
+	 *  Checks the validity of this object's state just before a saveUser operation
 	 *  is performed. Sub-classes should override this method to implement class-
 	 *  specific validation.
 	 *  
@@ -429,7 +429,7 @@ public class ParseObject implements Parse.IPersistable {
 	/**
 	 *  Saves this object.
 	 *  
-	 *  @param command The ParseCommand to be used to issue the save request.
+	 *  @param command The ParseCommand to be used to issue the saveUser request.
 	 *  @throws ParseException if anything goes wrong.
 	 */
 	protected void performSave(command.ParseCommand command) {

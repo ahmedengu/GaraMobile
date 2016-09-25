@@ -4,6 +4,8 @@
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
     <component type="TextField" name="Username" cloudBoundProperty="text" cloudDestinationProperty="Username" text="" hint="Username" >
     </component>
+    <component type="Button" name="Reset" cloudDestinationProperty="Reset" text="Rest password" >
+    </component>
     <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" text="" hint="Password" >
     </component>
     <component type="Button" name="Login" cloudDestinationProperty="Login" commandName="Login" commandId="1" commandAction="" commandBack="false" text="Login" >

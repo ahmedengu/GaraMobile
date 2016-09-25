@@ -49,7 +49,7 @@ public class GroupsController {
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Group");
             String email = eMail.getText();
-            String domain = email.substring(email.indexOf("@") + 1);
+            String domain = email.substring(email.lastIndexOf("@") + 1);
             query.whereEqualTo("domain", domain);
             List<ParseObject> results = query.find();
             ParseObject group;

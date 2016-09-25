@@ -8,10 +8,12 @@
 package generated;
 
 import com.codename1.ui.*;
-import com.codename1.ui.util.*;
-import com.codename1.ui.plaf.*;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.plaf.UIManager;
+import com.codename1.ui.util.Resources;
+import com.codename1.ui.util.UIBuilder;
+
 import java.util.Hashtable;
-import com.codename1.ui.events.*;
 
 public abstract class StateMachineBase extends UIBuilder {
     private Container aboutToShowThisContainer;
@@ -264,6 +266,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.Button findReset(Component root) {
+        return (com.codename1.ui.Button)findByName("Reset", root);
+    }
+
+    public com.codename1.ui.Button findReset() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Reset", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Reset", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.Button findFacebook(Component root) {
         return (com.codename1.ui.Button)findByName("Facebook", root);
     }
@@ -396,18 +410,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Label findLabel8(Component root) {
-        return (com.codename1.ui.Label)findByName("Label8", root);
-    }
-
-    public com.codename1.ui.Label findLabel8() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label8", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label8", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Label findCredit(Component root) {
         return (com.codename1.ui.Label)findByName("Credit", root);
     }
@@ -416,18 +418,6 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Credit", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Label)findByName("Credit", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.ui.Label findLabel5(Component root) {
-        return (com.codename1.ui.Label)findByName("Label5", root);
-    }
-
-    public com.codename1.ui.Label findLabel5() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label5", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label5", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -444,18 +434,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Label findLabel4(Component root) {
-        return (com.codename1.ui.Label)findByName("Label4", root);
-    }
-
-    public com.codename1.ui.Label findLabel4() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label4", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label4", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Component findGroups(Component root) {
         return (com.codename1.ui.Component)findByName("Groups", root);
     }
@@ -464,30 +442,6 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("Groups", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Component)findByName("Groups", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.ui.Label findLabel7(Component root) {
-        return (com.codename1.ui.Label)findByName("Label7", root);
-    }
-
-    public com.codename1.ui.Label findLabel7() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label7", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label7", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.ui.Label findLabel6(Component root) {
-        return (com.codename1.ui.Label)findByName("Label6", root);
-    }
-
-    public com.codename1.ui.Label findLabel6() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label6", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label6", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -528,30 +482,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Label findLabel1(Component root) {
-        return (com.codename1.ui.Label)findByName("Label1", root);
-    }
-
-    public com.codename1.ui.Label findLabel1() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label1", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label1", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.ui.Label findLabel3(Component root) {
-        return (com.codename1.ui.Label)findByName("Label3", root);
-    }
-
-    public com.codename1.ui.Label findLabel3() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label3", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label3", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Button findPic(Component root) {
         return (com.codename1.ui.Button)findByName("Pic", root);
     }
@@ -560,18 +490,6 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Pic", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Button)findByName("Pic", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.ui.Label findLabel2(Component root) {
-        return (com.codename1.ui.Label)findByName("Label2", root);
-    }
-
-    public com.codename1.ui.Label findLabel2() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label2", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Label2", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -763,6 +681,7 @@ public abstract class StateMachineBase extends UIBuilder {
     public static final int COMMAND_LoginRegister = 2;
     public static final int COMMAND_HomeHome = 5;
     public static final int COMMAND_CarSave = 10;
+    public static final int COMMAND_ProfileSave = 3;
     public static final int COMMAND_HomeHistory = 14;
     public static final int COMMAND_HomeCars = 6;
     public static final int COMMAND_HomeRequests = 15;
@@ -771,7 +690,6 @@ public abstract class StateMachineBase extends UIBuilder {
     public static final int COMMAND_GroupsNew = 18;
     public static final int COMMAND_LoginLogin = 1;
     public static final int COMMAND_RegisterRegister = 4;
-    public static final int COMMAND_RegisterLogin = 3;
     public static final int COMMAND_HomeGroups = 13;
 
     protected boolean onHomeSettings() {
@@ -799,6 +717,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected boolean onCarSave() {
+        return false;
+    }
+
+    protected boolean onProfileSave() {
         return false;
     }
 
@@ -831,10 +753,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected boolean onRegisterRegister() {
-        return false;
-    }
-
-    protected boolean onRegisterLogin() {
         return false;
     }
 
@@ -893,6 +811,13 @@ public abstract class StateMachineBase extends UIBuilder {
                 }
                 break;
 
+            case COMMAND_ProfileSave:
+                if(onProfileSave()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
             case COMMAND_HomeHistory:
                 if(onHomeHistory()) {
                     ev.consume();
@@ -944,13 +869,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
             case COMMAND_RegisterRegister:
                 if(onRegisterRegister()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_RegisterLogin:
-                if(onRegisterLogin()) {
                     ev.consume();
                     return;
                 }
@@ -2249,6 +2167,10 @@ public abstract class StateMachineBase extends UIBuilder {
                 onLogin_UsernameAction(c, event);
                 return;
             }
+            if("Reset".equals(c.getName())) {
+                onLogin_ResetAction(c, event);
+                return;
+            }
             if("Password".equals(c.getName())) {
                 onLogin_PasswordAction(c, event);
                 return;
@@ -2267,6 +2189,36 @@ public abstract class StateMachineBase extends UIBuilder {
             }
             if("Google".equals(c.getName())) {
                 onLogin_GoogleAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Profile")) {
+            if("Pic".equals(c.getName())) {
+                onProfile_PicAction(c, event);
+                return;
+            }
+            if("Name".equals(c.getName())) {
+                onProfile_NameAction(c, event);
+                return;
+            }
+            if("Username".equals(c.getName())) {
+                onProfile_UsernameAction(c, event);
+                return;
+            }
+            if("Email".equals(c.getName())) {
+                onProfile_EmailAction(c, event);
+                return;
+            }
+            if("Password".equals(c.getName())) {
+                onProfile_PasswordAction(c, event);
+                return;
+            }
+            if("Mobile".equals(c.getName())) {
+                onProfile_MobileAction(c, event);
+                return;
+            }
+            if("Save".equals(c.getName())) {
+                onProfile_SaveAction(c, event);
                 return;
             }
         }
@@ -2388,6 +2340,9 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onLogin_UsernameAction(Component c, ActionEvent event) {
       }
 
+      protected void onLogin_ResetAction(Component c, ActionEvent event) {
+      }
+
       protected void onLogin_PasswordAction(Component c, ActionEvent event) {
       }
 
@@ -2401,6 +2356,27 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onLogin_GoogleAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_PicAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_NameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_UsernameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_EmailAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_PasswordAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_MobileAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_SaveAction(Component c, ActionEvent event) {
       }
 
       protected void onChat_ChatAction(Component c, ActionEvent event) {

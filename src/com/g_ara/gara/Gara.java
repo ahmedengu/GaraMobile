@@ -26,9 +26,10 @@ public class Gara {
     }
 
     public void start() {
-        AnalyticsService.setAppsMode(Preferences.get("Analytics", true));
-        AnalyticsService.init("UA-80287405-1", "g-ara.com");
-
+        if (Preferences.get("Analytics", true)) {
+            AnalyticsService.setAppsMode(true);
+            AnalyticsService.init("UA-80287405-1", "g-ara.com");
+        }
         Display.getInstance().lockOrientation(true);
 
         if (current != null) {

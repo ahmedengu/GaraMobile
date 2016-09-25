@@ -1,6 +1,5 @@
 package com.g_ara.gara.controller;
 
-import com.codename1.analytics.AnalyticsService;
 import com.codename1.components.MultiButton;
 import com.codename1.io.Preferences;
 import com.codename1.messaging.Message;
@@ -19,7 +18,6 @@ public class SettingsController {
         boolean selected = !Preferences.get("Analytics", true);
         analyticsState(selected, analytics);
         Preferences.set("Analytics", selected);
-        AnalyticsService.setAppsMode(selected);
     }
 
     public static void websiteAction() {
