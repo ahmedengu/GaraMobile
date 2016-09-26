@@ -9,11 +9,14 @@ package userclasses;
 
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
+import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
+import com.g_ara.gara.controller.CarsController;
 import com.g_ara.gara.controller.MapController;
 import com.parse4cn1.*;
 import generated.StateMachineBase;
@@ -92,13 +95,26 @@ public class StateMachine extends StateMachineBase {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
-        if (Preferences.get("cars", "").length() == 0) {
+
+        MultiList list = new MultiList();
+        CarsController.refreshCars(list);
+
+        if (list.getModel().getSize() == 0) {
             ToastBar.showErrorMessage("You dont have any cars");
             return;
         }
-
-        Dialog.show("ride", "details", null, null);
-
+        list.addActionListener(evt -> {
+            ParseObject item = (ParseObject) ((Map<String, Object>) list.getSelectedItem()).get("object");
+            data.put("car", item);
+            showForm("DriveSummary", null);
+        });
+        Dialog dialog = new Dialog("Choose a car");
+        dialog.setLayout(new BorderLayout());
+        dialog.addComponent(BorderLayout.CENTER, list);
+        Button cancel = new Button("Cancel");
+        cancel.addActionListener(evt -> dialog.dispose());
+        dialog.addComponent(BorderLayout.SOUTH, cancel);
+        dialog.show();
 
     }
 
@@ -361,5 +377,35 @@ public class StateMachine extends StateMachineBase {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
         }
+    }
+
+    @Override
+    protected void onDriveSummary_ConfirmAction(Component c, ActionEvent event) {
+
+        try {
+            ParseObject trip = ParseObject.create("Trip");
+            ParseUser current = ParseUser.getCurrent();
+            current.setDirty(false);
+            trip.put("driver", current);
+            Coord locationCoord = MapController.getLocationCoord();
+            trip.put("from", locationCoord.getLatitude() + "," + locationCoord.getLongitude());
+            Coord destCoord = MapController.getDestCoord();
+            trip.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
+            trip.put("car", ((ParseObject) data.get("car")));
+            trip.save();
+            showForm("Home", null);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
+    }
+
+    @Override
+    protected void beforeDriveSummary(Form f) {
+        findSummary().add(new Label(MapController.getLocationCoord().toString()));
+        findSummary().add(new Label(MapController.getDestCoord().toString()));
+        findSummary().add(new Label(((ParseObject) data.get("car")).getString("name")));
+
+
     }
 }

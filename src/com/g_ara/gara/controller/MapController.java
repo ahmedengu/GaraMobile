@@ -12,6 +12,9 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.util.Resources;
+import com.parse4cn1.ParseException;
+import com.parse4cn1.ParseGeoPoint;
+import com.parse4cn1.ParseUser;
 
 import java.io.IOException;
 
@@ -20,9 +23,9 @@ import java.io.IOException;
  */
 public class MapController {
 
-    private static Coord destCoord,locationCoord;
-    private static Long lastLocationUpdate = 0L;
-    private static int locationUpdateThreshold = 3000;
+    private static Coord destCoord, locationCoord;
+    private static Long lastLocationUpdate = 0L, lastLocationSent = 0L;
+    private static int locationUpdateThreshold = 3000, locationSentThreshold=10000;
     private Resources theme;
 
     public MapController(Resources theme) {
@@ -58,9 +61,9 @@ public class MapController {
         LocationManager.getLocationManager().setLocationListener(new LocationListener() {
 
             public void locationUpdated(Location location) {
-                // TODO: send location to server
                 if (System.currentTimeMillis() - lastLocationUpdate >= locationUpdateThreshold) {
                     updateMarkers(map, location);
+                    sendLocation(location);
                 }
             }
 
@@ -69,6 +72,19 @@ public class MapController {
                 //TODO: handle gps state
             }
         });
+    }
+
+    private void sendLocation(Location location) {
+        if (System.currentTimeMillis() - lastLocationSent >= locationSentThreshold) {
+            try {
+                lastLocationSent = System.currentTimeMillis();
+                ParseUser user = ParseUser.getCurrent();
+                user.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+                user.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Location updateMarkers(MapContainer map) {

@@ -32,6 +32,8 @@ public class CarsController {
                     Map<String, Object> entry = new HashMap<>();
                     entry.put("Line1", results.get(i).getString("name"));
                     entry.put("Line2", results.get(i).getString("year"));
+                    entry.put("object", (ParseObject)results.get(i));
+
                     data.add(entry);
 
                 }

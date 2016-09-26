@@ -50,6 +50,7 @@
     <image name="Dialog.borderTopL_1.png" type="multi"  />
     <image name="Dialog.borderTopR:1" type="multi"  />
     <image name="Dialog.borderTopR_1.png" type="multi"  />
+    <ui name="DriveSummary" />
     <image name="empty.png"  />
     <image name="ForwardMedia.png" type="multi"  />
     <image name="gray_line.jpg"  />
