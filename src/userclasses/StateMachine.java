@@ -82,7 +82,26 @@ public class StateMachine extends StateMachineBase {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
-        Dialog.show("ride", "details", null, null);
+
+        try {
+            ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
+            query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), 5);
+            ParseQuery<ParseObject> tripQuery = ParseQuery.getQuery("Trip");
+            tripQuery.include("driver");
+            tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), 5);
+            List<ParseObject> results = tripQuery.find();
+            if (results.size() == 0) {
+                ToastBar.showErrorMessage("There is no rides available");
+            } else {
+                ToastBar.showErrorMessage("Choose your ride");
+            }
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
+
     }
 
     @Override
