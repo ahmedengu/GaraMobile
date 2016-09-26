@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="UserSearch" cloudDestinationProperty="UserSearch" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="User Search" >
+  <component type="Container" name="Container" cloudDestinationProperty="Container" layout="GridLayout" gridLayoutRows="1" gridLayoutColumns="2" >
+    <layoutConstraint value="North" />
+    <component type="TextArea" name="SearchField" cloudBoundProperty="text" cloudDestinationProperty="SearchField" text="" hint="Search" >
+    </component>
+    <component type="Button" name="Search" cloudDestinationProperty="Search" text="Search" >
+    </component>
+  </component>
+  <component type="MultiList" name="Users" cloudDestinationProperty="Users" >
+    <layoutConstraint value="Center" />
+  </component>
+</component>

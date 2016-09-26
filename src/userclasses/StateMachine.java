@@ -9,18 +9,19 @@ package userclasses;
 
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
-import com.codename1.ui.Component;
-import com.codename1.ui.Container;
-import com.codename1.ui.Dialog;
-import com.codename1.ui.Form;
+import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
 import com.g_ara.gara.controller.MapController;
-import com.parse4cn1.Parse;
+import com.parse4cn1.*;
 import generated.StateMachineBase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.g_ara.gara.controller.CarsController.*;
 import static com.g_ara.gara.controller.GroupsController.beforeGroupsForm;
@@ -60,10 +61,6 @@ public class StateMachine extends StateMachineBase {
         showForm("Car", null);
     }
 
-    @Override
-    protected void onChat_ChatAction(Component c, ActionEvent event) {
-        showForm("Conversion", null);
-    }
 
     @Override
     protected void onGroups_GroupsAction(Component c, ActionEvent event) {
@@ -216,5 +213,153 @@ public class StateMachine extends StateMachineBase {
     protected void postLogin(Form f) {
         onStart(this);
 
+    }
+
+
+    @Override
+    protected void beforeConversion(Form f) {
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+            query.whereEqualTo("chat", (ParseObject) data.get("chat"));
+            List<ParseObject> results = query.find();
+            for (int i = 0; i < results.size(); i++) {
+                addMessage(results.get(i));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void addMessage(ParseObject results) {
+        addMessage(results, false);
+    }
+
+    private void addMessage(ParseObject results, boolean repaint) {
+        Label message = new Label(results.getString("message"));
+        findMessages().add(message);
+        if (repaint)
+            findMessages().repaint();
+    }
+
+    @Override
+    protected void beforeChat(Form f) {
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
+            query.include("members");
+            query.whereEqualTo("members", ParseUser.getCurrent());
+            List<ParseObject> results = query.find();
+
+            if (results.size() > 0) {
+                ArrayList<Map<String, Object>> data = new ArrayList<>();
+
+                for (int i = 0; i < results.size(); i++) {
+                    Map<String, Object> entry = new HashMap<>();
+                    entry.put("Line1", ((ParseUser) results.get(i).getList("members").get(1)).getUsername());
+                    EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
+                    String url = ((ParseUser) results.get(i).getList("members").get(1)).getParseFile("pic").getUrl();
+                    entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+
+                    entry.put("object", results.get(i));
+                    data.add(entry);
+                }
+
+                ((MultiList) findChat()).setModel(new DefaultListModel<>(data));
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
+    }
+
+
+    @Override
+    protected void onUserSearch_SearchAction(Component c, ActionEvent event) {
+        try {
+            ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
+            query.whereStartsWith("username", findSearchField().getText());
+//            query.whereStartsWith("name", findSearchField().getText());
+//            query.whereStartsWith("email", findSearchField().getText());
+
+            List<ParseUser> results = query.find();
+
+            if (results.size() > 0) {
+                ArrayList<Map<String, Object>> data = new ArrayList<>();
+
+                for (int i = 0; i < results.size(); i++) {
+                    Map<String, Object> entry = new HashMap<>();
+                    entry.put("Line1", results.get(i).getUsername());
+                    entry.put("Line2", results.get(i).getString("name"));
+                    EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
+                    String url = results.get(i).getParseFile("pic").getUrl();
+                    entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+                    entry.put("object", results.get(i));
+                    data.add(entry);
+                }
+
+                findUsers().setModel(new DefaultListModel<>(data));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onUserSearch_UsersAction(Component c, ActionEvent event) {
+        try {
+            Map<String, Object> itemAt = (Map<String, Object>) findUsers().getSelectedItem();
+            ParseUser object = (ParseUser) itemAt.get("object");
+
+            List<ParseUser> parseUsers = new ArrayList<>();
+            parseUsers.add(ParseUser.getCurrent());
+            parseUsers.add(object);
+
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
+            query.whereContainsAll("members", parseUsers);
+            List<ParseObject> results = query.find();
+
+            ParseObject chat;
+            if (results.size() > 0) {
+                chat = results.get(0);
+            } else {
+                chat = ParseObject.create("Chat");
+                chat.put("members", parseUsers);
+                chat.save();
+            }
+
+            data.put("chat", chat);
+            showForm("Conversion", null);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
+
+    }
+
+    @Override
+    protected void onChat_ChatAction(Component c, ActionEvent event) {
+        Map<String, Object> itemAt = (Map<String, Object>) ((MultiList) findChat()).getSelectedItem();
+        ParseObject object = (ParseObject) itemAt.get("object");
+        data.put("chat", object);
+        showForm("Conversion", null);
+    }
+
+
+    @Override
+    protected void onConversion_SendAction(Component c, ActionEvent event) {
+        try {
+            ParseObject message = ParseObject.create("Message");
+            message.put("message", findMessage().getText());
+            message.put("from", ParseUser.getCurrent());
+            message.put("chat", (ParseObject) data.get("chat"));
+            message.save();
+            findMessage().setText("");
+            addMessage(message, true);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
     }
 }
