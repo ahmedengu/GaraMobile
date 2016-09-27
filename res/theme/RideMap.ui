@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="RideMap" cloudDestinationProperty="RideMap" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Ride Map" cyclicFocus="false" >
+  <component type="Button" name="Cancel" cloudDestinationProperty="Cancel" commandName="Cancel" commandId="22" commandAction="Home" commandBack="false" text="Cancel" >
+    <layoutConstraint value="South" />
+  </component>
+</component>

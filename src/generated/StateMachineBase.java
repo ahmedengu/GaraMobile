@@ -958,6 +958,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("RideMap".equals(f.getName())) {
+            exitRideMap(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("DriveSummary".equals(f.getName())) {
             exitDriveSummary(f);
             aboutToShowThisContainer = null;
@@ -1027,6 +1033,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void exitCar(Form f) {
+    }
+
+
+    protected void exitRideMap(Form f) {
     }
 
 
@@ -1123,6 +1133,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("RideMap".equals(f.getName())) {
+            beforeRideMap(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("DriveSummary".equals(f.getName())) {
             beforeDriveSummary(f);
             aboutToShowThisContainer = null;
@@ -1192,6 +1208,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void beforeCar(Form f) {
+    }
+
+
+    protected void beforeRideMap(Form f) {
     }
 
 
@@ -1288,6 +1308,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("RideMap".equals(c.getName())) {
+            beforeContainerRideMap(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("DriveSummary".equals(c.getName())) {
             beforeContainerDriveSummary(c);
             aboutToShowThisContainer = null;
@@ -1357,6 +1383,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void beforeContainerCar(Container c) {
+    }
+
+
+    protected void beforeContainerRideMap(Container c) {
     }
 
 
@@ -1452,6 +1482,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("RideMap".equals(f.getName())) {
+            postRideMap(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("DriveSummary".equals(f.getName())) {
             postDriveSummary(f);
             aboutToShowThisContainer = null;
@@ -1521,6 +1557,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void postCar(Form f) {
+    }
+
+
+    protected void postRideMap(Form f) {
     }
 
 
@@ -1616,6 +1656,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("RideMap".equals(c.getName())) {
+            postContainerRideMap(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("DriveSummary".equals(c.getName())) {
             postContainerDriveSummary(c);
             aboutToShowThisContainer = null;
@@ -1685,6 +1731,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void postContainerCar(Container c) {
+    }
+
+
+    protected void postContainerRideMap(Container c) {
     }
 
 
@@ -1780,6 +1830,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("RideMap".equals(rootName)) {
+            onCreateRideMap();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("DriveSummary".equals(rootName)) {
             onCreateDriveSummary();
             aboutToShowThisContainer = null;
@@ -1849,6 +1905,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void onCreateCar() {
+    }
+
+
+    protected void onCreateRideMap() {
     }
 
 
@@ -1945,6 +2005,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return h;
         }
 
+        if("RideMap".equals(f.getName())) {
+            getStateRideMap(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
         if("DriveSummary".equals(f.getName())) {
             getStateDriveSummary(f, h);
             aboutToShowThisContainer = null;
@@ -2014,6 +2080,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void getStateCar(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateRideMap(Form f, Hashtable h) {
     }
 
 
@@ -2110,6 +2180,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("RideMap".equals(f.getName())) {
+            setStateRideMap(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("DriveSummary".equals(f.getName())) {
             setStateDriveSummary(f, state);
             aboutToShowThisContainer = null;
@@ -2179,6 +2255,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void setStateCar(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateRideMap(Form f, Hashtable state) {
     }
 
 

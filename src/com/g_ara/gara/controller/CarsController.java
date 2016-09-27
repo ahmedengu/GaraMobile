@@ -25,21 +25,21 @@ public class CarsController {
             query.whereEqualTo("user", ParseUser.getCurrent());
             java.util.List<ParseObject> results = query.find();
 
-            if (results.size() > 0) {
-                ArrayList<Map<String, Object>> data = new ArrayList<>();
+//            if (results.size() > 0) {
+            ArrayList<Map<String, Object>> data = new ArrayList<>();
 
-                for (int i = 0; i < results.size(); i++) {
-                    Map<String, Object> entry = new HashMap<>();
-                    entry.put("Line1", results.get(i).getString("name"));
-                    entry.put("Line2", results.get(i).getString("year"));
-                    entry.put("object", (ParseObject)results.get(i));
+            for (int i = 0; i < results.size(); i++) {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("Line1", results.get(i).getString("name"));
+                entry.put("Line2", results.get(i).getString("year"));
+                entry.put("object", (ParseObject) results.get(i));
 
-                    data.add(entry);
+                data.add(entry);
 
-                }
-
-                cars.setModel(new DefaultListModel<>(data));
             }
+
+            cars.setModel(new DefaultListModel<>(data));
+//            }
         } catch (ParseException e) {
             e.printStackTrace();
 

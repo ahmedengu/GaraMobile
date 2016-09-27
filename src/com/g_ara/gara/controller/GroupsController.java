@@ -26,7 +26,7 @@ public class GroupsController {
 
             query.whereEqualTo("user", ParseUser.getCurrent());
             List<ParseObject> results = query.find();
-            if (results.size() > 0) {
+//            if (results.size() > 0) {
                 ArrayList<Map<String, Object>> data = new ArrayList<>();
 
                 for (int i = 0; i < results.size(); i++) {
@@ -37,7 +37,7 @@ public class GroupsController {
                 }
 
                 groups.setModel(new DefaultListModel<>(data));
-            }
+//            }
         } catch (ParseException e) {
             e.printStackTrace();
 

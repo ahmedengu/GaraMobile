@@ -56,7 +56,7 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void beforeHome(Form f) {
         f.setBackCommand(null);
-        new MapController(fetchResourceFile()).initMap(f);
+        new MapController(fetchResourceFile()).initMap((Form) f);
     }
 
     @Override
@@ -93,7 +93,8 @@ public class StateMachine extends StateMachineBase {
             if (results.size() == 0) {
                 ToastBar.showErrorMessage("There is no rides available");
             } else {
-                ToastBar.showErrorMessage("Choose your ride");
+                data.put("rides", results);
+                showForm("RideMap", null);
             }
 
 
@@ -285,7 +286,7 @@ public class StateMachine extends StateMachineBase {
             query.whereEqualTo("members", ParseUser.getCurrent());
             List<ParseObject> results = query.find();
 
-            if (results.size() > 0) {
+//            if (results.size() > 0) {
                 ArrayList<Map<String, Object>> data = new ArrayList<>();
 
                 for (int i = 0; i < results.size(); i++) {
@@ -300,7 +301,7 @@ public class StateMachine extends StateMachineBase {
                 }
 
                 ((MultiList) findChat()).setModel(new DefaultListModel<>(data));
-            }
+//            }
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -319,7 +320,7 @@ public class StateMachine extends StateMachineBase {
 
             List<ParseUser> results = query.find();
 
-            if (results.size() > 0) {
+//            if (results.size() > 0) {
                 ArrayList<Map<String, Object>> data = new ArrayList<>();
 
                 for (int i = 0; i < results.size(); i++) {
@@ -334,7 +335,7 @@ public class StateMachine extends StateMachineBase {
                 }
 
                 findUsers().setModel(new DefaultListModel<>(data));
-            }
+//            }
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
@@ -426,5 +427,11 @@ public class StateMachine extends StateMachineBase {
         findSummary().add(new Label(((ParseObject) data.get("car")).getString("name")));
 
 
+    }
+
+    @Override
+    protected void beforeRideMap(Form f) {
+        List<ParseObject> rides = (List<ParseObject>) data.get("rides");
+        new MapController((fetchResourceFile())).initMap(f, rides,this);
     }
 }
