@@ -10,7 +10,6 @@ package userclasses;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
 import com.codename1.maps.Coord;
-import com.codename1.payment.Purchase;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
@@ -19,6 +18,7 @@ import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
 import com.g_ara.gara.controller.CarsController;
 import com.g_ara.gara.controller.MapController;
+import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import generated.StateMachineBase;
 
@@ -538,34 +538,7 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void onWallet_RechargeAction(Component c, ActionEvent event) {
 
-        Dialog dialog = new Dialog("Payment");
-        TextField textField = new TextField("10");
-        Button confirm = new Button("confirm");
-        confirm.addActionListener(evt -> {
-            Purchase p = Purchase.getInAppPurchase();
-            String pay = p.pay(Integer.parseInt(textField.getText()), "USD");
-            if (pay != null) {
-                ParseUser user = ParseUser.getCurrent();
-                user.increment("wallet", Integer.parseInt(textField.getText()));
-                try {
-                    user.save();
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    ToastBar.showErrorMessage(e.getMessage());
-                }
-
-                dialog.dispose();
-                findCredit().setText("Cridet:" + user.get("wallet"));
-
-            }
-        });
-        Button cancel = new Button("Cancel");
-        cancel.addActionListener(evt -> dialog.dispose());
-        dialog.add(textField);
-        dialog.add(confirm);
-        dialog.add(cancel);
-        dialog.show();
+        Display.getInstance().execute(Constants.PAYMENT + "/" + ParseUser.getCurrent().getUsername());
     }
 
     @Override

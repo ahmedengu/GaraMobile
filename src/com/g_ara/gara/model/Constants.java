@@ -8,6 +8,7 @@ public class Constants {
     public static String EMAIL = "feedback@g-ara.com";
     public static String Play_STORE = "http://www.g-ara.com";
     public static String APPLE_STORE = "http://www.g-ara.com";
+    public static String PAYMENT = "http://www.g-ara.com";
 
 
 }
