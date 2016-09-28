@@ -8,12 +8,10 @@
 package generated;
 
 import com.codename1.ui.*;
-import com.codename1.ui.events.ActionEvent;
-import com.codename1.ui.plaf.UIManager;
-import com.codename1.ui.util.Resources;
-import com.codename1.ui.util.UIBuilder;
-
+import com.codename1.ui.util.*;
+import com.codename1.ui.plaf.*;
 import java.util.Hashtable;
+import com.codename1.ui.events.*;
 
 public abstract class StateMachineBase extends UIBuilder {
     private Container aboutToShowThisContainer;

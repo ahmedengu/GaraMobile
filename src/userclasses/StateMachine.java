@@ -10,6 +10,7 @@ package userclasses;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
 import com.codename1.maps.Coord;
+import com.codename1.payment.Purchase;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
@@ -528,6 +529,54 @@ public class StateMachine extends StateMachineBase {
 
             ((MultiList) findTripRequests()).setModel(new DefaultListModel<>(data));
 
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onWallet_RechargeAction(Component c, ActionEvent event) {
+
+        Dialog dialog = new Dialog("Payment");
+        TextField textField = new TextField("10");
+        Button confirm = new Button("confirm");
+        confirm.addActionListener(evt -> {
+            Purchase p = Purchase.getInAppPurchase();
+            String pay = p.pay(Integer.parseInt(textField.getText()), "USD");
+            if (pay != null) {
+                ParseUser user = ParseUser.getCurrent();
+                user.increment("wallet", Integer.parseInt(textField.getText()));
+                try {
+                    user.save();
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    ToastBar.showErrorMessage(e.getMessage());
+                }
+
+                dialog.dispose();
+                findCredit().setText("Cridet:" + user.get("wallet"));
+
+            }
+        });
+        Button cancel = new Button("Cancel");
+        cancel.addActionListener(evt -> dialog.dispose());
+        dialog.add(textField);
+        dialog.add(confirm);
+        dialog.add(cancel);
+        dialog.show();
+    }
+
+    @Override
+    protected void beforeWallet(Form f) {
+        try {
+            ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
+            query.whereEqualTo("objectId", ParseUser.getCurrent().getObjectId());
+            List<ParseUser> results = query.find();
+            ParseUser user = results.get(0);
+            Object wallet = user.get("wallet");
+            findCredit().setText((wallet == null) ? "Cridet: 0" : "Cridet: " + wallet);
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
