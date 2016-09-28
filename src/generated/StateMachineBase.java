@@ -8,10 +8,12 @@
 package generated;
 
 import com.codename1.ui.*;
-import com.codename1.ui.util.*;
-import com.codename1.ui.plaf.*;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.plaf.UIManager;
+import com.codename1.ui.util.Resources;
+import com.codename1.ui.util.UIBuilder;
+
 import java.util.Hashtable;
-import com.codename1.ui.events.*;
 
 public abstract class StateMachineBase extends UIBuilder {
     private Container aboutToShowThisContainer;
@@ -204,18 +206,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Component findHistory(Component root) {
-        return (com.codename1.ui.Component)findByName("History", root);
-    }
-
-    public com.codename1.ui.Component findHistory() {
-        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("History", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Component)findByName("History", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.TextField findName(Component root) {
         return (com.codename1.ui.TextField)findByName("Name", root);
     }
@@ -348,18 +338,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.list.MultiList findMultiList(Component root) {
-        return (com.codename1.ui.list.MultiList)findByName("MultiList", root);
-    }
-
-    public com.codename1.ui.list.MultiList findMultiList() {
-        com.codename1.ui.list.MultiList cmp = (com.codename1.ui.list.MultiList)findByName("MultiList", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.list.MultiList)findByName("MultiList", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Component findLogin(Component root) {
         return (com.codename1.ui.Component)findByName("Login", root);
     }
@@ -380,6 +358,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("UserSearch", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Component)findByName("UserSearch", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.list.MultiList findTripRequests(Component root) {
+        return (com.codename1.ui.list.MultiList)findByName("TripRequests", root);
+    }
+
+    public com.codename1.ui.list.MultiList findTripRequests() {
+        com.codename1.ui.list.MultiList cmp = (com.codename1.ui.list.MultiList)findByName("TripRequests", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.list.MultiList)findByName("TripRequests", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -646,13 +636,13 @@ public abstract class StateMachineBase extends UIBuilder {
     public static final int COMMAND_CarSave = 10;
     public static final int COMMAND_DriveSummaryCancel = 21;
     public static final int COMMAND_ProfileSave = 3;
-    public static final int COMMAND_HomeHistory = 14;
     public static final int COMMAND_HomeCars = 6;
     public static final int COMMAND_HomeRequests = 15;
     public static final int COMMAND_HomeLogout = 8;
     public static final int COMMAND_HomeWallet = 12;
     public static final int COMMAND_GroupsNew = 18;
     public static final int COMMAND_LoginLogin = 1;
+    public static final int COMMAND_RideMapCancel = 22;
     public static final int COMMAND_RegisterRegister = 4;
     public static final int COMMAND_HomeGroups = 13;
 
@@ -696,10 +686,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return false;
     }
 
-    protected boolean onHomeHistory() {
-        return false;
-    }
-
     protected boolean onHomeCars() {
         return false;
     }
@@ -721,6 +707,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected boolean onLoginLogin() {
+        return false;
+    }
+
+    protected boolean onRideMapCancel() {
         return false;
     }
 
@@ -804,13 +794,6 @@ public abstract class StateMachineBase extends UIBuilder {
                 }
                 break;
 
-            case COMMAND_HomeHistory:
-                if(onHomeHistory()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
             case COMMAND_HomeCars:
                 if(onHomeCars()) {
                     ev.consume();
@@ -853,6 +836,13 @@ public abstract class StateMachineBase extends UIBuilder {
                 }
                 break;
 
+            case COMMAND_RideMapCancel:
+                if(onRideMapCancel()) {
+                    ev.consume();
+                    return;
+                }
+                break;
+
             case COMMAND_RegisterRegister:
                 if(onRegisterRegister()) {
                     ev.consume();
@@ -874,12 +864,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void exitForm(Form f) {
-        if("History".equals(f.getName())) {
-            exitHistory(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Groups".equals(f.getName())) {
             exitGroups(f);
             aboutToShowThisContainer = null;
@@ -980,10 +964,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void exitHistory(Form f) {
-    }
-
-
     protected void exitGroups(Form f) {
     }
 
@@ -1049,12 +1029,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void beforeShow(Form f) {
     aboutToShowThisContainer = f;
-        if("History".equals(f.getName())) {
-            beforeHistory(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Groups".equals(f.getName())) {
             beforeGroups(f);
             aboutToShowThisContainer = null;
@@ -1155,10 +1129,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void beforeHistory(Form f) {
-    }
-
-
     protected void beforeGroups(Form f) {
     }
 
@@ -1224,12 +1194,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void beforeShowContainer(Container c) {
         aboutToShowThisContainer = c;
-        if("History".equals(c.getName())) {
-            beforeContainerHistory(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Groups".equals(c.getName())) {
             beforeContainerGroups(c);
             aboutToShowThisContainer = null;
@@ -1330,10 +1294,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void beforeContainerHistory(Container c) {
-    }
-
-
     protected void beforeContainerGroups(Container c) {
     }
 
@@ -1398,12 +1358,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void postShow(Form f) {
-        if("History".equals(f.getName())) {
-            postHistory(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Groups".equals(f.getName())) {
             postGroups(f);
             aboutToShowThisContainer = null;
@@ -1504,10 +1458,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void postHistory(Form f) {
-    }
-
-
     protected void postGroups(Form f) {
     }
 
@@ -1572,12 +1522,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void postShowContainer(Container c) {
-        if("History".equals(c.getName())) {
-            postContainerHistory(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Groups".equals(c.getName())) {
             postContainerGroups(c);
             aboutToShowThisContainer = null;
@@ -1678,10 +1622,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void postContainerHistory(Container c) {
-    }
-
-
     protected void postContainerGroups(Container c) {
     }
 
@@ -1746,12 +1686,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void onCreateRoot(String rootName) {
-        if("History".equals(rootName)) {
-            onCreateHistory();
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Groups".equals(rootName)) {
             onCreateGroups();
             aboutToShowThisContainer = null;
@@ -1852,10 +1786,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void onCreateHistory() {
-    }
-
-
     protected void onCreateGroups() {
     }
 
@@ -1921,12 +1851,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected Hashtable getFormState(Form f) {
         Hashtable h = super.getFormState(f);
-        if("History".equals(f.getName())) {
-            getStateHistory(f, h);
-            aboutToShowThisContainer = null;
-            return h;
-        }
-
         if("Groups".equals(f.getName())) {
             getStateGroups(f, h);
             aboutToShowThisContainer = null;
@@ -2027,10 +1951,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void getStateHistory(Form f, Hashtable h) {
-    }
-
-
     protected void getStateGroups(Form f, Hashtable h) {
     }
 
@@ -2096,12 +2016,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void setFormState(Form f, Hashtable state) {
         super.setFormState(f, state);
-        if("History".equals(f.getName())) {
-            setStateHistory(f, state);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Groups".equals(f.getName())) {
             setStateGroups(f, state);
             aboutToShowThisContainer = null;
@@ -2202,10 +2116,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void setStateHistory(Form f, Hashtable state) {
-    }
-
-
     protected void setStateGroups(Form f, Hashtable state) {
     }
 
@@ -2274,8 +2184,8 @@ public abstract class StateMachineBase extends UIBuilder {
         if("Users".equals(listName)) {
             return initListModelUsers(cmp);
         }
-        if("MultiList".equals(listName)) {
-            return initListModelMultiList(cmp);
+        if("TripRequests".equals(listName)) {
+            return initListModelTripRequests(cmp);
         }
         return super.setListModel(cmp);
     }
@@ -2284,7 +2194,7 @@ public abstract class StateMachineBase extends UIBuilder {
         return false;
     }
 
-    protected boolean initListModelMultiList(List cmp) {
+    protected boolean initListModelTripRequests(List cmp) {
         return false;
     }
 
@@ -2297,12 +2207,6 @@ public abstract class StateMachineBase extends UIBuilder {
             c = c.getParent().getLeadParent();
         }
         if(rootContainerName == null) return;
-        if(rootContainerName.equals("History")) {
-            if("History".equals(c.getName())) {
-                onHistory_HistoryAction(c, event);
-                return;
-            }
-        }
         if(rootContainerName.equals("Groups")) {
             if("New".equals(c.getName())) {
                 onGroups_NewAction(c, event);
@@ -2466,8 +2370,8 @@ public abstract class StateMachineBase extends UIBuilder {
             }
         }
         if(rootContainerName.equals("Requests")) {
-            if("MultiList".equals(c.getName())) {
-                onRequests_MultiListAction(c, event);
+            if("TripRequests".equals(c.getName())) {
+                onRequests_TripRequestsAction(c, event);
                 return;
             }
         }
@@ -2517,6 +2421,12 @@ public abstract class StateMachineBase extends UIBuilder {
                 return;
             }
         }
+        if(rootContainerName.equals("RideMap")) {
+            if("Cancel".equals(c.getName())) {
+                onRideMap_CancelAction(c, event);
+                return;
+            }
+        }
         if(rootContainerName.equals("DriveSummary")) {
             if("Cancel".equals(c.getName())) {
                 onDriveSummary_CancelAction(c, event);
@@ -2534,9 +2444,6 @@ public abstract class StateMachineBase extends UIBuilder {
             }
         }
     }
-
-      protected void onHistory_HistoryAction(Component c, ActionEvent event) {
-      }
 
       protected void onGroups_NewAction(Component c, ActionEvent event) {
       }
@@ -2646,7 +2553,7 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onChat_UserSearchAction(Component c, ActionEvent event) {
       }
 
-      protected void onRequests_MultiListAction(Component c, ActionEvent event) {
+      protected void onRequests_TripRequestsAction(Component c, ActionEvent event) {
       }
 
       protected void onConversion_MessageAction(Component c, ActionEvent event) {
@@ -2677,6 +2584,9 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onCar_SaveAction(Component c, ActionEvent event) {
+      }
+
+      protected void onRideMap_CancelAction(Component c, ActionEvent event) {
       }
 
       protected void onDriveSummary_CancelAction(Component c, ActionEvent event) {

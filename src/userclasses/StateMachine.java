@@ -36,7 +36,7 @@ import static com.g_ara.gara.controller.UserController.*;
  * @author Your name here
  */
 public class StateMachine extends StateMachineBase {
-    java.util.Map<String, Object> data = new HashMap<>();
+    public static java.util.Map<String, Object> data = new HashMap<>();
 
     public StateMachine(String resFile) {
         super(resFile);
@@ -56,6 +56,28 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void beforeHome(Form f) {
         f.setBackCommand(null);
+        if (data.getOrDefault("active", null) != null) {
+            Button active = new Button("cancel: " + ((ParseObject) data.get("active")).getClassName());
+            active.addActionListener(evt -> {
+                ParseObject object = (ParseObject) data.get("active");
+                object.put("inactive", true);
+                try {
+                    object.save();
+                    data.remove("active");
+                    f.removeComponent(active);
+                    f.repaint();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    ToastBar.showErrorMessage(e.getMessage());
+                }
+            });
+            f.add(BorderLayout.NORTH, active);
+//            findContainer().remove();
+            findDrive().remove();
+            findRide().remove();
+//            f.repaint();
+
+        }
         new MapController(fetchResourceFile()).initMap((Form) f);
     }
 
@@ -287,20 +309,20 @@ public class StateMachine extends StateMachineBase {
             List<ParseObject> results = query.find();
 
 //            if (results.size() > 0) {
-                ArrayList<Map<String, Object>> data = new ArrayList<>();
+            ArrayList<Map<String, Object>> data = new ArrayList<>();
 
-                for (int i = 0; i < results.size(); i++) {
-                    Map<String, Object> entry = new HashMap<>();
-                    entry.put("Line1", ((ParseUser) results.get(i).getList("members").get(1)).getUsername());
-                    EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
-                    String url = ((ParseUser) results.get(i).getList("members").get(1)).getParseFile("pic").getUrl();
-                    entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+            for (int i = 0; i < results.size(); i++) {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("Line1", ((ParseUser) results.get(i).getList("members").get(1)).getUsername());
+                EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
+                String url = ((ParseUser) results.get(i).getList("members").get(1)).getParseFile("pic").getUrl();
+                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
 
-                    entry.put("object", results.get(i));
-                    data.add(entry);
-                }
+                entry.put("object", results.get(i));
+                data.add(entry);
+            }
 
-                ((MultiList) findChat()).setModel(new DefaultListModel<>(data));
+            ((MultiList) findChat()).setModel(new DefaultListModel<>(data));
 //            }
 
         } catch (ParseException e) {
@@ -321,20 +343,20 @@ public class StateMachine extends StateMachineBase {
             List<ParseUser> results = query.find();
 
 //            if (results.size() > 0) {
-                ArrayList<Map<String, Object>> data = new ArrayList<>();
+            ArrayList<Map<String, Object>> data = new ArrayList<>();
 
-                for (int i = 0; i < results.size(); i++) {
-                    Map<String, Object> entry = new HashMap<>();
-                    entry.put("Line1", results.get(i).getUsername());
-                    entry.put("Line2", results.get(i).getString("name"));
-                    EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
-                    String url = results.get(i).getParseFile("pic").getUrl();
-                    entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
-                    entry.put("object", results.get(i));
-                    data.add(entry);
-                }
+            for (int i = 0; i < results.size(); i++) {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("Line1", results.get(i).getUsername());
+                entry.put("Line2", results.get(i).getString("name"));
+                EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
+                String url = results.get(i).getParseFile("pic").getUrl();
+                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+                entry.put("object", results.get(i));
+                data.add(entry);
+            }
 
-                findUsers().setModel(new DefaultListModel<>(data));
+            findUsers().setModel(new DefaultListModel<>(data));
 //            }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -412,7 +434,10 @@ public class StateMachine extends StateMachineBase {
             Coord destCoord = MapController.getDestCoord();
             trip.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
             trip.put("car", ((ParseObject) data.get("car")));
+            trip.put("inactive", false);
+
             trip.save();
+            data.put("active", trip);
             showForm("Home", null);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -432,6 +457,80 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void beforeRideMap(Form f) {
         List<ParseObject> rides = (List<ParseObject>) data.get("rides");
-        new MapController((fetchResourceFile())).initMap(f, rides,this);
+        new MapController((fetchResourceFile())).initMap(f, rides, this);
+    }
+
+    @Override
+    protected void onRequests_TripRequestsAction(Component c, ActionEvent event) {
+        ParseObject object = (ParseObject) ((Map<String, Object>) findTripRequests().getSelectedItem()).get("object");
+
+        Dialog dialog = new Dialog("Requests");
+        dialog.setLayout(new BorderLayout());
+        Label label = new Label("User: " + object.getParseObject("user").getString("username"));
+        Button cancel = new Button("Reject");
+        cancel.addActionListener(evt1 -> {
+            object.put("accept", 0);
+            try {
+                object.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+                ToastBar.showErrorMessage(e.getMessage());
+            }
+            dialog.dispose();
+        });
+
+        Button confirm = new Button("Accept");
+        confirm.addActionListener(evt1 -> {
+            object.put("accept", 1);
+            try {
+                object.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+                ToastBar.showErrorMessage(e.getMessage());
+            }
+            dialog.dispose();
+        });
+        Container container = new Container();
+        container.add(cancel);
+        container.add(confirm);
+        dialog.add(BorderLayout.CENTER, label);
+        dialog.add(BorderLayout.SOUTH, container);
+        dialog.show();
+
+
+    }
+
+    @Override
+    protected void beforeRequests(Form f) {
+
+
+        try {
+            List<ParseObject> results = new ArrayList<>();
+            if (data.getOrDefault("active", null) != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
+                ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
+                q.include("user");
+                q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("inactive", false);
+                results = q.find();
+            }
+
+            ArrayList<Map<String, Object>> data = new ArrayList<>();
+
+            for (int i = 0; i < results.size(); i++) {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("Line1", results.get(i).getParseObject("user").getString("username"));
+                EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
+                String url = results.get(i).getParseObject("user").getParseFile("pic").getUrl();
+                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+
+                entry.put("object", results.get(i));
+                data.add(entry);
+            }
+
+            ((MultiList) findTripRequests()).setModel(new DefaultListModel<>(data));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
     }
 }

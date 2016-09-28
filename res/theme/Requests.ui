@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <component type="Form" name="Requests" cloudDestinationProperty="Requests" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Requests" >
-  <component type="MultiList" name="MultiList" cloudDestinationProperty="MultiList" >
+  <component type="MultiList" name="TripRequests" cloudDestinationProperty="MultiList" >
     <layoutConstraint value="Center" />
     <mapItems>
       <stringItem key="Line2" value="more..." />

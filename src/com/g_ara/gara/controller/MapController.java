@@ -54,9 +54,12 @@ public class MapController {
                     ParseObject tripRequest = ParseObject.create("TripRequest");
                     tripRequest.put("trip", trip);
                     tripRequest.put("user", ParseUser.getCurrent());
-                    tripRequest.put("accept", false);
+                    tripRequest.put("accept", -1);
+                    tripRequest.put("inactive", false);
+
                     try {
                         tripRequest.save();
+                        StateMachine.data.put("active", tripRequest);
                         dialog.dispose();
                         stateMachine.showForm("Home", null);
                     } catch (ParseException e) {
