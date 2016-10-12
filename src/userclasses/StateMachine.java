@@ -50,7 +50,7 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
-        Parse.initialize("http://env-9969828.j.layershift.co.uk", "myAppId", "master");
+        Parse.initialize("https://env-9969828.j.layershift.co.uk/parse","myAppId", "master");
 
     }
 
