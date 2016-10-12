@@ -50,7 +50,7 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
-        Parse.initialize("http://localhost:1337/parse", "myAppId", "master");
+        Parse.initialize("http://env-9969828.j.layershift.co.uk", "myAppId", "master");
 
     }
 
@@ -74,8 +74,8 @@ public class StateMachine extends StateMachineBase {
             });
             f.add(BorderLayout.NORTH, active);
 //            findContainer().remove();
-            findDrive().remove();
-            findRide().remove();
+//            findDrive().remove();
+//            findRide().remove();
 //            f.repaint();
 
         }
