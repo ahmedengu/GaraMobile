@@ -8,7 +8,13 @@
     <component type="Button" name="Confirm" cloudDestinationProperty="Confirm" text="Confirm" >
     </component>
   </component>
-  <component type="Container" name="Summary" cloudDestinationProperty="Summary" layout="GridLayout" gridLayoutRows="1" gridLayoutColumns="1" >
-    <layoutConstraint value="Center" />
+  <component type="Container" name="Container1" cloudDestinationProperty="Container1" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" >
+    <layoutConstraint value="North" />
+    <component type="Container" name="Summary" cloudDestinationProperty="Summary" layout="BoxLayout" boxLayoutAxis="Y" >
+      <component type="TextField" name="Cost" cloudBoundProperty="text" cloudDestinationProperty="Cost" text="" hint="Cost per Kilo" >
+      </component>
+      <component type="TextField" name="Toll" cloudBoundProperty="text" cloudDestinationProperty="Troll" text="" hint="Toll" >
+      </component>
+    </component>
   </component>
 </component>

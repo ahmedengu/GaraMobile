@@ -1,14 +1,16 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.capture.Capture;
-import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
+import com.codename1.io.Storage;
 import com.codename1.ui.*;
 import com.codename1.ui.util.ImageIO;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseFile;
+import com.parse4cn1.ParseObject;
 import com.parse4cn1.ParseUser;
+import com.parse4cn1.util.ExternalizableParseObject;
 import userclasses.StateMachine;
 
 import java.io.ByteArrayOutputStream;
@@ -18,6 +20,8 @@ import java.io.IOException;
  * Created by ahmedengu.
  */
 public class UserController {
+    private static long last = 0l;
+
     public static void register(TextField username, TextField password, TextField name, TextField email, TextField mobile, Button pic, StateMachine stateMachine) {
         try {
             ParseUser user = ParseUser.create(username.getText(), password.getText());
@@ -35,8 +39,11 @@ public class UserController {
                 file.save();
                 user.put("pic", file);
                 user.save();
-                Preferences.set("username", username.getText());
-                Preferences.set("password", password.getText());
+
+                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
+
+//                Preferences.set("username", username.getText());
+//                Preferences.set("password", password.getText());
 
                 stateMachine.showForm("Home", null);
             }
@@ -72,8 +79,10 @@ public class UserController {
             user.login();
             if (user.isAuthenticated()) {
                 stateMachine.showForm("Home", null);
-                Preferences.set("username", username);
-                Preferences.set("password", password);
+                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
+//                Preferences.set("currentUser", user.getParseData().toString());
+//                Preferences.set("username", username);
+//                Preferences.set("password", password);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -140,7 +149,10 @@ public class UserController {
     public static void logout(StateMachine stateMachine) {
         Preferences.clearAll();
         try {
-            ParseUser.getCurrent().logout();
+            ParseUser user = ParseUser.getCurrent();
+            Storage.getInstance().deleteStorageFile("currentUser");
+            user.logout();
+
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
@@ -148,10 +160,51 @@ public class UserController {
         stateMachine.showForm("Login", null);
     }
 
-    public static void onStart(StateMachine stateMachine) {
-        Dialog dialog = new InfiniteProgress().showInifiniteBlocking();
-        if (!(Preferences.get("username", "").equals("") && Preferences.get("password", "").equals("")))
-            login(Preferences.get("username", ""), Preferences.get("password", ""), stateMachine);
-        dialog.dispose();
+    public static boolean onStart() {
+
+        ExternalizableParseObject<ParseUser> currentUser = (ExternalizableParseObject<ParseUser>) Storage.getInstance().readObject("currentUser");
+        if (ParseUser.getCurrent() != null && ParseUser.getCurrent().isAuthenticated())
+            return true;
+        return false;
+    }
+
+    public static void currentParseUserSave() throws ParseException {
+
+        ParseUser current = ParseUser.getCurrent();
+        current.save();
+        if (System.currentTimeMillis() - last > 5000) {
+            ParseObject trip = current.getParseObject("trip");
+            ParseObject tripRequest = current.getParseObject("tripRequest");
+
+            Object driver = null;
+            if (trip != null) {
+                driver = trip.get("driver");
+                trip.remove("driver");
+                trip.setDirty(false);
+
+            }
+
+            Object user = null;
+            if (tripRequest != null) {
+                user = tripRequest.get("user");
+                tripRequest.remove("user");
+                tripRequest.setDirty(false);
+            }
+            current.setDirty(false);
+            last = System.currentTimeMillis();
+            Storage.getInstance().writeObject("currentUser", current.asExternalizable());
+
+            if (trip != null && driver != null) {
+                trip.put("driver", driver);
+                trip.setDirty(false);
+
+            }
+
+            if (tripRequest != null && user != null) {
+                tripRequest.put("user", user);
+                tripRequest.setDirty(false);
+            }
+            current.setDirty(false);
+        }
     }
 }

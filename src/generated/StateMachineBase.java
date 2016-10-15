@@ -192,18 +192,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Button findRecharge(Component root) {
-        return (com.codename1.ui.Button)findByName("Recharge", root);
-    }
-
-    public com.codename1.ui.Button findRecharge() {
-        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Recharge", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Button)findByName("Recharge", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.TextField findName(Component root) {
         return (com.codename1.ui.TextField)findByName("Name", root);
     }
@@ -360,18 +348,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.list.MultiList findTripRequests(Component root) {
-        return (com.codename1.ui.list.MultiList)findByName("TripRequests", root);
-    }
-
-    public com.codename1.ui.list.MultiList findTripRequests() {
-        com.codename1.ui.list.MultiList cmp = (com.codename1.ui.list.MultiList)findByName("TripRequests", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.list.MultiList)findByName("TripRequests", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Button findSave(Component root) {
         return (com.codename1.ui.Button)findByName("Save", root);
     }
@@ -444,14 +420,14 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Label findCredit(Component root) {
-        return (com.codename1.ui.Label)findByName("Credit", root);
+    public com.codename1.ui.TextField findCost(Component root) {
+        return (com.codename1.ui.TextField)findByName("Cost", root);
     }
 
-    public com.codename1.ui.Label findCredit() {
-        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Credit", Display.getInstance().getCurrent());
+    public com.codename1.ui.TextField findCost() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Cost", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Label)findByName("Credit", aboutToShowThisContainer);
+            cmp = (com.codename1.ui.TextField)findByName("Cost", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -624,6 +600,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.TextField findToll(Component root) {
+        return (com.codename1.ui.TextField)findByName("Toll", root);
+    }
+
+    public com.codename1.ui.TextField findToll() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Toll", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Toll", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public static final int COMMAND_HomeSettings = 17;
     public static final int COMMAND_HomeChat = 11;
     public static final int COMMAND_ChatFindUser = 20;
@@ -637,7 +625,6 @@ public abstract class StateMachineBase extends UIBuilder {
     public static final int COMMAND_HomeCars = 6;
     public static final int COMMAND_HomeRequests = 15;
     public static final int COMMAND_HomeLogout = 8;
-    public static final int COMMAND_HomeWallet = 12;
     public static final int COMMAND_GroupsNew = 18;
     public static final int COMMAND_LoginLogin = 1;
     public static final int COMMAND_RideMapCancel = 22;
@@ -693,10 +680,6 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected boolean onHomeLogout() {
-        return false;
-    }
-
-    protected boolean onHomeWallet() {
         return false;
     }
 
@@ -808,13 +791,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
             case COMMAND_HomeLogout:
                 if(onHomeLogout()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeWallet:
-                if(onHomeWallet()) {
                     ev.consume();
                     return;
                 }
@@ -952,12 +928,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Wallet".equals(f.getName())) {
-            exitWallet(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
@@ -1019,10 +989,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void exitDriveSummary(Form f) {
-    }
-
-
-    protected void exitWallet(Form f) {
     }
 
     protected void beforeShow(Form f) {
@@ -1117,12 +1083,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Wallet".equals(f.getName())) {
-            beforeWallet(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
@@ -1184,10 +1144,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void beforeDriveSummary(Form f) {
-    }
-
-
-    protected void beforeWallet(Form f) {
     }
 
     protected void beforeShowContainer(Container c) {
@@ -1282,12 +1238,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Wallet".equals(c.getName())) {
-            beforeContainerWallet(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
@@ -1349,10 +1299,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void beforeContainerDriveSummary(Container c) {
-    }
-
-
-    protected void beforeContainerWallet(Container c) {
     }
 
     protected void postShow(Form f) {
@@ -1446,12 +1392,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Wallet".equals(f.getName())) {
-            postWallet(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
@@ -1513,10 +1453,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void postDriveSummary(Form f) {
-    }
-
-
-    protected void postWallet(Form f) {
     }
 
     protected void postShowContainer(Container c) {
@@ -1610,12 +1546,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Wallet".equals(c.getName())) {
-            postContainerWallet(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
@@ -1677,10 +1607,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void postContainerDriveSummary(Container c) {
-    }
-
-
-    protected void postContainerWallet(Container c) {
     }
 
     protected void onCreateRoot(String rootName) {
@@ -1774,12 +1700,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Wallet".equals(rootName)) {
-            onCreateWallet();
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
@@ -1841,10 +1761,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void onCreateDriveSummary() {
-    }
-
-
-    protected void onCreateWallet() {
     }
 
     protected Hashtable getFormState(Form f) {
@@ -1939,12 +1855,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return h;
         }
 
-        if("Wallet".equals(f.getName())) {
-            getStateWallet(f, h);
-            aboutToShowThisContainer = null;
-            return h;
-        }
-
             return h;
     }
 
@@ -2006,10 +1916,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void getStateDriveSummary(Form f, Hashtable h) {
-    }
-
-
-    protected void getStateWallet(Form f, Hashtable h) {
     }
 
     protected void setFormState(Form f, Hashtable state) {
@@ -2104,12 +2010,6 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Wallet".equals(f.getName())) {
-            setStateWallet(f, state);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
@@ -2173,26 +2073,15 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void setStateDriveSummary(Form f, Hashtable state) {
     }
 
-
-    protected void setStateWallet(Form f, Hashtable state) {
-    }
-
     protected boolean setListModel(List cmp) {
         String listName = cmp.getName();
         if("Users".equals(listName)) {
             return initListModelUsers(cmp);
         }
-        if("TripRequests".equals(listName)) {
-            return initListModelTripRequests(cmp);
-        }
         return super.setListModel(cmp);
     }
 
     protected boolean initListModelUsers(List cmp) {
-        return false;
-    }
-
-    protected boolean initListModelTripRequests(List cmp) {
         return false;
     }
 
@@ -2367,12 +2256,6 @@ public abstract class StateMachineBase extends UIBuilder {
                 return;
             }
         }
-        if(rootContainerName.equals("Requests")) {
-            if("TripRequests".equals(c.getName())) {
-                onRequests_TripRequestsAction(c, event);
-                return;
-            }
-        }
         if(rootContainerName.equals("Conversion")) {
             if("Message".equals(c.getName())) {
                 onConversion_MessageAction(c, event);
@@ -2434,10 +2317,12 @@ public abstract class StateMachineBase extends UIBuilder {
                 onDriveSummary_ConfirmAction(c, event);
                 return;
             }
-        }
-        if(rootContainerName.equals("Wallet")) {
-            if("Recharge".equals(c.getName())) {
-                onWallet_RechargeAction(c, event);
+            if("Cost".equals(c.getName())) {
+                onDriveSummary_CostAction(c, event);
+                return;
+            }
+            if("Toll".equals(c.getName())) {
+                onDriveSummary_TollAction(c, event);
                 return;
             }
         }
@@ -2551,9 +2436,6 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onChat_UserSearchAction(Component c, ActionEvent event) {
       }
 
-      protected void onRequests_TripRequestsAction(Component c, ActionEvent event) {
-      }
-
       protected void onConversion_MessageAction(Component c, ActionEvent event) {
       }
 
@@ -2593,7 +2475,10 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onDriveSummary_ConfirmAction(Component c, ActionEvent event) {
       }
 
-      protected void onWallet_RechargeAction(Component c, ActionEvent event) {
+      protected void onDriveSummary_CostAction(Component c, ActionEvent event) {
+      }
+
+      protected void onDriveSummary_TollAction(Component c, ActionEvent event) {
       }
 
 }

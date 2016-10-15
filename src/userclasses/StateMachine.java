@@ -8,30 +8,35 @@
 package userclasses;
 
 import com.codename1.components.ToastBar;
+import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Preferences;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
+import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.controller.CarsController;
 import com.g_ara.gara.controller.MapController;
-import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import generated.StateMachineBase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.g_ara.gara.controller.CarsController.*;
+import static com.g_ara.gara.controller.ChatController.*;
+import static com.g_ara.gara.controller.DriveSummary.beforeDriveSummaryForm;
+import static com.g_ara.gara.controller.DriveSummary.confirmAction;
 import static com.g_ara.gara.controller.GroupsController.beforeGroupsForm;
 import static com.g_ara.gara.controller.GroupsController.newGroup;
+import static com.g_ara.gara.controller.HomeController.*;
+import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
 import static com.g_ara.gara.controller.SettingsController.*;
 import static com.g_ara.gara.controller.UserController.*;
+import static com.g_ara.gara.controller.UserSearch.searchAction;
+import static com.g_ara.gara.controller.UserSearch.usersAction;
 
 /**
  * @author Your name here
@@ -50,36 +55,20 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
-        Parse.initialize("https://env-9969828.j.layershift.co.uk/parse","myAppId", "master");
+        Parse.initialize("http://localhost:1337/parse", "myAppId", "master");
+    }
 
+    @Override
+    protected String getFirstFormName() {
+        if (onStart()) {
+            return "Home";
+        } else
+            return super.getFirstFormName();
     }
 
     @Override
     protected void beforeHome(Form f) {
-        f.setBackCommand(null);
-        if (data.getOrDefault("active", null) != null) {
-            Button active = new Button("cancel: " + ((ParseObject) data.get("active")).getClassName());
-            active.addActionListener(evt -> {
-                ParseObject object = (ParseObject) data.get("active");
-                object.put("inactive", true);
-                try {
-                    object.save();
-                    data.remove("active");
-                    f.removeComponent(active);
-                    f.repaint();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    ToastBar.showErrorMessage(e.getMessage());
-                }
-            });
-            f.add(BorderLayout.NORTH, active);
-//            findContainer().remove();
-//            findDrive().remove();
-//            findRide().remove();
-//            f.repaint();
-
-        }
-        new MapController(fetchResourceFile()).initMap((Form) f);
+        beforeHomeForm(f, fetchResourceFile(), findDrive(f), findRide(f));
     }
 
     @Override
@@ -91,75 +80,20 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void onGroups_GroupsAction(Component c, ActionEvent event) {
         showForm("Group", null);
-
-
     }
 
     @Override
     protected void onHome_RideAction(Component c, ActionEvent event) {
-        if (MapController.getDestCoord() == null) {
-            ToastBar.showErrorMessage("You should choose a destination");
-            return;
-        }
-        if (MapController.getLocationCoord() == null) {
-            ToastBar.showErrorMessage("GPS is required");
-            return;
-        }
-
-        try {
-            ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
-            query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), 5);
-            ParseQuery<ParseObject> tripQuery = ParseQuery.getQuery("Trip");
-            tripQuery.include("driver");
-            tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), 5);
-            List<ParseObject> results = tripQuery.find();
-            if (results.size() == 0) {
-                ToastBar.showErrorMessage("There is no rides available");
-            } else {
-                data.put("rides", results);
-                showForm("RideMap", null);
-            }
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
-
+        rideAction(this);
     }
+
 
     @Override
     protected void onHome_DriveAction(Component c, ActionEvent event) {
-        if (MapController.getDestCoord() == null) {
-            ToastBar.showErrorMessage("You should choose a destination");
-            return;
-        }
-        if (MapController.getLocationCoord() == null) {
-            ToastBar.showErrorMessage("GPS is required");
-            return;
-        }
-
-        MultiList list = new MultiList();
-        CarsController.refreshCars(list);
-
-        if (list.getModel().getSize() == 0) {
-            ToastBar.showErrorMessage("You dont have any cars");
-            return;
-        }
-        list.addActionListener(evt -> {
-            ParseObject item = (ParseObject) ((Map<String, Object>) list.getSelectedItem()).get("object");
-            data.put("car", item);
-            showForm("DriveSummary", null);
-        });
-        Dialog dialog = new Dialog("Choose a car");
-        dialog.setLayout(new BorderLayout());
-        dialog.addComponent(BorderLayout.CENTER, list);
-        Button cancel = new Button("Cancel");
-        cancel.addActionListener(evt -> dialog.dispose());
-        dialog.addComponent(BorderLayout.SOUTH, cancel);
-        dialog.show();
+        driveAction(this);
 
     }
+
 
     @Override
     protected boolean allowBackTo(String formName) {
@@ -270,236 +204,64 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void postLogin(Form f) {
-        onStart(this);
-
+//        onStart(this);
     }
 
 
     @Override
     protected void beforeConversion(Form f) {
-        try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
-            query.whereEqualTo("chat", (ParseObject) data.get("chat"));
-            List<ParseObject> results = query.find();
-            for (int i = 0; i < results.size(); i++) {
-                addMessage(results.get(i));
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        beforeConversionForm(findMessages());
 
     }
 
-    private void addMessage(ParseObject results) {
-        addMessage(results, false);
-    }
-
-    private void addMessage(ParseObject results, boolean repaint) {
-        Label message = new Label(results.getString("message"));
-        findMessages().add(message);
-        if (repaint)
-            findMessages().repaint();
-    }
 
     @Override
     protected void beforeChat(Form f) {
-        try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
-            query.include("members");
-            query.whereEqualTo("members", ParseUser.getCurrent());
-            List<ParseObject> results = query.find();
-
-//            if (results.size() > 0) {
-            ArrayList<Map<String, Object>> data = new ArrayList<>();
-
-            for (int i = 0; i < results.size(); i++) {
-                Map<String, Object> entry = new HashMap<>();
-                entry.put("Line1", ((ParseUser) results.get(i).getList("members").get(1)).getUsername());
-                EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
-                String url = ((ParseUser) results.get(i).getList("members").get(1)).getParseFile("pic").getUrl();
-                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
-
-                entry.put("object", results.get(i));
-                data.add(entry);
-            }
-
-            ((MultiList) findChat()).setModel(new DefaultListModel<>(data));
-//            }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
+        beforeChatForm((MultiList) findChat(), fetchResourceFile());
     }
 
 
     @Override
     protected void onUserSearch_SearchAction(Component c, ActionEvent event) {
-        try {
-            ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
-            query.whereStartsWith("username", findSearchField().getText());
-//            query.whereStartsWith("name", findSearchField().getText());
-//            query.whereStartsWith("email", findSearchField().getText());
-
-            List<ParseUser> results = query.find();
-
-//            if (results.size() > 0) {
-            ArrayList<Map<String, Object>> data = new ArrayList<>();
-
-            for (int i = 0; i < results.size(); i++) {
-                Map<String, Object> entry = new HashMap<>();
-                entry.put("Line1", results.get(i).getUsername());
-                entry.put("Line2", results.get(i).getString("name"));
-                EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
-                String url = results.get(i).getParseFile("pic").getUrl();
-                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
-                entry.put("object", results.get(i));
-                data.add(entry);
-            }
-
-            findUsers().setModel(new DefaultListModel<>(data));
-//            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
+        searchAction(findSearchField(), findUsers(), fetchResourceFile());
     }
+
 
     @Override
     protected void onUserSearch_UsersAction(Component c, ActionEvent event) {
-        try {
-            Map<String, Object> itemAt = (Map<String, Object>) findUsers().getSelectedItem();
-            ParseUser object = (ParseUser) itemAt.get("object");
-
-            List<ParseUser> parseUsers = new ArrayList<>();
-            parseUsers.add(ParseUser.getCurrent());
-            parseUsers.add(object);
-
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
-            query.whereContainsAll("members", parseUsers);
-            List<ParseObject> results = query.find();
-
-            ParseObject chat;
-            if (results.size() > 0) {
-                chat = results.get(0);
-            } else {
-                chat = ParseObject.create("Chat");
-                chat.put("members", parseUsers);
-                chat.save();
-            }
-
-            data.put("chat", chat);
-            showForm("Conversion", null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
+        usersAction(this, findUsers());
 
     }
 
+
     @Override
     protected void onChat_ChatAction(Component c, ActionEvent event) {
-        Map<String, Object> itemAt = (Map<String, Object>) ((MultiList) findChat()).getSelectedItem();
-        ParseObject object = (ParseObject) itemAt.get("object");
-        data.put("chat", object);
-        showForm("Conversion", null);
+        chatAction(this, (MultiList) findChat());
     }
 
 
     @Override
     protected void onConversion_SendAction(Component c, ActionEvent event) {
-        try {
-            ParseObject message = ParseObject.create("Message");
-            message.put("message", findMessage().getText());
-            message.put("from", ParseUser.getCurrent());
-            message.put("chat", (ParseObject) data.get("chat"));
-            message.save();
-            findMessage().setText("");
-            addMessage(message, true);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
+        conversionSendActcion(findMessage(), findMessages());
     }
 
     @Override
     protected void onDriveSummary_ConfirmAction(Component c, ActionEvent event) {
-
-        try {
-            ParseObject trip = ParseObject.create("Trip");
-            ParseUser current = ParseUser.getCurrent();
-            current.setDirty(false);
-            trip.put("driver", current);
-            Coord locationCoord = MapController.getLocationCoord();
-            trip.put("from", locationCoord.getLatitude() + "," + locationCoord.getLongitude());
-            Coord destCoord = MapController.getDestCoord();
-            trip.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
-            trip.put("car", ((ParseObject) data.get("car")));
-            trip.put("inactive", false);
-
-            trip.save();
-            data.put("active", trip);
-            showForm("Home", null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
+        confirmAction(this, findToll(), findCost());
     }
+
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        findSummary().add(new Label(MapController.getLocationCoord().toString()));
-        findSummary().add(new Label(MapController.getDestCoord().toString()));
-        findSummary().add(new Label(((ParseObject) data.get("car")).getString("name")));
-
-
+        beforeDriveSummaryForm(findSummary());
     }
+
 
     @Override
     protected void beforeRideMap(Form f) {
-        List<ParseObject> rides = (List<ParseObject>) data.get("rides");
-        new MapController((fetchResourceFile())).initMap(f, rides, this);
+        beforeRideMapForm(f, fetchResourceFile(), this);
     }
 
-    @Override
-    protected void onRequests_TripRequestsAction(Component c, ActionEvent event) {
-        ParseObject object = (ParseObject) ((Map<String, Object>) findTripRequests().getSelectedItem()).get("object");
-
-        Dialog dialog = new Dialog("Requests");
-        dialog.setLayout(new BorderLayout());
-        Label label = new Label("User: " + object.getParseObject("user").getString("username"));
-        Button cancel = new Button("Reject");
-        cancel.addActionListener(evt1 -> {
-            object.put("accept", 0);
-            try {
-                object.save();
-            } catch (ParseException e) {
-                e.printStackTrace();
-                ToastBar.showErrorMessage(e.getMessage());
-            }
-            dialog.dispose();
-        });
-
-        Button confirm = new Button("Accept");
-        confirm.addActionListener(evt1 -> {
-            object.put("accept", 1);
-            try {
-                object.save();
-            } catch (ParseException e) {
-                e.printStackTrace();
-                ToastBar.showErrorMessage(e.getMessage());
-            }
-            dialog.dispose();
-        });
-        Container container = new Container();
-        container.add(cancel);
-        container.add(confirm);
-        dialog.add(BorderLayout.CENTER, label);
-        dialog.add(BorderLayout.SOUTH, container);
-        dialog.show();
-
-
-    }
 
     @Override
     protected void beforeRequests(Form f) {
@@ -507,27 +269,59 @@ public class StateMachine extends StateMachineBase {
 
         try {
             List<ParseObject> results = new ArrayList<>();
-            if (data.getOrDefault("active", null) != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
+            if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
                 ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
                 q.include("user");
                 q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("inactive", false);
                 results = q.find();
             }
 
-            ArrayList<Map<String, Object>> data = new ArrayList<>();
-
+            MapContainer map = new MapController(fetchResourceFile(), f).map;
             for (int i = 0; i < results.size(); i++) {
-                Map<String, Object> entry = new HashMap<>();
-                entry.put("Line1", results.get(i).getParseObject("user").getString("username"));
-                EncodedImage placeholder = EncodedImage.createFromImage(fetchResourceFile().getImage("profile_icon.png"), false);
-                String url = results.get(i).getParseObject("user").getParseFile("pic").getUrl();
-                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+                final ParseObject object = results.get(i);
+                ParseGeoPoint location = object.getParseObject("user").getParseGeoPoint("location");
+                map.addMarker(FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+                    Dialog dialog = new Dialog("Requests");
+                    dialog.setLayout(new BorderLayout());
+                    Label label = new Label("User: " + object.getParseObject("user").getString("username"));
+                    Button cancel = new Button("Reject");
+                    cancel.addActionListener(evt1 -> {
+                        object.put("accept", 0);
+                        try {
+                            object.save();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            ToastBar.showErrorMessage(e.getMessage());
+                        }
+                        dialog.dispose();
+                    });
 
-                entry.put("object", results.get(i));
-                data.add(entry);
+                    Button confirm = new Button("Accept");
+                    confirm.addActionListener(evt1 -> {
+                        object.put("accept", 1);
+                        ParseObject trip = object.getParseObject("trip");
+                        trip.addUniqueToArrayField("tripRequests", object);
+                        try {
+                            ParseBatch batch = ParseBatch.create();
+                            batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
+                            batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
+                            batch.execute();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            ToastBar.showErrorMessage(e.getMessage());
+                        }
+                        dialog.dispose();
+                    });
+                    Container container = new Container();
+                    container.add(cancel);
+                    container.add(confirm);
+                    dialog.add(BorderLayout.CENTER, label);
+                    dialog.add(BorderLayout.SOUTH, container);
+                    dialog.show();
+
+                });
             }
 
-            ((MultiList) findTripRequests()).setModel(new DefaultListModel<>(data));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -535,24 +329,5 @@ public class StateMachine extends StateMachineBase {
         }
     }
 
-    @Override
-    protected void onWallet_RechargeAction(Component c, ActionEvent event) {
 
-        Display.getInstance().execute(Constants.PAYMENT + "/" + ParseUser.getCurrent().getUsername());
-    }
-
-    @Override
-    protected void beforeWallet(Form f) {
-        try {
-            ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
-            query.whereEqualTo("objectId", ParseUser.getCurrent().getObjectId());
-            List<ParseUser> results = query.find();
-            ParseUser user = results.get(0);
-            Object wallet = user.get("wallet");
-            findCredit().setText((wallet == null) ? "Cridet: 0" : "Cridet: " + wallet);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
-    }
 }

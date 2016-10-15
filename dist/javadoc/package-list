@@ -1,5 +1,12 @@
 com.g_ara.gara
 com.g_ara.gara.controller
-com.g_ara.gara.form
+com.g_ara.gara.model
+com.parse4cn1
+com.parse4cn1.callback
+com.parse4cn1.command
+com.parse4cn1.encode
+com.parse4cn1.nativeinterface
+com.parse4cn1.operation
+com.parse4cn1.util
 generated
 userclasses

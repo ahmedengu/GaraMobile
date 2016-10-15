@@ -19,7 +19,12 @@ import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 
 /**
  * Created by ahmedengu.
@@ -29,15 +34,17 @@ public class MapController {
     private static Coord destCoord, locationCoord;
     private static Long lastLocationUpdate = 0L, lastLocationSent = 0L;
     private static int locationUpdateThreshold = 3000, locationSentThreshold = 10000;
+    public final MapContainer map = new MapContainer(new GoogleMapsProvider("AIzaSyAxlzXskkl3KKdjZUuFrV-j8oFjWOjtTIQ"));
     private Resources theme;
+    private List<Map<String, Object>> markers = new ArrayList<>();
 
-    public MapController(Resources theme) {
+    public MapController(Resources theme, Form f) {
         this.theme = theme;
+        f.addComponent(BorderLayout.CENTER, map);
+        map.setRotateGestureEnabled(true);
     }
 
-    public void initMap(Form f, List<ParseObject> parseObjects, StateMachine stateMachine) {
-        final MapContainer map = getMapContainer(f);
-
+    public void initMap(List<ParseObject> parseObjects, StateMachine stateMachine) {
         map.clearMapLayers();
         for (int i = 0; i < parseObjects.size(); i++) {
             final ParseObject driver = parseObjects.get(i).getParseObject("driver");
@@ -53,12 +60,16 @@ public class MapController {
                 confirm.addActionListener(evt1 -> {
                     ParseObject tripRequest = ParseObject.create("TripRequest");
                     tripRequest.put("trip", trip);
-                    tripRequest.put("user", ParseUser.getCurrent());
+                    ParseUser user = ParseUser.getCurrent();
+                    tripRequest.put("user", user);
                     tripRequest.put("accept", -1);
                     tripRequest.put("inactive", false);
 
                     try {
                         tripRequest.save();
+                        user.put("tripRequest", tripRequest);
+                        currentParseUserSave();
+
                         StateMachine.data.put("active", tripRequest);
                         dialog.dispose();
                         stateMachine.showForm("Home", null);
@@ -79,17 +90,13 @@ public class MapController {
 
     }
 
-    public void initMap(Form f) {
-        final MapContainer map = getMapContainer(f);
-
+    public void initMap() {
         handleCurrentLocation(map);
+        destListener(map);
     }
 
-    private MapContainer getMapContainer(Form f) {
-        final MapContainer map = new MapContainer(new GoogleMapsProvider("AIzaSyAxlzXskkl3KKdjZUuFrV-j8oFjWOjtTIQ"));
-        f.addComponent(BorderLayout.CENTER, map);
-        map.setRotateGestureEnabled(true);
-        return map;
+    public void initDriveMap() {
+        handleCurrentLocation(map);
     }
 
     private void handleCurrentLocation(MapContainer map) {
@@ -101,7 +108,6 @@ public class MapController {
             map.setShowMyLocation(true);
         }
         locationListener(map);
-        destListener(map);
     }
 
     private void destListener(final MapContainer map) {
@@ -132,13 +138,19 @@ public class MapController {
 
     private void sendLocation(Location location) {
         if (System.currentTimeMillis() - lastLocationSent >= locationSentThreshold) {
-            try {
-                lastLocationSent = System.currentTimeMillis();
-                ParseUser user = ParseUser.getCurrent();
-                user.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
-                user.save();
-            } catch (ParseException e) {
-                e.printStackTrace();
+
+            lastLocationSent = System.currentTimeMillis();
+            ParseUser user = ParseUser.getCurrent();
+            if (user != null) {
+                ParseGeoPoint location1 = user.getParseGeoPoint("location");
+                if (location.getLatitude() != location1.getLatitude() && location.getLongitude() != location1.getLongitude()) {
+                    user.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+                    try {
+                        currentParseUserSave();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -164,6 +176,11 @@ public class MapController {
         if (destCoord != null)
             map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-blue-hi.png"), false), destCoord, "Hi marker", "Optional long description", null);
 
+        for (int i = 0; i < markers.size(); i++) {
+            Map<String, Object> m = markers.get(i);
+            map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
+
+        }
         return location;
     }
 
@@ -173,5 +190,16 @@ public class MapController {
 
     public static Coord getLocationCoord() {
         return locationCoord;
+    }
+
+    public void addToMarkers(EncodedImage encodedImage, Coord coord, String s, String s1, Object o) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("icon", encodedImage);
+        m.put("coord", coord);
+        m.put("title", s);
+        m.put("desc", s1);
+        m.put("action", o);
+        markers.add(m);
+        map.addMarker(encodedImage, coord, s, s1, (ActionListener) o);
     }
 }

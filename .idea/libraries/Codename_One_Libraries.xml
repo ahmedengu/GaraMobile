@@ -8,6 +8,7 @@
     <SOURCES>
       <root url="file://$PROJECT_DIR$/lib/impl/stubs" />
       <root url="jar://$PROJECT_DIR$/lib/CodenameOne_SRC.zip!/" />
+      <root url="file://$PROJECT_DIR$/lib/impl/stubs" />
     </SOURCES>
   </library>
 </component>

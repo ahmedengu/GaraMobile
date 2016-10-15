@@ -770,5 +770,4 @@
     <image name="ToggleButtonLast.sel#borderTopR:1" type="multi"  />
     <image name="ToggleButtonLast.sel#borderTopR_1.png" type="multi"  />
     <ui name="UserSearch" />
-    <ui name="Wallet" />
 </resource>
