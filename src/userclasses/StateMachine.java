@@ -8,34 +8,28 @@
 package userclasses;
 
 import com.codename1.components.InfiniteProgress;
-import com.codename1.components.ToastBar;
-import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Preferences;
-import com.codename1.maps.Coord;
-import com.codename1.ui.*;
+import com.codename1.ui.Component;
+import com.codename1.ui.Container;
+import com.codename1.ui.Dialog;
+import com.codename1.ui.Form;
 import com.codename1.ui.events.ActionEvent;
-import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.MultiList;
-import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.controller.Callback;
-import com.g_ara.gara.controller.Countdown;
-import com.g_ara.gara.controller.HomeController;
-import com.g_ara.gara.controller.MapController;
-import com.parse4cn1.*;
+import com.parse4cn1.Parse;
 import generated.StateMachineBase;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static com.g_ara.gara.controller.CarsController.*;
 import static com.g_ara.gara.controller.ChatController.*;
+import static com.g_ara.gara.controller.CountdownController.beforeCountdownForm;
 import static com.g_ara.gara.controller.DriveSummary.beforeDriveSummaryForm;
 import static com.g_ara.gara.controller.DriveSummary.confirmAction;
 import static com.g_ara.gara.controller.GroupsController.beforeGroupsForm;
 import static com.g_ara.gara.controller.GroupsController.newGroup;
 import static com.g_ara.gara.controller.HomeController.*;
+import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
 import static com.g_ara.gara.controller.SettingsController.*;
 import static com.g_ara.gara.controller.UserController.*;
@@ -252,13 +246,13 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onDriveSummary_ConfirmAction(Component c, ActionEvent event) {
-        confirmAction(this, findToll(), findCost());
+        confirmAction(this);
     }
 
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        beforeDriveSummaryForm(findSummary());
+        beforeDriveSummaryForm(findSummary(),fetchResourceFile());
     }
 
 
@@ -270,98 +264,12 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeRequests(Form f) {
-
-
-        try {
-            List<ParseObject> results = new ArrayList<>();
-            if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
-                ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
-                q.include("user");
-                q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("inactive", false);
-                results = q.find();
-            }
-
-            MapContainer map = new MapController(fetchResourceFile(), f).map;
-            for (int i = 0; i < results.size(); i++) {
-                final ParseObject object = results.get(i);
-                ParseGeoPoint location = object.getParseObject("user").getParseGeoPoint("location");
-                map.addMarker(FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
-                    Dialog dialog = new Dialog("Requests");
-                    dialog.setLayout(new BorderLayout());
-                    Label label = new Label("User: " + object.getParseObject("user").getString("username"));
-                    Button cancel = new Button("Reject");
-                    cancel.addActionListener(evt1 -> {
-                        object.put("accept", 0);
-                        try {
-                            object.save();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            ToastBar.showErrorMessage(e.getMessage());
-                        }
-                        dialog.dispose();
-                    });
-
-                    Button confirm = new Button("Accept");
-                    confirm.addActionListener(evt1 -> {
-                        object.put("accept", 1);
-                        ParseObject trip = object.getParseObject("trip");
-                        trip.addUniqueToArrayField("tripRequests", object);
-                        try {
-                            ParseBatch batch = ParseBatch.create();
-                            batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
-                            batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
-                            batch.execute();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            ToastBar.showErrorMessage(e.getMessage());
-                        }
-                        dialog.dispose();
-                    });
-                    Container container = new Container();
-                    container.add(cancel);
-                    container.add(confirm);
-                    dialog.add(BorderLayout.CENTER, label);
-                    dialog.add(BorderLayout.SOUTH, container);
-                    dialog.show();
-
-                });
-            }
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
+        beforeRequestsForm(f, fetchResourceFile());
     }
-
 
     @Override
     protected void beforeCountdown(Form f) {
-        f.add(new Countdown(this, findContainer(f), 90, new Callback() {
-            @Override
-            public void done(StateMachine stateMachine) {
-                showDialog();
-
-
-                try {
-                    ParseObject object = ParseObject.fetch("TripRequest", ((ParseObject) data.get("active")).getObjectId());
-                    Integer accept = object.getInt("accept");
-                    hideDialog();
-                    if (accept != 1) {
-                        ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
-                        HomeController.CancelActiveRequest(object);
-                    } else {
-                        ToastBar.showErrorMessage("Your request got accepted!");
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    ToastBar.showErrorMessage(e.getMessage());
-                }
-                showForm("Home", null);
-
-
-            }
-        }));
+        beforeCountdownForm(findContainer(), this);
     }
 
     public void showDialog() {

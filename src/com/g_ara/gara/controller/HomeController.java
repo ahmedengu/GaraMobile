@@ -2,11 +2,9 @@ package com.g_ara.gara.controller;
 
 import com.codename1.components.ToastBar;
 import com.codename1.maps.Coord;
-import com.codename1.ui.Button;
-import com.codename1.ui.Dialog;
-import com.codename1.ui.FontImage;
-import com.codename1.ui.Form;
+import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
@@ -49,11 +47,12 @@ public class HomeController {
 
 
                 List<ParseObject> tripRequests = fetch.getList("tripRequests");
-                for (int i = 0; i < tripRequests.size(); i++) {
-                    ParseGeoPoint location = tripRequests.get(i).getParseObject("user").getParseGeoPoint("location");
+                if (tripRequests != null)
+                    for (int i = 0; i < tripRequests.size(); i++) {
+                        ParseGeoPoint location = tripRequests.get(i).getParseObject("user").getParseGeoPoint("location");
 
-                    map.addToMarkers((FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage()), new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
-                }
+                        map.addToMarkers((FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage()), new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+                    }
                 data.put("active", fetch);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -68,7 +67,12 @@ public class HomeController {
                 query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("tripRequest").getObjectId());
                 fetch = query.find().get(0);
 
-
+                if (fetch.getInt("accept") != 1) {
+                    CancelActiveRequest(fetch);
+                    new MapController(resources, f).initMap();
+                    ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
+                    return;
+                }
                 Button active = new Button("cancel: " + fetch.getClassName());
                 final ParseObject object = fetch;
                 active.addActionListener(evt -> {
@@ -174,14 +178,44 @@ public class HomeController {
         list.addActionListener(evt -> {
             ParseObject item = (ParseObject) ((Map<String, Object>) list.getSelectedItem()).get("object");
             data.put("car", item);
-            stateMachine.showForm("DriveSummary", null);
         });
         Dialog dialog = new Dialog("Choose a car");
-        dialog.setLayout(new BorderLayout());
-        dialog.addComponent(BorderLayout.CENTER, list);
+        dialog.setLayout(new GridLayout(1));
+        dialog.add(list);
+        TextField cost = new TextField("");
+        TextField toll = new TextField("");
+        TextField seats = new TextField("");
+        TextArea notes = new TextArea("");
+
+        cost.setHint("Cost per kilo");
+        toll.setHint("Toll cost");
+        seats.setHint("Available seats");
+        notes.setHint("Notes:");
+
+        dialog.add(cost);
+        dialog.add(toll);
+        dialog.add(seats);
+        dialog.add(notes);
+
         Button cancel = new Button("Cancel");
         cancel.addActionListener(evt -> dialog.dispose());
-        dialog.addComponent(BorderLayout.SOUTH, cancel);
+        Button confirm = new Button("Confirm");
+        confirm.addActionListener(evt -> {
+            if (data.get("car") == null) {
+                return;
+            }
+            data.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
+            data.put("toll", Integer.parseInt(toll.getText().length() == 0 ? "0" : toll.getText()));
+            data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "0" : seats.getText()));
+            data.put("notes", notes.getText());
+
+            stateMachine.showForm("DriveSummary", null);
+        });
+        Container container = new Container();
+        container.setLayout(new GridLayout(2));
+        container.add(cancel);
+        container.add(confirm);
+        dialog.add(container);
         dialog.show();
     }
 

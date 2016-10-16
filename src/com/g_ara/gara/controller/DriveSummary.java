@@ -1,16 +1,21 @@
 package com.g_ara.gara.controller;
 
+import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
+import com.codename1.googlemaps.MapContainer;
 import com.codename1.maps.Coord;
 import com.codename1.ui.Container;
 import com.codename1.ui.Label;
-import com.codename1.ui.TextField;
+import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.util.Resources;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseGeoPoint;
 import com.parse4cn1.ParseObject;
 import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
 
+import static com.g_ara.gara.model.Constants.CURRENT_LOCATION_ICON;
+import static com.g_ara.gara.model.Constants.DESTINATION_LOCATION_ICON;
 import static userclasses.StateMachine.data;
 
 /**
@@ -18,7 +23,7 @@ import static userclasses.StateMachine.data;
  */
 public class DriveSummary {
 
-    public static void confirmAction(StateMachine stateMachine, TextField toll, TextField cost) {
+    public static void confirmAction(StateMachine stateMachine) {
         try {
             ParseObject trip = ParseObject.create("Trip");
             ParseUser current = ParseUser.getCurrent();
@@ -30,14 +35,15 @@ public class DriveSummary {
             trip.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
             trip.put("car", ((ParseObject) data.get("car")));
             trip.put("active", true);
-            trip.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
-            trip.put("toll", Integer.parseInt(toll.getText().length() == 0 ? "0" : toll.getText()));
+            trip.put("cost", data.get("cost"));
+            trip.put("toll", data.get("toll"));
+            trip.put("seats", data.get("seats"));
+            trip.put("notes", data.get("notes"));
 
             trip.save();
             current.put("trip", trip);
             current.remove("tripRequest");
-            current.save();
-
+            UserController.currentParseUserSave();
 
             data.put("active", trip);
             stateMachine.showForm("Home", null);
@@ -47,11 +53,26 @@ public class DriveSummary {
         }
     }
 
-    public static void beforeDriveSummaryForm(Container summary) {
+    public static void beforeDriveSummaryForm(Container summary, Resources resources) {
+        summary.add(new Label("Cost per kilo: " + data.get("cost")));
+        summary.add(new Label("Tolls cost: " + data.get("toll")));
+        summary.add(new Label("available seats: " + data.get("seats")));
+        summary.add(new SpanLabel("notes:\n" + data.get("notes")));
+        summary.add(new Label("Car: " + ((ParseObject) data.get("car")).getString("name")));
+        Container container = new Container(new BorderLayout());
 
-        summary.add(new Label(MapController.getLocationCoord().toString()));
-        summary.add(new Label(MapController.getDestCoord().toString()));
-        summary.add(new Label(((ParseObject) data.get("car")).getString("name")));
+        MapContainer map = new MapController(resources, container).map;
+        map.addMarker(CURRENT_LOCATION_ICON(), MapController.getLocationCoord(), "Hi marker", "Optional long description", null);
+        map.addMarker(DESTINATION_LOCATION_ICON(), MapController.getDestCoord(), "Hi marker", "Optional long description", null);
+        map.zoom(MapController.getLocationCoord(), 5);
+        map.setScrollableX(false);
+        map.setScrollableY(false);
+        String routesEncoded = MapController.getRoutesEncoded(MapController.getLocationCoord(), MapController.getDestCoord());
+        Coord[] decode = MapController.decode(routesEncoded);
+        map.addPath(decode);
+
+        summary.add(container);
     }
+
 
 }

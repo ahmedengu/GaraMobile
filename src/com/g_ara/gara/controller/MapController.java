@@ -2,6 +2,9 @@ package com.g_ara.gara.controller;
 
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
+import com.codename1.io.ConnectionRequest;
+import com.codename1.io.JSONParser;
+import com.codename1.io.NetworkManager;
 import com.codename1.location.Location;
 import com.codename1.location.LocationListener;
 import com.codename1.location.LocationManager;
@@ -12,19 +15,22 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.util.Resources;
+import com.g_ara.gara.model.Constants;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseGeoPoint;
 import com.parse4cn1.ParseObject;
 import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
+import static com.g_ara.gara.model.Constants.*;
 
 /**
  * Created by ahmedengu.
@@ -34,12 +40,14 @@ public class MapController {
     private static Coord destCoord, locationCoord;
     private static Long lastLocationUpdate = 0L, lastLocationSent = 0L;
     private static int locationUpdateThreshold = 3000, locationSentThreshold = 10000;
-    public final MapContainer map = new MapContainer(new GoogleMapsProvider("AIzaSyAxlzXskkl3KKdjZUuFrV-j8oFjWOjtTIQ"));
+    public final MapContainer map = new MapContainer(new GoogleMapsProvider(Constants.MAPS_KEY));
     private Resources theme;
     private List<Map<String, Object>> markers = new ArrayList<>();
+    private Coord[] coordsPath;
 
-    public MapController(Resources theme, Form f) {
+    public MapController(Resources theme, Container f) {
         this.theme = theme;
+
         f.addComponent(BorderLayout.CENTER, map);
         map.setRotateGestureEnabled(true);
     }
@@ -49,7 +57,7 @@ public class MapController {
         for (int i = 0; i < parseObjects.size(); i++) {
             final ParseObject driver = parseObjects.get(i).getParseObject("driver");
             final ParseObject trip = parseObjects.get(i);
-            map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-blue-hi.png"), false), new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
+            map.addMarker(DESTINATION_LOCATION_ICON(), new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
                 Dialog dialog = new Dialog("Ride Info");
                 dialog.setLayout(new BorderLayout());
                 Label label = new Label("driver: " + driver.getString("username"));
@@ -116,6 +124,8 @@ public class MapController {
         map.addTapListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
+                coordsPath = null;
+                getRoutesCoordsAsync();
                 updateMarkers(map);
             }
         });
@@ -172,19 +182,25 @@ public class MapController {
         //TODO: edit the text and icon below
         if (location != null) {
             locationCoord = new Coord(location.getLatitude(), location.getLongitude());
-            map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-green-hi.png"), false), locationCoord, "Hi marker", "Optional long description", null);
+
+
+            map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Hi marker", "Optional long description", null);
             lastLocationUpdate = System.currentTimeMillis();
         }
         if (destCoord != null)
-            map.addMarker(EncodedImage.createFromImage(theme.getImage("map-pin-blue-hi.png"), false), destCoord, "Hi marker", "Optional long description", null);
+            map.addMarker(DESTINATION_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
 
         for (int i = 0; i < markers.size(); i++) {
             Map<String, Object> m = markers.get(i);
             map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
 
         }
+
+        if (coordsPath != null)
+            map.addPath(coordsPath);
         return location;
     }
+
 
     public static Coord getDestCoord() {
         return destCoord;
@@ -203,5 +219,81 @@ public class MapController {
         m.put("action", o);
         markers.add(m);
         map.addMarker(encodedImage, coord, s, s1, (ActionListener) o);
+    }
+
+    public void clearMarkers() {
+        markers.clear();
+    }
+
+    public static Coord[] decode(final String encodedPath) {
+        int len = encodedPath.length();
+
+        // For speed we preallocate to an upper bound on the final length, then
+        // truncate the array before returning.
+        final List<Coord> path = new ArrayList<Coord>();
+        int index = 0;
+        int lat = 0;
+        int lng = 0;
+
+        while (index < len) {
+            int result = 1;
+            int shift = 0;
+            int b;
+            do {
+                b = encodedPath.charAt(index++) - 63 - 1;
+                result += b << shift;
+                shift += 5;
+            } while (b >= 0x1f);
+            lat += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+
+            result = 1;
+            shift = 0;
+            do {
+                b = encodedPath.charAt(index++) - 63 - 1;
+                result += b << shift;
+                shift += 5;
+            } while (b >= 0x1f);
+            lng += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+
+            path.add(new Coord(lat * 1e-5, lng * 1e-5));
+        }
+        Coord[] p = new Coord[path.size()];
+        for (int i = 0; i < path.size(); i++) {
+            p[i] = path.get(i);
+        }
+
+        return p;
+    }
+
+    public static String getRoutesEncoded(Coord src, Coord dest) {
+        String ret = "";
+        try {
+            ConnectionRequest request = new ConnectionRequest("https://maps.googleapis.com/maps/api/directions/json", false);
+            request.addArgument("key", MAPS_KEY);
+            request.addArgument("origin", src.getLatitude() + "," + src.getLongitude());
+            request.addArgument("destination", dest.getLatitude() + "," + dest.getLongitude());
+
+            NetworkManager.getInstance().addToQueueAndWait(request);
+            Map<String, Object> response = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(request.getResponseData()), "UTF-8"));
+            ret = ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) response.get("routes")).get(0)).get("overview_polyline")).get("points").toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    public void getRoutesCoordsAsync() {
+        ConnectionRequest request = new ConnectionRequest("https://maps.googleapis.com/maps/api/directions/json", false) {
+            @Override
+            protected void readResponse(InputStream input) throws IOException {
+                Map<String, Object> response = new JSONParser().parseJSON(new InputStreamReader(input, "UTF-8"));
+                coordsPath = decode(((LinkedHashMap) ((LinkedHashMap) ((ArrayList) response.get("routes")).get(0)).get("overview_polyline")).get("points").toString());
+            }
+        };
+        request.addArgument("key", MAPS_KEY);
+        request.addArgument("origin", locationCoord.getLatitude() + "," + locationCoord.getLongitude());
+        request.addArgument("destination", destCoord.getLatitude() + "," + destCoord.getLongitude());
+
+        NetworkManager.getInstance().addToQueue(request);
     }
 }

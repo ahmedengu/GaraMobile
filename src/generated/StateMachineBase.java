@@ -434,18 +434,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.TextField findCost(Component root) {
-        return (com.codename1.ui.TextField)findByName("Cost", root);
-    }
-
-    public com.codename1.ui.TextField findCost() {
-        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Cost", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.TextField)findByName("Cost", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Button findFeedback(Component root) {
         return (com.codename1.ui.Button)findByName("Feedback", root);
     }
@@ -610,18 +598,6 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("Summary", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Container)findByName("Summary", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.ui.TextField findToll(Component root) {
-        return (com.codename1.ui.TextField)findByName("Toll", root);
-    }
-
-    public com.codename1.ui.TextField findToll() {
-        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Toll", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.TextField)findByName("Toll", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -2411,14 +2387,6 @@ public abstract class StateMachineBase extends UIBuilder {
                 onDriveSummary_ConfirmAction(c, event);
                 return;
             }
-            if("Cost".equals(c.getName())) {
-                onDriveSummary_CostAction(c, event);
-                return;
-            }
-            if("Toll".equals(c.getName())) {
-                onDriveSummary_TollAction(c, event);
-                return;
-            }
         }
     }
 
@@ -2567,12 +2535,6 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onDriveSummary_ConfirmAction(Component c, ActionEvent event) {
-      }
-
-      protected void onDriveSummary_CostAction(Component c, ActionEvent event) {
-      }
-
-      protected void onDriveSummary_TollAction(Component c, ActionEvent event) {
       }
 
 }
