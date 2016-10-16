@@ -38,31 +38,15 @@ public class HomeController {
                 Button active = new Button("cancel: " + fetch.getClassName());
                 final ParseObject object = fetch;
                 active.addActionListener(evt -> {
-                    object.put("active", false);
-                    ParseUser user = ParseUser.getCurrent();
-                    user.remove("trip");
-                    user.remove("tripRequest");
-                    try {
-                        object.save();
-                        currentParseUserSave();
-                        data.remove("active");
-                        f.removeComponent(active);
-                        drive.setHidden(false);
-                        ride.setHidden(false);
-                        new MapController(resources, f).initMap();
-                        f.repaint();
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        ToastBar.showErrorMessage(e.getMessage());
-                    }
+                    CancelActive(f, resources, drive, ride, active, object);
                 });
 
                 drive.setHidden(true);
                 ride.setHidden(true);
                 f.add(BorderLayout.NORTH, active);
                 MapController map = new MapController(resources, f);
-                map.initDriveMap();
+                map.initDriveMap(fetch.getParseGeoPoint("to"));
+
 
                 List<ParseObject> tripRequests = fetch.getList("tripRequests");
                 for (int i = 0; i < tripRequests.size(); i++) {
@@ -88,37 +72,19 @@ public class HomeController {
                 Button active = new Button("cancel: " + fetch.getClassName());
                 final ParseObject object = fetch;
                 active.addActionListener(evt -> {
-                    object.put("active", false);
-                    ParseUser user = ParseUser.getCurrent();
-//                    user.remove("trip");
-                    user.remove("tripRequest");
-                    try {
-                        object.save();
-                        currentParseUserSave();
-                        data.remove("active");
-                        f.removeComponent(active);
-                        drive.setHidden(false);
-                        ride.setHidden(false);
-                        new MapController(resources, f).initMap();
-
-                        f.repaint();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        ToastBar.showErrorMessage(e.getMessage());
-                    }
+                    CancelActive(f, resources, drive, ride, active, object);
                 });
 
                 drive.setHidden(true);
                 ride.setHidden(true);
                 f.add(BorderLayout.NORTH, active);
                 MapController map = new MapController(resources, f);
-                map.initDriveMap();
+                map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
                 ParseGeoPoint location = fetch.getParseObject("trip").getParseObject("driver").getParseGeoPoint("location");
 
                 map.addToMarkers((FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage()), new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
-
 
 
                 data.put("active", fetch);
@@ -129,6 +95,32 @@ public class HomeController {
 
         } else
             new MapController(resources, f).initMap();
+    }
+
+    public static void CancelActive(Form f, Resources resources, Button drive, Button ride, Button active, ParseObject object) {
+
+        CancelActiveRequest(object);
+        new MapController(resources, f).initMap();
+
+        f.repaint();
+        f.removeComponent(active);
+        drive.setHidden(false);
+        ride.setHidden(false);
+    }
+
+    public static void CancelActiveRequest(ParseObject object) {
+        object.put("active", false);
+        ParseUser user = ParseUser.getCurrent();
+        user.remove("trip");
+        user.remove("tripRequest");
+        try {
+            object.save();
+            currentParseUserSave();
+            data.remove("active");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
     }
 
     public static void rideAction(StateMachine stateMachine) {

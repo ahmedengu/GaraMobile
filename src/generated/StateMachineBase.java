@@ -35,6 +35,7 @@ public abstract class StateMachineBase extends UIBuilder {
         initVars();
         UIBuilder.registerCustomComponent("Container", com.codename1.ui.Container.class);
         UIBuilder.registerCustomComponent("Form", com.codename1.ui.Form.class);
+        UIBuilder.registerCustomComponent("InfiniteProgress", com.codename1.components.InfiniteProgress.class);
         UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("TextArea", com.codename1.ui.TextArea.class);
         UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
@@ -77,6 +78,7 @@ public abstract class StateMachineBase extends UIBuilder {
         initVars();
         UIBuilder.registerCustomComponent("Container", com.codename1.ui.Container.class);
         UIBuilder.registerCustomComponent("Form", com.codename1.ui.Form.class);
+        UIBuilder.registerCustomComponent("InfiniteProgress", com.codename1.components.InfiniteProgress.class);
         UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("TextArea", com.codename1.ui.TextArea.class);
         UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
@@ -224,6 +226,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("Container", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Container)findByName("Container", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.InfiniteProgress findInfiniteProgress(Component root) {
+        return (com.codename1.components.InfiniteProgress)findByName("InfiniteProgress", root);
+    }
+
+    public com.codename1.components.InfiniteProgress findInfiniteProgress() {
+        com.codename1.components.InfiniteProgress cmp = (com.codename1.components.InfiniteProgress)findByName("InfiniteProgress", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.InfiniteProgress)findByName("InfiniteProgress", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -838,6 +852,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void exitForm(Form f) {
+        if("Countdown".equals(f.getName())) {
+            exitCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Groups".equals(f.getName())) {
             exitGroups(f);
             aboutToShowThisContainer = null;
@@ -932,6 +952,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void exitCountdown(Form f) {
+    }
+
+
     protected void exitGroups(Form f) {
     }
 
@@ -993,6 +1017,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void beforeShow(Form f) {
     aboutToShowThisContainer = f;
+        if("Countdown".equals(f.getName())) {
+            beforeCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Groups".equals(f.getName())) {
             beforeGroups(f);
             aboutToShowThisContainer = null;
@@ -1087,6 +1117,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeCountdown(Form f) {
+    }
+
+
     protected void beforeGroups(Form f) {
     }
 
@@ -1148,6 +1182,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void beforeShowContainer(Container c) {
         aboutToShowThisContainer = c;
+        if("Countdown".equals(c.getName())) {
+            beforeContainerCountdown(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Groups".equals(c.getName())) {
             beforeContainerGroups(c);
             aboutToShowThisContainer = null;
@@ -1242,6 +1282,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeContainerCountdown(Container c) {
+    }
+
+
     protected void beforeContainerGroups(Container c) {
     }
 
@@ -1302,6 +1346,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void postShow(Form f) {
+        if("Countdown".equals(f.getName())) {
+            postCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Groups".equals(f.getName())) {
             postGroups(f);
             aboutToShowThisContainer = null;
@@ -1396,6 +1446,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postCountdown(Form f) {
+    }
+
+
     protected void postGroups(Form f) {
     }
 
@@ -1456,6 +1510,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void postShowContainer(Container c) {
+        if("Countdown".equals(c.getName())) {
+            postContainerCountdown(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Groups".equals(c.getName())) {
             postContainerGroups(c);
             aboutToShowThisContainer = null;
@@ -1550,6 +1610,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postContainerCountdown(Container c) {
+    }
+
+
     protected void postContainerGroups(Container c) {
     }
 
@@ -1610,6 +1674,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void onCreateRoot(String rootName) {
+        if("Countdown".equals(rootName)) {
+            onCreateCountdown();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Groups".equals(rootName)) {
             onCreateGroups();
             aboutToShowThisContainer = null;
@@ -1704,6 +1774,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void onCreateCountdown() {
+    }
+
+
     protected void onCreateGroups() {
     }
 
@@ -1765,6 +1839,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected Hashtable getFormState(Form f) {
         Hashtable h = super.getFormState(f);
+        if("Countdown".equals(f.getName())) {
+            getStateCountdown(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
         if("Groups".equals(f.getName())) {
             getStateGroups(f, h);
             aboutToShowThisContainer = null;
@@ -1859,6 +1939,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void getStateCountdown(Form f, Hashtable h) {
+    }
+
+
     protected void getStateGroups(Form f, Hashtable h) {
     }
 
@@ -1920,6 +2004,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void setFormState(Form f, Hashtable state) {
         super.setFormState(f, state);
+        if("Countdown".equals(f.getName())) {
+            setStateCountdown(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Groups".equals(f.getName())) {
             setStateGroups(f, state);
             aboutToShowThisContainer = null;
@@ -2011,6 +2101,10 @@ public abstract class StateMachineBase extends UIBuilder {
         }
 
             return;
+    }
+
+
+    protected void setStateCountdown(Form f, Hashtable state) {
     }
 
 

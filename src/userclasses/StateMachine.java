@@ -7,6 +7,7 @@
 
 package userclasses;
 
+import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.Preferences;
@@ -17,6 +18,9 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.g_ara.gara.controller.Callback;
+import com.g_ara.gara.controller.Countdown;
+import com.g_ara.gara.controller.HomeController;
 import com.g_ara.gara.controller.MapController;
 import com.parse4cn1.*;
 import generated.StateMachineBase;
@@ -43,6 +47,7 @@ import static com.g_ara.gara.controller.UserSearch.usersAction;
  */
 public class StateMachine extends StateMachineBase {
     public static java.util.Map<String, Object> data = new HashMap<>();
+    public Dialog progressDialog;
 
     public StateMachine(String resFile) {
         super(resFile);
@@ -329,5 +334,45 @@ public class StateMachine extends StateMachineBase {
         }
     }
 
+
+    @Override
+    protected void beforeCountdown(Form f) {
+        f.add(new Countdown(this, findContainer(f), 90, new Callback() {
+            @Override
+            public void done(StateMachine stateMachine) {
+                showDialog();
+
+
+                try {
+                    ParseObject object = ParseObject.fetch("TripRequest", ((ParseObject) data.get("active")).getObjectId());
+                    Integer accept = object.getInt("accept");
+                    hideDialog();
+                    if (accept != 1) {
+                        ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
+                        HomeController.CancelActiveRequest(object);
+                    } else {
+                        ToastBar.showErrorMessage("Your request got accepted!");
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    ToastBar.showErrorMessage(e.getMessage());
+                }
+                showForm("Home", null);
+
+
+            }
+        }));
+    }
+
+    public void showDialog() {
+        if (progressDialog == null)
+            progressDialog = new InfiniteProgress().showInifiniteBlocking();
+        progressDialog.show();
+    }
+
+    public void hideDialog() {
+        if (progressDialog != null)
+            progressDialog.dispose();
+    }
 
 }

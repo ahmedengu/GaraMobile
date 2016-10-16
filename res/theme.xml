@@ -32,6 +32,7 @@
     <image name="ComboBox.sel#borderTopR:1" type="multi"  />
     <image name="CommandBar" type="multi"  />
     <ui name="Conversion" />
+    <ui name="Countdown" />
     <image name="Dialog.borderBottom:1" type="multi"  />
     <image name="Dialog.borderBottom_1.png" type="multi"  />
     <image name="Dialog.borderBottomL:1" type="multi"  />

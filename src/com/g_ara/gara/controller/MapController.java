@@ -63,7 +63,8 @@ public class MapController {
                     ParseUser user = ParseUser.getCurrent();
                     tripRequest.put("user", user);
                     tripRequest.put("accept", -1);
-                    tripRequest.put("inactive", false);
+                    tripRequest.put("active", true);
+                    tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
 
                     try {
                         tripRequest.save();
@@ -72,7 +73,7 @@ public class MapController {
 
                         StateMachine.data.put("active", tripRequest);
                         dialog.dispose();
-                        stateMachine.showForm("Home", null);
+                        stateMachine.showForm("Countdown", null);
                     } catch (ParseException e) {
                         e.printStackTrace();
                         ToastBar.showErrorMessage(e.getMessage());
@@ -95,7 +96,8 @@ public class MapController {
         destListener(map);
     }
 
-    public void initDriveMap() {
+    public void initDriveMap(ParseGeoPoint to) {
+        destCoord = new Coord(to.getLatitude(), to.getLongitude());
         handleCurrentLocation(map);
     }
 
