@@ -8,6 +8,7 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.util.Resources;
 import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
+import userclasses.StateMachine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +20,20 @@ import static userclasses.StateMachine.data;
  * Created by ahmedengu.
  */
 public class RequestsController {
-    public static void beforeRequestsForm(Form f, Resources resources) {
+    public static void beforeRequestsForm(Form f, Resources resources, StateMachine stateMachine) {
         try {
             List<ParseObject> results = new ArrayList<>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
-                ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
-                q.include("user");
-                q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
-                results = q.find();
+                if (((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
+                    ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
+                    q.include("user");
+                    q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
+                    results = q.find();
+                } else {
+                    ToastBar.showErrorMessage("You have no remaining seats!");
+                }
+            } else {
+                ToastBar.showErrorMessage("You don't have an active trip!");
             }
 
             MapContainer map = new MapController(resources, f).map;
@@ -48,28 +55,33 @@ public class RequestsController {
                         object.put("accept", 0);
                         try {
                             object.save();
+                            data.put("active", object);
                         } catch (ParseException e) {
                             e.printStackTrace();
                             ToastBar.showErrorMessage(e.getMessage());
                         }
                         dialog.dispose();
+                        stateMachine.showForm("Home", null);
                     });
 
                     Button confirm = new Button("Accept");
                     confirm.addActionListener(evt1 -> {
                         object.put("accept", 1);
+
                         ParseObject trip = object.getParseObject("trip");
-                        trip.addUniqueToArrayField("tripRequests", object);
                         try {
+                            trip.addUniqueToArrayField("tripRequests", object);
                             ParseBatch batch = ParseBatch.create();
                             batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
                             batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
                             batch.execute();
+                            data.put("active", object);
                         } catch (ParseException e) {
                             e.printStackTrace();
                             ToastBar.showErrorMessage(e.getMessage());
                         }
                         dialog.dispose();
+                        stateMachine.showForm("Home", null);
                     });
                     Container container = new Container();
                     container.add(cancel);

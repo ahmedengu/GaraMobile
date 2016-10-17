@@ -27,7 +27,7 @@ import com.parse4cn1.ParseObject;
 import com.parse4cn1.encode.IParseObjectEncodingStrategy;
 
 /**
- * This class defines an operation to increment or decrement the value of a 
+ * This class defines an operation to increment or decrement the value of a
  * field of a ParseObject.
  */
 public class IncrementFieldOperation implements ParseOperation {
@@ -37,23 +37,22 @@ public class IncrementFieldOperation implements ParseOperation {
 
     public IncrementFieldOperation(Object amount) {
         if (!ParseOperationUtil.isSupportedNumberType(amount)) {
-            throw new IllegalArgumentException("Type '" + amount.getClass() 
+            throw new IllegalArgumentException("Type '" + amount.getClass()
                     + "' is not a supported number type");
         }
         this.amount = amount;
     }
 
     @Override
-    public Object apply(Object oldValue, ParseObject parseObject, String key) 
+    public Object apply(Object oldValue, ParseObject parseObject, String key)
             throws ParseException {
 
         if (oldValue == null) {
-            needIncrement = false;
             return amount;
         }
 
         if (ParseOperationUtil.isSupportedNumberType(oldValue)) {
-           return ParseOperationUtil.addNumbers(oldValue, this.amount); 
+           return ParseOperationUtil.addNumbers(oldValue, this.amount);
         }
 
         throw new IllegalArgumentException("You cannot increment a non-number."

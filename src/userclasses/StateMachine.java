@@ -264,7 +264,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeRequests(Form f) {
-        beforeRequestsForm(f, fetchResourceFile());
+        beforeRequestsForm(f, fetchResourceFile(),this);
     }
 
     @Override

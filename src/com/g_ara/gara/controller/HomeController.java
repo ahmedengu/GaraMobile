@@ -78,6 +78,11 @@ public class HomeController {
                     new MapController(resources, f).initMap();
                     ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
                     return;
+                } else if (fetch.getParseObject("trip").getBoolean("active") == false) {
+                    CancelActiveRequest(fetch);
+                    new MapController(resources, f).initMap();
+                    ToastBar.showErrorMessage("The driver canceled the trip!");
+                    return;
                 }
                 Button active = new Button("cancel: " + fetch.getClassName());
                 final ParseObject object = fetch;
@@ -217,7 +222,7 @@ public class HomeController {
             }
             data.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
             data.put("toll", Integer.parseInt(toll.getText().length() == 0 ? "0" : toll.getText()));
-            data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "0" : seats.getText()));
+            data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
             data.put("notes", notes.getText());
 
             stateMachine.showForm("DriveSummary", null);

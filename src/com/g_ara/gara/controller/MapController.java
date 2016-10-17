@@ -44,6 +44,7 @@ public class MapController {
     private Resources theme;
     private List<Map<String, Object>> markers = new ArrayList<>();
     private Coord[] coordsPath;
+    private static MapController mapController;
 
     public MapController(Resources theme, Container f) {
         this.theme = theme;
@@ -74,6 +75,7 @@ public class MapController {
                     ParseObject tripRequest = ParseObject.create("TripRequest");
                     tripRequest.put("trip", trip);
                     ParseUser user = ParseUser.getCurrent();
+                    user.setDirty(false);
                     tripRequest.put("user", user);
                     tripRequest.put("accept", -1);
                     tripRequest.put("active", true);
@@ -107,6 +109,7 @@ public class MapController {
     public void initMap() {
         handleCurrentLocation(map);
         destListener(map);
+        mapController = this;
     }
 
     public void initDriveMap(ParseGeoPoint to) {
@@ -158,9 +161,9 @@ public class MapController {
 
             lastLocationSent = System.currentTimeMillis();
             ParseUser user = ParseUser.getCurrent();
-            if (user != null) {
+            if (user != null && user.isAuthenticated()) {
                 ParseGeoPoint location1 = user.getParseGeoPoint("location");
-                if (location.getLatitude() != location1.getLatitude() && location.getLongitude() != location1.getLongitude()) {
+                if (location1 == null || location.getLatitude() != location1.getLatitude() && location.getLongitude() != location1.getLongitude()) {
                     user.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
                     try {
                         currentParseUserSave();
@@ -297,5 +300,9 @@ public class MapController {
         request.addArgument("destination", destCoord.getLatitude() + "," + destCoord.getLongitude());
 
         NetworkManager.getInstance().addToQueue(request);
+    }
+
+    public static void stopLocationListener() {
+        LocationManager.getLocationManager().setLocationListener(null);
     }
 }

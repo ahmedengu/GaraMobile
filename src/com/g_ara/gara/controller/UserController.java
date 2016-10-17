@@ -152,7 +152,7 @@ public class UserController {
             ParseUser user = ParseUser.getCurrent();
             Storage.getInstance().deleteStorageFile("currentUser");
             user.logout();
-
+            MapController.stopLocationListener();
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());

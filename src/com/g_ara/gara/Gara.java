@@ -3,10 +3,12 @@ package com.g_ara.gara;
 
 import com.codename1.analytics.AnalyticsService;
 import com.codename1.io.Preferences;
+import com.codename1.io.Storage;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
+import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
 
 /**
@@ -45,6 +47,7 @@ public class Gara {
             ((Dialog) current).dispose();
             current = Display.getInstance().getCurrent();
         }
+        Storage.getInstance().writeObject("currentUser", ParseUser.getCurrent().asExternalizable());
     }
 
     public void destroy() {
