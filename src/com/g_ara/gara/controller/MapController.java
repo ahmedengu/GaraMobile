@@ -61,7 +61,7 @@ public class MapController {
             String url = driver.getParseFile("pic").getUrl();
 
             URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), url.substring(url.lastIndexOf("/") + 1), url, adapter);
+            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
             map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
                 Dialog dialog = new Dialog("Ride Info");

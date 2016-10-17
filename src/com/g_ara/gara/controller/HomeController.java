@@ -55,7 +55,7 @@ public class HomeController {
                         String url = tripUser.getParseFile("pic").getUrl();
 
                         URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-                        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), url.substring(url.lastIndexOf("/") + 1), url, adapter);
+                        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
                         map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
                     }
@@ -102,7 +102,7 @@ public class HomeController {
                 String url = tripUser.getParseFile("pic").getUrl();
 
                 URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-                URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), url.substring(url.lastIndexOf("/") + 1), url, adapter);
+                URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
                 map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
 

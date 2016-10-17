@@ -78,7 +78,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onGroups_GroupsAction(Component c, ActionEvent event) {
-        showForm("Group", null);
+//        showForm("Group", null);
     }
 
     @Override
