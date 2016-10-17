@@ -57,7 +57,12 @@ public class MapController {
         for (int i = 0; i < parseObjects.size(); i++) {
             final ParseObject driver = parseObjects.get(i).getParseObject("driver");
             final ParseObject trip = parseObjects.get(i);
-            map.addMarker(DESTINATION_LOCATION_ICON(), new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
+            String url = driver.getParseFile("pic").getUrl();
+
+            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+            map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
                 Dialog dialog = new Dialog("Ride Info");
                 dialog.setLayout(new BorderLayout());
                 Label label = new Label("driver: " + driver.getString("username"));
@@ -188,7 +193,7 @@ public class MapController {
             lastLocationUpdate = System.currentTimeMillis();
         }
         if (destCoord != null)
-            map.addMarker(DESTINATION_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
+            map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
 
         for (int i = 0; i < markers.size(); i++) {
             Map<String, Object> m = markers.get(i);
@@ -227,9 +232,6 @@ public class MapController {
 
     public static Coord[] decode(final String encodedPath) {
         int len = encodedPath.length();
-
-        // For speed we preallocate to an upper bound on the final length, then
-        // truncate the array before returning.
         final List<Coord> path = new ArrayList<Coord>();
         int index = 0;
         int lat = 0;

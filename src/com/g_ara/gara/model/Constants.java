@@ -2,6 +2,7 @@ package com.g_ara.gara.model;
 
 import com.codename1.ui.EncodedImage;
 import com.codename1.ui.FontImage;
+import com.codename1.ui.Image;
 import com.codename1.ui.plaf.Style;
 
 /**
@@ -15,26 +16,40 @@ public class Constants {
     public static String APPLE_STORE = "http://www.g-ara.com";
     public static String PAYMENT = "http://www.g-ara.com";
 
-    public static Style STYLE_CURRENT_LOCATION() {
-        Style s = new Style();
-        s.setBgTransparency(0);
-        s.setFgColor(0);
-        return s;
-    }
-
-    public static Style STYLE_DESTINATION_LOCATION() {
+    public static EncodedImage RED_LOCATION_ICON() {
         Style s = new Style();
         s.setBgTransparency(0);
         s.setFgColor(0xFF0000);
-        return s;
-    }
-
-    public static EncodedImage DESTINATION_LOCATION_ICON() {
-        return FontImage.createMaterial(FontImage.MATERIAL_LOCATION_ON, STYLE_DESTINATION_LOCATION()).toEncodedImage();
+        return FontImage.createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
     }
 
     public static EncodedImage CURRENT_LOCATION_ICON() {
-        return FontImage.createMaterial(FontImage.MATERIAL_MY_LOCATION, STYLE_CURRENT_LOCATION()).toEncodedImage();
+        Style s = new Style();
+        s.setBgTransparency(0);
+        s.setFgColor(0);
+        return FontImage.createMaterial(FontImage.MATERIAL_MY_LOCATION, s).toEncodedImage();
     }
 
+    public static EncodedImage GREEN_LOCATION_ICON() {
+        Style s = new Style();
+        s.setBgTransparency(0);
+        s.setFgColor(0x00FF00);
+        return FontImage.createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
+    }
+
+    public static EncodedImage BLUE_LOCATION_ICON() {
+        Style s = new Style();
+        s.setBgTransparency(0);
+        s.setFgColor(0x0000FF);
+        return FontImage.createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
+    }
+
+    public static Image MASK_LOCATION_ICON() {
+        Style s = new Style();
+//        s.setBgTransparency(255);
+        s.setBgColor(0);
+        s.setFgColor(0xFFFFFF);
+
+        return FontImage.createMaterial(FontImage.MATERIAL_NAVIGATION, s).toEncodedImage().rotate(180);
+    }
 }

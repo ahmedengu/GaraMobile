@@ -15,7 +15,7 @@ import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
 
 import static com.g_ara.gara.model.Constants.CURRENT_LOCATION_ICON;
-import static com.g_ara.gara.model.Constants.DESTINATION_LOCATION_ICON;
+import static com.g_ara.gara.model.Constants.RED_LOCATION_ICON;
 import static userclasses.StateMachine.data;
 
 /**
@@ -63,14 +63,10 @@ public class DriveSummary {
 
         MapContainer map = new MapController(resources, container).map;
         map.addMarker(CURRENT_LOCATION_ICON(), MapController.getLocationCoord(), "Hi marker", "Optional long description", null);
-        map.addMarker(DESTINATION_LOCATION_ICON(), MapController.getDestCoord(), "Hi marker", "Optional long description", null);
+        map.addMarker(RED_LOCATION_ICON(), MapController.getDestCoord(), "Hi marker", "Optional long description", null);
         map.zoom(MapController.getLocationCoord(), 5);
-        map.setScrollableX(false);
         map.setScrollableY(false);
-        String routesEncoded = MapController.getRoutesEncoded(MapController.getLocationCoord(), MapController.getDestCoord());
-        Coord[] decode = MapController.decode(routesEncoded);
-        map.addPath(decode);
-
+        map.addPath(MapController.decode(MapController.getRoutesEncoded(MapController.getLocationCoord(), MapController.getDestCoord())));
         summary.add(container);
     }
 

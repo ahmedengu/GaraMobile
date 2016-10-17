@@ -5,13 +5,14 @@ import com.codename1.googlemaps.MapContainer;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
 import static userclasses.StateMachine.data;
 
 /**
@@ -24,15 +25,21 @@ public class RequestsController {
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
                 ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
                 q.include("user");
-                q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("inactive", false);
+                q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                 results = q.find();
             }
 
             MapContainer map = new MapController(resources, f).map;
             for (int i = 0; i < results.size(); i++) {
                 final ParseObject object = results.get(i);
-                ParseGeoPoint location = object.getParseObject("user").getParseGeoPoint("location");
-                map.addMarker(FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+                ParseObject user = object.getParseObject("user");
+                ParseGeoPoint location = user.getParseGeoPoint("location");
+                String url = user.getParseFile("pic").getUrl();
+                URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+                URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+
+                map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
                     Dialog dialog = new Dialog("Requests");
                     dialog.setLayout(new BorderLayout());
                     Label label = new Label("User: " + object.getParseObject("user").getString("username"));

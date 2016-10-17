@@ -6,8 +6,8 @@ import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.list.MultiList;
-import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import userclasses.StateMachine;
 
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
+import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
 import static userclasses.StateMachine.data;
 
 /**
@@ -49,9 +50,14 @@ public class HomeController {
                 List<ParseObject> tripRequests = fetch.getList("tripRequests");
                 if (tripRequests != null)
                     for (int i = 0; i < tripRequests.size(); i++) {
-                        ParseGeoPoint location = tripRequests.get(i).getParseObject("user").getParseGeoPoint("location");
+                        ParseObject tripUser = tripRequests.get(i).getParseObject("user");
+                        ParseGeoPoint location = tripUser.getParseGeoPoint("location");
+                        String url = tripUser.getParseFile("pic").getUrl();
 
-                        map.addToMarkers((FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage()), new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+                        URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+                        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+                        map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
                     }
                 data.put("active", fetch);
             } catch (ParseException e) {
@@ -86,9 +92,14 @@ public class HomeController {
                 map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
-                ParseGeoPoint location = fetch.getParseObject("trip").getParseObject("driver").getParseGeoPoint("location");
+                ParseObject tripUser = fetch.getParseObject("trip").getParseObject("driver");
+                ParseGeoPoint location = tripUser.getParseGeoPoint("location");
+                String url = tripUser.getParseFile("pic").getUrl();
 
-                map.addToMarkers((FontImage.createMaterial(FontImage.MATERIAL_PERSON_PIN_CIRCLE, new Style()).toEncodedImage()), new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+                URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+                URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+                map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
 
 
                 data.put("active", fetch);
