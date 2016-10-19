@@ -1,5 +1,6 @@
 package com.g_ara.gara.controller;
 
+import com.codename1.components.ImageViewer;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.io.ConnectionRequest;
@@ -14,12 +15,11 @@ import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.util.Resources;
+import com.codename1.util.MathUtil;
 import com.g_ara.gara.model.Constants;
-import com.parse4cn1.ParseException;
-import com.parse4cn1.ParseGeoPoint;
-import com.parse4cn1.ParseObject;
-import com.parse4cn1.ParseUser;
+import com.parse4cn1.*;
 import userclasses.StateMachine;
 
 import java.io.ByteArrayInputStream;
@@ -56,8 +56,10 @@ public class MapController {
     public void initMap(List<ParseObject> parseObjects, StateMachine stateMachine) {
         map.clearMapLayers();
         for (int i = 0; i < parseObjects.size(); i++) {
-            final ParseObject driver = parseObjects.get(i).getParseObject("driver");
             final ParseObject trip = parseObjects.get(i);
+            final ParseObject driver = trip.getParseObject("driver");
+            final ParseObject car = trip.getParseObject("car");
+
             String url = driver.getParseFile("pic").getUrl();
 
             URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
@@ -66,7 +68,6 @@ public class MapController {
             map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
                 Dialog dialog = new Dialog("Ride Info");
                 dialog.setLayout(new BorderLayout());
-                Label label = new Label("driver: " + driver.getString("username"));
                 Button cancel = new Button("Cancel");
                 cancel.addActionListener(evt1 -> dialog.dispose());
 
@@ -97,7 +98,25 @@ public class MapController {
                 Container container = new Container();
                 container.add(cancel);
                 container.add(confirm);
-                dialog.add(BorderLayout.CENTER, label);
+                Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+
+
+                String picUrl = driver.getParseFile("pic").getUrl();
+
+                info.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON(), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
+                info.add(new Label("Username: " + driver.getString("username")));
+                info.add(new Label("Name: " + driver.getString("name")));
+                info.add(new Label("Mobile: " + driver.getString("mobile")));
+
+                List<ParseFile> carPics = car.getList("pics");
+                for (int j = 0; j < carPics.size(); j++) {
+                    String carUrl = FILE_PATH + carPics.get(j).getName();
+                    info.add(new ImageViewer(URLImage.createToStorage(CAR_ICON(), carUrl.substring(carUrl.lastIndexOf("/") + 1), carUrl)));
+                }
+                info.add(new Label("Car: " + car.getString("name")));
+                info.add(new Label("Car Year: " + car.getString("year")));
+
+                dialog.add(BorderLayout.CENTER, info);
                 dialog.add(BorderLayout.SOUTH, container);
                 dialog.show();
             });
@@ -107,6 +126,7 @@ public class MapController {
     }
 
     public void initMap() {
+        destCoord = null;
         handleCurrentLocation(map);
         destListener(map);
         mapController = this;
@@ -133,7 +153,6 @@ public class MapController {
             public void actionPerformed(ActionEvent evt) {
                 destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
                 coordsPath = null;
-                getRoutesCoordsAsync();
                 updateMarkers(map);
             }
         });
@@ -195,9 +214,11 @@ public class MapController {
             map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Hi marker", "Optional long description", null);
             lastLocationUpdate = System.currentTimeMillis();
         }
-        if (destCoord != null)
+        if (destCoord != null) {
             map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
-
+            if (coordsPath == null)
+                getRoutesCoordsAsync();
+        }
         for (int i = 0; i < markers.size(); i++) {
             Map<String, Object> m = markers.get(i);
             map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
@@ -304,5 +325,27 @@ public class MapController {
 
     public static void stopLocationListener() {
         LocationManager.getLocationManager().setLocationListener(null);
+    }
+
+    public static double distanceInKilometers(Coord point1, Coord point2) {
+        double d2r = 0.0174532925199433D;
+        double lat1rad = point1.getLatitude() * d2r;
+        double long1rad = point1.getLongitude() * d2r;
+        double lat2rad = point2.getLatitude() * d2r;
+        double long2rad = point2.getLongitude() * d2r;
+        double deltaLat = lat1rad - lat2rad;
+        double deltaLong = long1rad - long2rad;
+        double sinDeltaLatDiv2 = Math.sin(deltaLat / 2.0D);
+        double sinDeltaLongDiv2 = Math.sin(deltaLong / 2.0D);
+
+        double a = sinDeltaLatDiv2 * sinDeltaLatDiv2 + Math.cos(lat1rad)
+                * Math.cos(lat2rad) * sinDeltaLongDiv2 * sinDeltaLongDiv2;
+
+        a = Math.min(1.0D, a);
+        return 2.0D * MathUtil.asin(Math.sqrt(a)) * 6371.0D;
+    }
+
+    public static void setDestCoord(Coord destCoord) {
+        MapController.destCoord = destCoord;
     }
 }

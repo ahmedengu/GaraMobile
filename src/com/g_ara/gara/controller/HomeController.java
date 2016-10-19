@@ -126,6 +126,7 @@ public class HomeController {
         f.removeComponent(active);
         drive.setHidden(false);
         ride.setHidden(false);
+
     }
 
     public static void CancelActiveRequest(ParseObject object) {
@@ -158,6 +159,7 @@ public class HomeController {
             query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), 5000000);
             ParseQuery<ParseObject> tripQuery = ParseQuery.getQuery("Trip");
             tripQuery.include("driver");
+            tripQuery.include("car");
             tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), 5000000);
             List<ParseObject> results = tripQuery.find();
             if (results.size() == 0) {

@@ -54,6 +54,7 @@ public class DriveSummary {
     }
 
     public static void beforeDriveSummaryForm(Container summary, Resources resources) {
+        summary.add(new Label("Distance: " + MapController.distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord())));
         summary.add(new Label("Cost per kilo: " + data.get("cost")));
         summary.add(new Label("Tolls cost: " + data.get("toll")));
         summary.add(new Label("available seats: " + data.get("seats")));
