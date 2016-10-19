@@ -16,6 +16,7 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.util.Resources;
 import com.codename1.util.MathUtil;
 import com.g_ara.gara.model.Constants;
@@ -95,15 +96,18 @@ public class MapController {
                         ToastBar.showErrorMessage(e.getMessage());
                     }
                 });
-                Container container = new Container();
+                Container container = new Container(new GridLayout(2));
                 container.add(cancel);
                 container.add(confirm);
                 Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
 
 
                 String picUrl = driver.getParseFile("pic").getUrl();
+                double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
+                info.add(new Label("Distance: " + distanceInKilometers));
+                info.add(new Label("Cost: " + distanceInKilometers * trip.getInt("cost") + trip.getInt("toll")));
 
-                info.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON(), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
+                info.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
                 info.add(new Label("Username: " + driver.getString("username")));
                 info.add(new Label("Name: " + driver.getString("name")));
                 info.add(new Label("Mobile: " + driver.getString("mobile")));
@@ -111,11 +115,11 @@ public class MapController {
                 List<ParseFile> carPics = car.getList("pics");
                 for (int j = 0; j < carPics.size(); j++) {
                     String carUrl = FILE_PATH + carPics.get(j).getName();
-                    info.add(new ImageViewer(URLImage.createToStorage(CAR_ICON(), carUrl.substring(carUrl.lastIndexOf("/") + 1), carUrl)));
+                    info.add(new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(dialog.getWidth(), -1), carUrl.substring(carUrl.lastIndexOf("/") + 1), carUrl)));
                 }
                 info.add(new Label("Car: " + car.getString("name")));
                 info.add(new Label("Car Year: " + car.getString("year")));
-
+                info.setScrollableY(true);
                 dialog.add(BorderLayout.CENTER, info);
                 dialog.add(BorderLayout.SOUTH, container);
                 dialog.show();

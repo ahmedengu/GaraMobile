@@ -65,6 +65,7 @@ public class Constants {
         Style s = new Style();
         s.setBgTransparency(0);
         s.setFgColor(0x0000FF);
+
         return FontImage.createMaterial(FontImage.MATERIAL_DIRECTIONS_CAR, s).toEncodedImage();
     }
 }
