@@ -81,8 +81,10 @@ public class MapController {
                     tripRequest.put("user", user);
                     tripRequest.put("accept", -1);
                     tripRequest.put("active", true);
+                    double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
+                    tripRequest.put("cost", distanceInKilometers * trip.getInt("cost") + trip.getInt("toll"));
                     tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
-
+                    tripRequest.put("distance", distanceInKilometers);
                     try {
                         tripRequest.save();
                         user.put("tripRequest", tripRequest);

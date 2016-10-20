@@ -8,15 +8,15 @@
 package userclasses;
 
 import com.codename1.components.InfiniteProgress;
+import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.list.MultiList;
+import com.codename1.ui.plaf.Style;
+import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.controller.RatingWidget;
 import com.parse4cn1.Parse;
-import com.parse4cn1.ParseException;
-import com.parse4cn1.ParseObject;
 import generated.StateMachineBase;
 
 import java.util.HashMap;
@@ -32,6 +32,7 @@ import static com.g_ara.gara.controller.HomeController.*;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
 import static com.g_ara.gara.controller.SettingsController.*;
+import static com.g_ara.gara.controller.TripFeedbackController.*;
 import static com.g_ara.gara.controller.UserController.*;
 import static com.g_ara.gara.controller.UserSearch.searchAction;
 import static com.g_ara.gara.controller.UserSearch.usersAction;
@@ -67,7 +68,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeHome(Form f) {
-        beforeHomeForm(f, fetchResourceFile(), findDrive(f), findRide(f),this);
+        beforeHomeForm(f, fetchResourceFile(), findDrive(f), findRide(f), this);
     }
 
     @Override
@@ -404,26 +405,32 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeTripFeedback(Form f) {
-        RatingWidget.createStarRankSlider((Slider) findRate(f));
+        beforeTripFeedbackForm((Slider) findRate(f));
 
     }
+
 
     @Override
     protected void onTripFeedback_OkAction(Component c, ActionEvent event) {
-        ParseObject object = (ParseObject) data.get("tripObject");
-
-        object.put("rate", ((Slider) findRate()).getProgress());
-        object.put("comment", findComment().getText());
-        try {
-            object.save();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        showForm("Home", null);
+        okAction(this, (Slider) findRate(), findComment());
     }
+
 
     @Override
     protected void onTripFeedback_CancelAction(Component c, ActionEvent event) {
-        showForm("Home", null);
+        cancelAction(this);
+    }
+
+    public static void showDelayedToastBar(String msg) {
+        showDelayedToastBar(msg, 15000, 1000, FontImage.MATERIAL_ERROR);
+    }
+
+    public static void showDelayedToastBar(String msg, int expire, int delay, char icon) {
+        ToastBar.Status s = ToastBar.getInstance().createStatus();
+        Style stl = UIManager.getInstance().getComponentStyle(s.getMessageUIID());
+        s.setMessage(msg);
+        s.setIcon(FontImage.createMaterial(icon, stl, 4));
+        s.setExpires(expire);
+        s.showDelayed(delay);
     }
 }

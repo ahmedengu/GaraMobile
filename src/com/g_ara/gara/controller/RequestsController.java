@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
 import static userclasses.StateMachine.data;
+import static userclasses.StateMachine.showDelayedToastBar;
 
 /**
  * Created by ahmedengu.
@@ -24,16 +25,16 @@ public class RequestsController {
         try {
             List<ParseObject> results = new ArrayList<>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
-//                if (((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
+                if (((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
                     ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
                     q.include("user");
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                     results = q.find();
-//                } else {
-//                    ToastBar.showErrorMessage("You have no remaining seats!");
-//                }
+                } else {
+                    showDelayedToastBar("You have no remaining seats!");
+                }
             } else {
-                ToastBar.showErrorMessage("You don't have an active trip!");
+                showDelayedToastBar("You don't have an active trip!");
             }
 
             MapContainer map = new MapController(resources, f).map;

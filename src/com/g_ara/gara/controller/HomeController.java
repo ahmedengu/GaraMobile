@@ -23,6 +23,7 @@ import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.model.Constants.CODE_ICON;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
 import static userclasses.StateMachine.data;
+import static userclasses.StateMachine.showDelayedToastBar;
 
 /**
  * Created by ahmedengu.
@@ -55,12 +56,16 @@ public class HomeController {
             if (fetch.getInt("accept") != 1) {
                 CancelActiveRequest(fetch);
                 new MapController(resources, f).initMap();
-                ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
+//                ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
+                showDelayedToastBar("Your request got no replay from the driver or rejected, Please choose another driver!");
+
                 return;
             } else if (fetch.getParseObject("trip").getBoolean("active") == false) {
                 CancelActiveRequest(fetch);
                 new MapController(resources, f).initMap();
-                ToastBar.showErrorMessage("The driver canceled the trip!");
+//                ToastBar.showErrorMessage("The driver canceled the trip!");
+                showDelayedToastBar("The driver canceled the trip!");
+
                 return;
             }
             Button active = new Button("cancel: " + fetch.getClassName());
@@ -135,7 +140,9 @@ public class HomeController {
 
     private static void checkinAction(String contents, ParseObject object, Button checkIn, Form f, Resources resources, Button drive, Button ride, Button active, StateMachine stateMachine) {
         if (contents.equals(object.getParseObject("trip").getObjectId())) {
-            ToastBar.showErrorMessage("Checked in Successfully");
+//            ToastBar.showErrorMessage("Checked in Successfully");
+            showDelayedToastBar("Checked in Successfully");
+
             Map<String, Object> map = new HashMap<>();
             map.put("token", contents);
             map.put("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()));
@@ -145,6 +152,7 @@ public class HomeController {
                 if (checkIn.getText().equals("Check Out")) {
                     CancelActive(f, resources, drive, ride, active, object);
                     data.put("tripObject", object);
+                    showDelayedToastBar("You should pay the driver: " + object.get("cost"));
                     stateMachine.showForm("TripFeedback", null);
                 } else
                     checkIn.setText("Check Out");
@@ -153,9 +161,11 @@ public class HomeController {
                 e.printStackTrace();
             }
         } else {
-            ToastBar.showErrorMessage("Sorry couldn't identify the QR as the trip Qr!", 5000);
+            showDelayedToastBar("Sorry couldn't identify the QR as the trip Qr!");
+//            ToastBar.showErrorMessage("Sorry couldn't identify the QR as the trip Qr!", 5000);
         }
     }
+
 
     public static void tripHome(Form f, Resources resources, Button drive, Button ride) {
         ParseObject fetch;
