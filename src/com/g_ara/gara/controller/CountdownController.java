@@ -15,7 +15,7 @@ public class CountdownController {
     public static void beforeCountdownForm(Container container, StateMachine stateMachine) {
         container.add(new Countdown(90, new CallbackController() {
             @Override
-            public void done() {
+            public void done(Object... objects) {
                 stateMachine.showDialog();
                 try {
                     ParseObject object = ParseObject.fetch("TripRequest", ((ParseObject) data.get("active")).getObjectId());

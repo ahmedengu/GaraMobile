@@ -9,14 +9,14 @@ package userclasses;
 
 import com.codename1.components.InfiniteProgress;
 import com.codename1.io.Preferences;
-import com.codename1.ui.Component;
-import com.codename1.ui.Container;
-import com.codename1.ui.Dialog;
-import com.codename1.ui.Form;
+import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
+import com.g_ara.gara.controller.RatingWidget;
 import com.parse4cn1.Parse;
+import com.parse4cn1.ParseException;
+import com.parse4cn1.ParseObject;
 import generated.StateMachineBase;
 
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeHome(Form f) {
-        beforeHomeForm(f, fetchResourceFile(), findDrive(f), findRide(f));
+        beforeHomeForm(f, fetchResourceFile(), findDrive(f), findRide(f),this);
     }
 
     @Override
@@ -284,7 +284,6 @@ public class StateMachine extends StateMachineBase {
     }
 
 
-
     // No need for social loin .. unnecessary headache
 //    @Override
 //    protected void onLogin_GoogleAction(Component c, ActionEvent event) {
@@ -402,4 +401,29 @@ public class StateMachine extends StateMachineBase {
 //        return -1;
 //    }
 
+
+    @Override
+    protected void beforeTripFeedback(Form f) {
+        RatingWidget.createStarRankSlider((Slider) findRate(f));
+
+    }
+
+    @Override
+    protected void onTripFeedback_OkAction(Component c, ActionEvent event) {
+        ParseObject object = (ParseObject) data.get("tripObject");
+
+        object.put("rate", ((Slider) findRate()).getProgress());
+        object.put("comment", findComment().getText());
+        try {
+            object.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        showForm("Home", null);
+    }
+
+    @Override
+    protected void onTripFeedback_CancelAction(Component c, ActionEvent event) {
+        showForm("Home", null);
+    }
 }

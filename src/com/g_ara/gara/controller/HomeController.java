@@ -28,7 +28,7 @@ import static userclasses.StateMachine.data;
  * Created by ahmedengu.
  */
 public class HomeController {
-    public static void beforeHomeForm(Form f, Resources resources, Button drive, Button ride) {
+    public static void beforeHomeForm(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
         f.setBackCommand(null);
         ParseObject fetch = null;
         if (ParseUser.getCurrent().get("trip") != null) {
@@ -37,13 +37,13 @@ public class HomeController {
 
         } else if (ParseUser.getCurrent().get("tripRequest") != null) {
 
-            tripRequestHome(f, resources, drive, ride);
+            tripRequestHome(f, resources, drive, ride, stateMachine);
 
         } else
             new MapController(resources, f).initMap();
     }
 
-    public static void tripRequestHome(Form f, Resources resources, Button drive, Button ride) {
+    public static void tripRequestHome(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
         ParseObject fetch;
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("TripRequest");
@@ -81,7 +81,7 @@ public class HomeController {
                     CodeScanner.getInstance().scanQRCode(new ScanResult() {
 
                         public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
-                            checkinAction(contents, object, checkIn);
+                            checkinAction(contents, object, checkIn, f, resources, drive, ride, active, stateMachine);
                         }
 
                         public void scanCanceled() {
@@ -99,7 +99,7 @@ public class HomeController {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
 //                            super.actionPerformed(evt);
-                            checkinAction(input.getText(), object, checkIn);
+                            checkinAction(input.getText(), object, checkIn, f, resources, drive, ride, active, stateMachine);
                         }
                     });
                 }
@@ -133,7 +133,7 @@ public class HomeController {
         }
     }
 
-    private static void checkinAction(String contents, ParseObject object, Button checkIn) {
+    private static void checkinAction(String contents, ParseObject object, Button checkIn, Form f, Resources resources, Button drive, Button ride, Button active, StateMachine stateMachine) {
         if (contents.equals(object.getParseObject("trip").getObjectId())) {
             ToastBar.showErrorMessage("Checked in Successfully");
             Map<String, Object> map = new HashMap<>();
@@ -142,7 +142,13 @@ public class HomeController {
             object.put((checkIn.getText().equals("Check Out")) ? "checkout" : "checkin", map);
             try {
                 object.save();
-                checkIn.setText("Check Out");
+                if (checkIn.getText().equals("Check Out")) {
+                    CancelActive(f, resources, drive, ride, active, object);
+                    data.put("tripObject", object);
+                    stateMachine.showForm("TripFeedback", null);
+                } else
+                    checkIn.setText("Check Out");
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }

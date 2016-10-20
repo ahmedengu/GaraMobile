@@ -63,7 +63,19 @@ public class RatingWidget {
     void showReviewWidget() {
         // block this from happening twice
         Preferences.set("alreadyRated", true);
-        InteractionDialog id = new InteractionDialog("Please Rate " + Display.getInstance().getProperty("AppName", "The App"));
+        String title = "Please Rate " + Display.getInstance().getProperty("AppName", "The App");
+
+        showReviewWideget(title, new CallbackController() {
+            @Override
+            public void done(Object... objects) {
+                Slider object = (Slider) objects[0];
+                okStoreAction(object);
+            }
+        }, null);
+    }
+
+    public static void showReviewWideget(String title, CallbackController okCallback, CallbackController noCallback) {
+        InteractionDialog id = new InteractionDialog(title);
         int height = id.getPreferredH();
         Form f = Display.getInstance().getCurrent();
         id.setLayout(new BorderLayout());
@@ -73,31 +85,42 @@ public class RatingWidget {
         id.add(BorderLayout.CENTER, FlowLayout.encloseCenterMiddle(rate)).
                 add(BorderLayout.SOUTH, GridLayout.encloseIn(2, no, ok));
         id.show(f.getHeight() - height - f.getTitleArea().getHeight(), 0, 0, 0);
-        no.addActionListener(e -> id.dispose());
+        no.addActionListener(e -> {
+            if (noCallback == null) id.dispose();
+            else noCallback.done(rate);
+        });
         ok.addActionListener(e -> {
             id.dispose();
-            if (rate.getProgress() >= 9) {
-                if (Dialog.show("Rate On Store", "Would you mind rating us in the appstore?", "Go To Store", "Dismiss")) {
-                    Display.getInstance().execute(appstoreUrl);
-                }
-            } else {
-                if (Dialog.show("Tell Us Why?", "Would you mind writing us a short message explaining how we can improve?", "Write", "Dismiss")) {
-                    Message m = new Message("Heres how you can improve  " + Display.getInstance().getProperty("AppName", "the app"));
-                    Display.getInstance().sendMessage(new String[]{supportEmail}, "Improvement suggestions for " + Display.getInstance().getProperty("AppName", "your app"), m);
-                }
-            }
+            okCallback.done(rate);
         });
     }
 
-    private void initStarRankStyle(Style s, Image star) {
+    private void okStoreAction(Slider rate) {
+        if (rate.getProgress() >= 9) {
+            if (Dialog.show("Rate On Store", "Would you mind rating us in the appstore?", "Go To Store", "Dismiss")) {
+                Display.getInstance().execute(appstoreUrl);
+            }
+        } else {
+            if (Dialog.show("Tell Us Why?", "Would you mind writing us a short message explaining how we can improve?", "Write", "Dismiss")) {
+                Message m = new Message("Heres how you can improve  " + Display.getInstance().getProperty("AppName", "the app"));
+                Display.getInstance().sendMessage(new String[]{supportEmail}, "Improvement suggestions for " + Display.getInstance().getProperty("AppName", "your app"), m);
+            }
+        }
+    }
+
+    public static void initStarRankStyle(Style s, Image star) {
         s.setBackgroundType(Style.BACKGROUND_IMAGE_TILE_BOTH);
         s.setBorder(Border.createEmpty());
         s.setBgImage(star);
         s.setBgTransparency(0);
     }
 
-    private Slider createStarRankSlider() {
+    public static Slider createStarRankSlider() {
         Slider starRank = new Slider();
+        return createStarRankSlider(starRank);
+    }
+
+    public static Slider createStarRankSlider(Slider starRank) {
         starRank.setEditable(true);
         starRank.setMinValue(0);
         starRank.setMaxValue(10);
@@ -155,4 +178,6 @@ public class RatingWidget {
         }
         return Constants.WEBSITE;
     }
+
+
 }
