@@ -15,6 +15,7 @@ import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import userclasses.StateMachine;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,8 +94,8 @@ public class HomeController {
                     });
                 else {
                     TextField input = new TextField("");
-                    input.setHint("Checkin token");
-                    Dialog.show("Enter checkin token", input, new Command("Enter") {
+                    input.setHint("Check in/out token");
+                    Dialog.show("Enter check in/out token", input, new Command("Enter") {
                         @Override
                         public void actionPerformed(ActionEvent evt) {
 //                            super.actionPerformed(evt);
@@ -105,8 +106,9 @@ public class HomeController {
 
             });
 
-            if (object.getString("checkinToken") != null)
-                checkIn.setEnabled(false);
+            if (object.getString("checkin") != null) {
+                checkIn.setText("Check Out");
+            }
             north.add(checkIn);
 
             f.add(BorderLayout.NORTH, north);
@@ -134,10 +136,13 @@ public class HomeController {
     private static void checkinAction(String contents, ParseObject object, Button checkIn) {
         if (contents.equals(object.getParseObject("trip").getObjectId())) {
             ToastBar.showErrorMessage("Checked in Successfully");
-            object.put("checkinToken", contents);
+            Map<String, Object> map = new HashMap<>();
+            map.put("token", contents);
+            map.put("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()));
+            object.put((checkIn.getText().equals("Check Out")) ? "checkout" : "checkin", map);
             try {
                 object.save();
-                checkIn.setEnabled(false);
+                checkIn.setText("Check Out");
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -166,7 +171,7 @@ public class HomeController {
             Container north = new Container(new GridLayout(2));
             north.add(active);
 
-            Button checkin = new Button("CheckIn");
+            Button checkin = new Button("Check In/Out");
             checkin.addActionListener(evt -> {
                 String objectId = object.getObjectId();
                 String url = Constants.GOOGLE_QR + objectId;
