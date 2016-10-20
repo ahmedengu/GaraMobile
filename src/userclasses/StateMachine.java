@@ -252,7 +252,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        beforeDriveSummaryForm(findSummary(),fetchResourceFile());
+        beforeDriveSummaryForm(findSummary(), fetchResourceFile());
     }
 
 
@@ -264,7 +264,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeRequests(Form f) {
-        beforeRequestsForm(f, fetchResourceFile(),this);
+        beforeRequestsForm(f, fetchResourceFile(), this);
     }
 
     @Override
@@ -282,5 +282,124 @@ public class StateMachine extends StateMachineBase {
         if (progressDialog != null)
             progressDialog.dispose();
     }
+
+
+
+    // No need for social loin .. unnecessary headache
+//    @Override
+//    protected void onLogin_GoogleAction(Component c, ActionEvent event) {
+//
+//        Login gc = GoogleConnect.getInstance();
+//        gc.setClientId(Constants.GPLUS_CLIENT);
+//        gc.setRedirectURI("https://www.codenameone.com/oauth2callback");
+//        gc.setClientSecret(Constants.GPLUS_SECRET);
+//        doLogin(gc, new GoogleData(), false);
+//
+//    }
+//
+//    class GoogleData extends ConnectionRequest {
+//        private Runnable callback;
+//        private Map<String, Object> parsedData;
+//
+//        public String getName() {
+//            return (String) parsedData.get("displayName");
+//        }
+//
+//        public String getId() {
+//            return parsedData.get("id").toString();
+//        }
+//
+//        public String getImage() {
+//            Map<String, Object> imageMeta = ((Map<String, Object>) parsedData.get("image"));
+//            return (String) imageMeta.get("url");
+//        }
+//
+//        public void fetchData(String token, Runnable callback) {
+//            this.callback = callback;
+//            addRequestHeader("Authorization", "Bearer " + token);
+//            setUrl("https://www.googleapis.com/plus/v1/people/me");
+//            setPost(false);
+//            NetworkManager.getInstance().addToQueue(this);
+//        }
+//
+//        protected void handleErrorResponseCode(int code, String message) {
+//            //access token not valid anymore
+//            if (code >= 400 && code <= 410) {
+//                doLogin(GoogleConnect.getInstance(), this, true);
+//                return;
+//            }
+//            super.handleErrorResponseCode(code, message);
+//        }
+//
+//        protected void readResponse(InputStream input) throws IOException {
+//            JSONParser parser = new JSONParser();
+//            parsedData = parser.parseJSON(new InputStreamReader(input, "UTF-8"));
+//        }
+//
+//        protected void postResponse() {
+//            callback.run();
+//        }
+//    }
+//
+//    private String fullName;
+//    private String uniqueId;
+//    private String imageURL;
+//
+//    void doLogin(Login lg, GoogleData data, boolean forceLogin) {
+//        String t = Preferences.get("googletoken", (String) null);
+//        if (t != null) {
+//            // we check the expiration of the token which we previously stored as System time
+//            long tokenExpires = Preferences.get("tokenExpires", (long) -1);
+//            if (tokenExpires < 0 || tokenExpires > System.currentTimeMillis()) {
+//                // we are still logged in
+//                return;
+//            }
+//        }
+//
+//
+//        lg.setCallback(new LoginCallback() {
+//            @Override
+//            public void loginFailed(String errorMessage) {
+//                Dialog.show("Error Logging In", "There was an error logging in: " + errorMessage, "OK", null);
+//            }
+//
+//            @Override
+//            public void loginSuccessful() {
+//                // when login is successful we fetch the full data
+//                data.fetchData(lg.getAccessToken().getToken(), () -> {
+//                    // we store the values of result into local variables
+//                    uniqueId = data.getId();
+//                    fullName = data.getName();
+//                    imageURL = data.getImage();
+//
+//                    // we then store the data into local cached storage so they will be around when we run the app next time
+//                    Preferences.set("fullName", fullName);
+//                    Preferences.set("uniqueId", uniqueId);
+//                    Preferences.set("imageURL", imageURL);
+//                    Preferences.set("googletoken", lg.getAccessToken().getToken());
+//
+//                    // token expiration is in seconds from the current time, we convert it to a System.currentTimeMillis value so we can
+//                    // reference it in the future to check expiration
+//                    Preferences.set("tokenExpires", tokenExpirationInMillis(lg.getAccessToken()));
+//                });
+//            }
+//        });
+//        lg.doLogin();
+//
+//    }
+//
+//    long tokenExpirationInMillis(AccessToken token) {
+//        String expires = token.getExpires();
+//        if (expires != null && expires.length() > 0) {
+//            try {
+//                // when it will expire in seconds
+//                long l = (long) (Float.parseFloat(expires) * 1000);
+//                return System.currentTimeMillis() + l;
+//            } catch (NumberFormatException err) {
+//                // ignore invalid input
+//            }
+//        }
+//        return -1;
+//    }
 
 }

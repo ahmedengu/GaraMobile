@@ -12,9 +12,5 @@
     </component>
     <component type="Button" name="Register" cloudDestinationProperty="Register" commandName="Register" commandId="2" commandAction="Register" commandBack="false" text="Register" >
     </component>
-    <component type="Button" name="Facebook" cloudDestinationProperty="Facebook" text="Facebook" >
-    </component>
-    <component type="Button" name="Google" cloudDestinationProperty="Google" text="Google" >
-    </component>
   </component>
 </component>

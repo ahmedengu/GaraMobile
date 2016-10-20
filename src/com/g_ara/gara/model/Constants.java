@@ -17,6 +17,11 @@ public class Constants {
     public static String PAYMENT = "http://www.g-ara.com";
     public static String FILE_PATH = "http://localhost:1337/parse/files/myAppId/";
 
+    public static String GPLUS_CLIENT = "478278768173-p03m0mn78pdp79op1c83rak5rg5auc11.apps.googleusercontent.com";
+    public static String GPLUS_SECRET = "kGTosZIkwVA0OQPyex0ktWpS";
+
+    public static String GPLUS_REDIRECT = "https://www.codenameone.com/oauth2callback";
+
     public static EncodedImage RED_LOCATION_ICON() {
         Style s = new Style();
         s.setBgTransparency(0);
