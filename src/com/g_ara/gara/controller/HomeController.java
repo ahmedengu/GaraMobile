@@ -168,9 +168,10 @@ public class HomeController {
 
             Button checkin = new Button("CheckIn");
             checkin.addActionListener(evt -> {
-                String url = Constants.GOOGLE_QR + object.getObjectId();
+                String objectId = object.getObjectId();
+                String url = Constants.GOOGLE_QR + objectId;
 
-                Dialog.show("Check in QR", new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(150, -1), object.getObjectId() + ".png", url)), new Command("Back"));
+                Dialog.show("Token:" + objectId, new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(150, -1), objectId + ".png", url)), new Command("Back"));
             });
 
             north.add(checkin);
