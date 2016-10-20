@@ -1,8 +1,12 @@
 package com.g_ara.gara.controller;
 
+import com.codename1.components.ImageViewer;
 import com.codename1.components.ToastBar;
+import com.codename1.ext.codescan.CodeScanner;
+import com.codename1.ext.codescan.ScanResult;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.list.MultiList;
@@ -15,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
+import static com.g_ara.gara.model.Constants.CAR_ICON;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
 import static userclasses.StateMachine.data;
 
@@ -27,94 +32,169 @@ public class HomeController {
         ParseObject fetch = null;
         if (ParseUser.getCurrent().get("trip") != null) {
 
-            try {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Trip");
-                query.include("tripRequests");
-                query.include("tripRequests.user");
-                query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("trip").getObjectId());
-                fetch = query.find().get(0);
-
-                Button active = new Button("cancel: " + fetch.getClassName());
-                final ParseObject object = fetch;
-                active.addActionListener(evt -> {
-                    CancelActive(f, resources, drive, ride, active, object);
-                });
-
-                drive.setHidden(true);
-                ride.setHidden(true);
-                f.add(BorderLayout.NORTH, active);
-                MapController map = new MapController(resources, f);
-                map.initDriveMap(fetch.getParseGeoPoint("to"));
-
-
-                List<ParseObject> tripRequests = fetch.getList("tripRequests");
-                if (tripRequests != null)
-                    for (int i = 0; i < tripRequests.size(); i++) {
-                        ParseObject tripUser = tripRequests.get(i).getParseObject("user");
-                        ParseGeoPoint location = tripUser.getParseGeoPoint("location");
-                        String url = tripUser.getParseFile("pic").getUrl();
-
-                        URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-                        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
-
-                        map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
-                    }
-                data.put("active", fetch);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            tripHome(f, resources, drive, ride);
 
         } else if (ParseUser.getCurrent().get("tripRequest") != null) {
 
-            try {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("TripRequest");
-                query.include("trip");
-                query.include("trip.driver");
-                query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("tripRequest").getObjectId());
-                fetch = query.find().get(0);
-
-                if (fetch.getInt("accept") != 1) {
-                    CancelActiveRequest(fetch);
-                    new MapController(resources, f).initMap();
-                    ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
-                    return;
-                } else if (fetch.getParseObject("trip").getBoolean("active") == false) {
-                    CancelActiveRequest(fetch);
-                    new MapController(resources, f).initMap();
-                    ToastBar.showErrorMessage("The driver canceled the trip!");
-                    return;
-                }
-                Button active = new Button("cancel: " + fetch.getClassName());
-                final ParseObject object = fetch;
-                active.addActionListener(evt -> {
-                    CancelActive(f, resources, drive, ride, active, object);
-                });
-
-                drive.setHidden(true);
-                ride.setHidden(true);
-                f.add(BorderLayout.NORTH, active);
-                MapController map = new MapController(resources, f);
-                map.initDriveMap(fetch.getParseGeoPoint("to"));
-
-
-                ParseObject tripUser = fetch.getParseObject("trip").getParseObject("driver");
-                ParseGeoPoint location = tripUser.getParseGeoPoint("location");
-                String url = tripUser.getParseFile("pic").getUrl();
-
-                URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-                URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
-
-                map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
-
-
-                data.put("active", fetch);
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            tripRequestHome(f, resources, drive, ride);
 
         } else
             new MapController(resources, f).initMap();
+    }
+
+    public static void tripRequestHome(Form f, Resources resources, Button drive, Button ride) {
+        ParseObject fetch;
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("TripRequest");
+            query.include("trip");
+            query.include("trip.driver");
+            query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("tripRequest").getObjectId());
+            fetch = query.find().get(0);
+
+            if (fetch.getInt("accept") != 1) {
+                CancelActiveRequest(fetch);
+                new MapController(resources, f).initMap();
+                ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
+                return;
+            } else if (fetch.getParseObject("trip").getBoolean("active") == false) {
+                CancelActiveRequest(fetch);
+                new MapController(resources, f).initMap();
+                ToastBar.showErrorMessage("The driver canceled the trip!");
+                return;
+            }
+            Button active = new Button("cancel: " + fetch.getClassName());
+            final ParseObject object = fetch;
+            active.addActionListener(evt -> {
+                CancelActive(f, resources, drive, ride, active, object);
+            });
+
+            drive.setHidden(true);
+            ride.setHidden(true);
+            Container north = new Container(new GridLayout(2));
+            north.add(active);
+
+            Button checkIn = new Button("CheckIn");
+            checkIn.addActionListener(evt -> {
+
+                if (CodeScanner.isSupported())
+                    CodeScanner.getInstance().scanQRCode(new ScanResult() {
+
+                        public void scanCompleted(String contents, String formatName, byte[] rawBytes) {
+                            checkinAction(contents, object, checkIn);
+                        }
+
+                        public void scanCanceled() {
+                            ToastBar.showErrorMessage("Cancelled");
+                        }
+
+                        public void scanError(int errorCode, String message) {
+                            ToastBar.showErrorMessage(message);
+                        }
+                    });
+                else {
+                    TextField input = new TextField("");
+                    input.setHint("Checkin token");
+                    Dialog.show("Enter checkin token", input, new Command("Enter") {
+                        @Override
+                        public void actionPerformed(ActionEvent evt) {
+//                            super.actionPerformed(evt);
+                            checkinAction(input.getText(), object, checkIn);
+                        }
+                    });
+                }
+
+            });
+
+            if (object.getString("checkinToken") != null)
+                checkIn.setEnabled(false);
+            north.add(checkIn);
+
+            f.add(BorderLayout.NORTH, north);
+            MapController map = new MapController(resources, f);
+            map.initDriveMap(fetch.getParseGeoPoint("to"));
+
+
+            ParseObject tripUser = fetch.getParseObject("trip").getParseObject("driver");
+            ParseGeoPoint location = tripUser.getParseGeoPoint("location");
+            String url = tripUser.getParseFile("pic").getUrl();
+
+            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+            map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+
+
+            data.put("active", fetch);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void checkinAction(String contents, ParseObject object, Button checkIn) {
+        if (contents.equals(object.getParseObject("trip").getObjectId())) {
+            ToastBar.showErrorMessage("Checked in Successfully");
+            object.put("checkinToken", contents);
+            try {
+                object.save();
+                checkIn.setEnabled(false);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            ToastBar.showErrorMessage("Sorry couldn't identify the QR as the trip Qr!", 5000);
+        }
+    }
+
+    public static void tripHome(Form f, Resources resources, Button drive, Button ride) {
+        ParseObject fetch;
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Trip");
+            query.include("tripRequests");
+            query.include("tripRequests.user");
+            query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("trip").getObjectId());
+            fetch = query.find().get(0);
+
+            Button active = new Button("cancel: " + fetch.getClassName());
+            final ParseObject object = fetch;
+            active.addActionListener(evt -> {
+                CancelActive(f, resources, drive, ride, active, object);
+            });
+
+            drive.setHidden(true);
+            ride.setHidden(true);
+            Container north = new Container(new GridLayout(2));
+            north.add(active);
+
+            Button checkin = new Button("CheckIn");
+            checkin.addActionListener(evt -> {
+                String url = Constants.GOOGLE_QR + object.getObjectId();
+
+                Dialog.show("Check in QR", new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(150, -1), object.getObjectId() + ".png", url)), new Command("Back"));
+            });
+
+            north.add(checkin);
+            f.add(BorderLayout.NORTH, north);
+            MapController map = new MapController(resources, f);
+            map.initDriveMap(fetch.getParseGeoPoint("to"));
+
+
+            List<ParseObject> tripRequests = fetch.getList("tripRequests");
+            if (tripRequests != null)
+                for (int i = 0; i < tripRequests.size(); i++) {
+                    ParseObject tripUser = tripRequests.get(i).getParseObject("user");
+                    ParseGeoPoint location = tripUser.getParseGeoPoint("location");
+                    String url = tripUser.getParseFile("pic").getUrl();
+
+                    URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+                    URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+                    map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+                }
+            data.put("active", fetch);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void CancelActive(Form f, Resources resources, Button drive, Button ride, Button active, ParseObject object) {

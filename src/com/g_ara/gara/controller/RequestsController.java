@@ -24,14 +24,14 @@ public class RequestsController {
         try {
             List<ParseObject> results = new ArrayList<>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
-                if (((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
+//                if (((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
                     ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
                     q.include("user");
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                     results = q.find();
-                } else {
-                    ToastBar.showErrorMessage("You have no remaining seats!");
-                }
+//                } else {
+//                    ToastBar.showErrorMessage("You have no remaining seats!");
+//                }
             } else {
                 ToastBar.showErrorMessage("You don't have an active trip!");
             }
