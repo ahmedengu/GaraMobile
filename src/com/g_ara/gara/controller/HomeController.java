@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
-import static com.g_ara.gara.model.Constants.CAR_ICON;
+import static com.g_ara.gara.model.Constants.CODE_ICON;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
 import static userclasses.StateMachine.data;
 
@@ -171,7 +171,7 @@ public class HomeController {
                 String objectId = object.getObjectId();
                 String url = Constants.GOOGLE_QR + objectId;
 
-                Dialog.show("Token:" + objectId, new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(150, -1), objectId + ".png", url)), new Command("Back"));
+                Dialog.show("Token:" + objectId, new ImageViewer(URLImage.createToStorage(CODE_ICON().scaledEncoded(150, -1), objectId + ".png", url)), new Command("Back"));
             });
 
             north.add(checkin);

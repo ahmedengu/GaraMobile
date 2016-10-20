@@ -76,4 +76,12 @@ public class Constants {
 
         return FontImage.createMaterial(FontImage.MATERIAL_DIRECTIONS_CAR, s).toEncodedImage();
     }
+
+    public static EncodedImage CODE_ICON() {
+        Style s = new Style();
+        s.setBgTransparency(0);
+        s.setFgColor(0x000000);
+
+        return FontImage.createMaterial(FontImage.MATERIAL_CODE, s).toEncodedImage();
+    }
 }
