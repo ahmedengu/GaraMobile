@@ -5,6 +5,8 @@ import com.codename1.googlemaps.MapContainer;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.util.Resources;
 import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
@@ -25,7 +27,7 @@ public class RequestsController {
         try {
             List<ParseObject> results = new ArrayList<>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
-                if (((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
+                if (((ParseObject) data.get("active")).getList("tripRequests") == null || ((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
                     ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
                     q.include("user");
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
@@ -50,7 +52,6 @@ public class RequestsController {
                 map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
                     Dialog dialog = new Dialog("Requests");
                     dialog.setLayout(new BorderLayout());
-                    Label label = new Label("User: " + object.getParseObject("user").getString("username"));
                     Button cancel = new Button("Reject");
                     cancel.addActionListener(evt1 -> {
                         object.put("accept", 0);
@@ -84,10 +85,19 @@ public class RequestsController {
                         dialog.dispose();
                         stateMachine.showForm("Home", null);
                     });
-                    Container container = new Container();
+                    Container container = new Container(new GridLayout(2));
                     container.add(cancel);
                     container.add(confirm);
-                    dialog.add(BorderLayout.CENTER, label);
+
+                    Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+
+                    center.add(new Label("Name: " + user.getString("name")));
+                    center.add(new Label("Username: " + user.getString("username")));
+                    center.add(new Label("Mobile: " + user.getString("mobile")));
+                    center.add(new Label("Cost: " + object.get("cost")));
+
+
+                    dialog.add(BorderLayout.CENTER, center);
                     dialog.add(BorderLayout.SOUTH, container);
                     dialog.show();
 

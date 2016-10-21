@@ -204,14 +204,16 @@ public class HomeController {
             List<ParseObject> tripRequests = fetch.getList("tripRequests");
             if (tripRequests != null)
                 for (int i = 0; i < tripRequests.size(); i++) {
-                    ParseObject tripUser = tripRequests.get(i).getParseObject("user");
-                    ParseGeoPoint location = tripUser.getParseGeoPoint("location");
-                    String url = tripUser.getParseFile("pic").getUrl();
+                    if (tripRequests.get(i).getBoolean("active")) {
+                        ParseObject tripUser = tripRequests.get(i).getParseObject("user");
+                        ParseGeoPoint location = tripUser.getParseGeoPoint("location");
+                        String url = tripUser.getParseFile("pic").getUrl();
 
-                    URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-                    URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+                        URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+                        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
-                    map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+                        map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+                    }
                 }
             data.put("active", fetch);
         } catch (ParseException e) {
