@@ -207,7 +207,7 @@ public class ParseFile implements Parse.IPersistable, Externalizable {
      * Synchronously saves the file to the Parse cloud with 
      * progress notifications sent to the provided {@code progressCallback}.
      * 
-     * @param progressCallback The callback to retrieve progress notifications.
+     * @param progressCallback The callBack to retrieve progress notifications.
      * @throws ParseException if anything goes wrong while saving the file.
      */
     public void save(ProgressCallback progressCallback) throws ParseException {

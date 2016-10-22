@@ -113,7 +113,7 @@ public class ParsePush {
          * currently running in the foreground. 
          * <p>See related methods {@link ParsePush#isAppOpenedViaPushNotification()}
          * and {@link ParsePush#getPushDataUsedToOpenApp()} for the case where 
-         * the app was not fully in the foreground with the callback was received.
+         * the app was not fully in the foreground with the callBack was received.
          * 
          * @param pushPayload The push data.
          * @see ParsePush#isAppOpenedViaPushNotification()
@@ -125,7 +125,7 @@ public class ParsePush {
          * Called when registering for push notifications fails.
          * <p>It is up to the underlying native implementation to detect when
          * registration for push fails.
-         * <p>This callback should be invoked immediately if there's already a pending
+         * <p>This callBack should be invoked immediately if there's already a pending
          * notification failure message.
          * @param error The error wrapped in a ParseException. The {@link ParseException#getMessage() ()}
          * and {@link ParseException#getCode()} should always be filled with meaningful values.
@@ -294,13 +294,13 @@ public class ParsePush {
     }
     
     /**
-     * Sets the push callback.
-     * <p>This call removes any previously set callback since 
-     * there can be at most one callback per app.
+     * Sets the push callBack.
+     * <p>This call removes any previously set callBack since
+     * there can be at most one callBack per app.
      * <p>If there's a push registration failure notification from the native 
      * code, {@link IPushCallback#onPushRegistrationFailed(com.parse4cn1.ParseException)} 
      * will be invoked immediately.
-     * @param callback The Push callback to be set or null to remove the current callback.
+     * @param callback The Push callBack to be set or null to remove the current callBack.
      */
     public static void setPushCallback(final IPushCallback callback) {        
         pushCallback = callback;
@@ -312,7 +312,7 @@ public class ParsePush {
      * message is received and the app is judged to be in the foreground (as must be 
      * determined in native code).
      * <p>
-     * The provided data is forward to the {@link IPushCallback push callback} if any 
+     * The provided data is forward to the {@link IPushCallback push callBack} if any
      * by calling {@link IPushCallback#onPushReceivedForeground(ca.weblite.codename1.json.JSONObject)}.
      * @param jsonPushPayload The push data.
      * @return {@code true} if the app has processed the push message and no further 
@@ -327,7 +327,7 @@ public class ParsePush {
      * message is received and the app is judged to be running but not in the foreground 
      * (as must be determined in native code).
      * <p>
-     * The provided data is forward to the {@link IPushCallback push callback} if any 
+     * The provided data is forward to the {@link IPushCallback push callBack} if any
      * by calling {@link IPushCallback#onPushReceivedBackground(ca.weblite.codename1.json.JSONObject)}.
      * 
      * @param jsonPushPayload The push data.
@@ -385,7 +385,7 @@ public class ParsePush {
      * If the app is already running and in the foreground, i.e., {@code isAppInForeground=true}, 
      * the push data will directly be deliver to the app via 
      * {@link IPushCallback#onAppOpenedViaPush(ca.weblite.codename1.json.JSONObject)} or 
-     * simply ignored if there's no callback set. Conversely, if the app is not 
+     * simply ignored if there's no callBack set. Conversely, if the app is not
      * yet running , i.e., {@code isAppInForeground=false}, the data will be 
      * stored until the app requests for it via {@link ParsePush#getPushDataUsedToOpenApp()} 
      * possibly after first checking 
@@ -453,13 +453,13 @@ public class ParsePush {
     }
     
     /**
-     * Notifies the push callback of a pending push registration error if 
-     * there's a callback set.
+     * Notifies the push callBack of a pending push registration error if
+     * there's a callBack set.
      */
     private static void processRegistrationError() {
         if (pushRegistrationError != null && pushCallback != null) {
             Logger.logBuffered("processRegistrationError(): "
-                    + "Notifying callback of push registration error:  " 
+                    + "Notifying callBack of push registration error:  "
                     + pushRegistrationError.toString());
             pushCallback.onPushRegistrationFailed(pushRegistrationError);
             pushRegistrationError = null;
@@ -469,11 +469,11 @@ public class ParsePush {
     /**
      * Processes push data received when app is running in foreground or background.
      * <p>
-     * Forwards the data the push callback if any
+     * Forwards the data the push callBack if any
      * @param jsonPushPayload The push data.
      * @param isForeground Flag indicating whether app is running in foreground {@code = true} 
      * or background {@code = false}.
-     * @return The response of the push callback if one is available or {@code false} otherwise.
+     * @return The response of the push callBack if one is available or {@code false} otherwise.
      */
     private static boolean handlePushReceivedRunning(final String jsonPushPayload, boolean isForeground) {
         Logger.getInstance().debug("Push received while app is running in " 

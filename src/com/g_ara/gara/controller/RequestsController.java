@@ -1,5 +1,6 @@
 package com.g_ara.gara.controller;
 
+import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.maps.Coord;
@@ -32,6 +33,33 @@ public class RequestsController {
                     q.include("user");
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                     results = q.find();
+
+                    ParseLiveQuery parseLiveQuery = new ParseLiveQuery(q) {
+                        @Override
+                        public void event(String op, int requestId, ParseObject object) {
+                            System.out.println(op + " " + requestId + " " + object.getObjectId());
+                        }
+
+                        @Override
+                        public void error(String op, int code, String error, boolean reconnect) {
+                            System.out.println(op + " " + code + " " + error + " " + reconnect);
+                        }
+
+                        @Override
+                        public void onWebsocketOpen() {
+
+                        }
+
+                        @Override
+                        public void onWebsocketClose(int i, String s) {
+                            System.out.println(i + " " + s);
+                        }
+
+                        @Override
+                        public void onWebsocketError(Exception e) {
+
+                        }
+                    };
                 } else {
                     showDelayedToastBar("You have no remaining seats!");
                 }
@@ -108,6 +136,8 @@ public class RequestsController {
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
