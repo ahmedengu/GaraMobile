@@ -3,58 +3,66 @@ package com.parse4cn1;
 import ca.weblite.codename1.json.JSONException;
 import ca.weblite.codename1.json.JSONObject;
 import com.codename1.io.websocket.WebSocket;
+import com.codename1.io.websocket.WebSocketState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ahmedengu.
  */
 public abstract class ParseLiveQuery {
-    private int requestId;
-    private static String liveQueryServerURL;
     private final static String OP = "op";
-    private static WebSocket webSocket;
-    private static List<ParseLiveQuery> lQuerys = new ArrayList<>();
+
     private JSONObject query;
+    private String subscribeData;
+    private int requestId;
+
+    private static int requestIds = 0;
+    private static String liveQueryServerURL;
+    private static WebSocket webSocket;
+    private static Map<Integer, ParseLiveQuery> lQuerys = new HashMap<>();
+    public static WsCallback wsCallback = new WsCallback() {
+        @Override
+        public void error(String op, int code, String error, boolean reconnect) {
+            System.out.println(op + ", code:" + code + ", error:" + error);
+        }
+    };
 
     public abstract void event(String op, int requestId, ParseObject object);
-
-    public abstract void error(String op, int code, String error, boolean reconnect);
-
-    public abstract void onWebsocketOpen();
-
-    public abstract void onWebsocketClose(int i, String s);
-
-    public abstract void onWebsocketError(Exception e);
 
     public ParseLiveQuery(ParseQuery query) throws JSONException, ParseException {
         this(query.encode());
     }
 
-    public ParseLiveQuery(JSONObject query) throws JSONException, ParseException {
+    private ParseLiveQuery(JSONObject query) throws JSONException, ParseException {
         this.query = query;
-        lQuerys.add(this);
-        requestId = lQuerys.indexOf(this);
-        String sData = getSubscribe();
-        if (webSocket == null)
-            init(sData);
-        else
-            webSocket.send(sData);
+        requestIds++;
+        requestId = requestIds;
+        subscribe();
     }
 
-    private void init(String sData) throws ParseException {
+    private static void init() {
         webSocket = new WebSocket(getLiveQueryServerURL()) {
-
             @Override
             protected void onOpen() {
                 this.send(getConnect());
-                onWebsocketOpen();
+                wsCallback.onOpen();
             }
 
             @Override
             protected void onClose(int i, String s) {
-                onWebsocketClose(i, s);
+                for (int j = 0; j < 5; j++)
+                    try {
+                        Thread.sleep(3000);
+                        init();
+                        Thread.sleep(1000);
+                        return;
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+
+                wsCallback.onClose(i, s);
             }
 
             @Override
@@ -65,35 +73,39 @@ public abstract class ParseLiveQuery {
 
                     switch (operation) {
                         case "connected":
-                            this.send(sData);
+                            for (Map.Entry<Integer, ParseLiveQuery> entry : lQuerys.entrySet())
+                                webSocket.send(entry.getValue().getSubscribe());
                             break;
                         case "subscribed":
                             break;
                         case "unsubscribed":
                             break;
                         case "error":
-                            error(json.getString(OP), json.getInt("code"), json.getString("error"), json.getBoolean("reconnect"));
+                            wsCallback.error(json.getString(OP), json.getInt("code"), json.getString("error"), json.getBoolean("reconnect"));
                             break;
                         default:
                             JSONObject data = json.getJSONObject("object");
                             ParseObject parseObject = ParseObject.create(data.getString("className"));
                             parseObject.setData(data);
-                            event(json.getString(OP), json.getInt("requestId"), parseObject);
+                            int requestId = json.getInt("requestId");
+                            lQuerys.get(requestId).event(json.getString(OP), requestId, parseObject);
                             break;
                     }
                 } catch (JSONException e) {
                     onError(e);
                 }
+                wsCallback.onMessage(s);
             }
 
             @Override
             protected void onMessage(byte[] bytes) {
+                wsCallback.onMessage(bytes);
             }
 
             @Override
             protected void onError(Exception e) {
-                System.out.println(e);
-                onWebsocketError(e);
+                e.printStackTrace();
+                wsCallback.onError(e);
             }
         };
 
@@ -101,7 +113,7 @@ public abstract class ParseLiveQuery {
     }
 
 
-    private String getConnect() {
+    private static String getConnect() {
         JSONObject output = new JSONObject();
         try {
             output.put(OP, "connect");
@@ -110,35 +122,51 @@ public abstract class ParseLiveQuery {
             output.put("clientKey", Parse.getClientKey());
             output.put("applicationId", Parse.getApplicationId());
         } catch (JSONException ex) {
+            ex.printStackTrace();
         }
         return output.toString();
     }
 
 
-    public String getSubscribe() throws JSONException {
-        JSONObject output = new JSONObject();
-        output.put(OP, "subscribe");
-        output.put("requestId", this.requestId);
+    private String getSubscribe() throws JSONException {
+        if (subscribeData == null) {
+            JSONObject output = new JSONObject();
+            output.put(OP, "subscribe");
+            output.put("requestId", this.requestId);
 
-        JSONObject q = new JSONObject();
-        q.put("className", query.getString("className"));
-        q.put("where", query.get("where"));
-        if (query.has("keys"))
-            q.put("fields", query.get("keys"));
-        if (query.has("fields"))
-            q.put("fields", query.get("fields"));
+            JSONObject q = new JSONObject();
+            q.put("className", query.getString("className"));
+            q.put("where", query.get("where"));
+            if (query.has("keys"))
+                q.put("fields", query.get("keys"));
+            if (query.has("fields"))
+                q.put("fields", query.get("fields"));
 
-        output.put("query", q);
-        if (ParseUser.getCurrent() != null)
-            output.put("sessionToken", ParseUser.getCurrent().getSessionToken());
-        return output.toString();
+            output.put("query", q);
+            if (ParseUser.getCurrent() != null)
+                output.put("sessionToken", ParseUser.getCurrent().getSessionToken());
+            subscribeData = output.toString();
+        }
+        return subscribeData;
     }
 
     public void unsubscribe() throws JSONException {
+        lQuerys.remove(requestId);
         JSONObject output = new JSONObject();
         output.put(OP, "unsubscribe");
         output.put("requestId", requestId);
         webSocket.send(output.toString());
+    }
+
+    public void subscribe() throws ParseException, JSONException {
+        lQuerys.put(requestId, this);
+
+        if (webSocket == null)
+            init();
+        else if (webSocket.getReadyState() != WebSocketState.OPEN)
+            webSocket.connect();
+        else
+            webSocket.send(getSubscribe());
     }
 
     public static void close() {
@@ -161,6 +189,41 @@ public abstract class ParseLiveQuery {
     public JSONObject getQuery() {
         return query;
     }
+
+    public static WsCallback getWsCallback() {
+        return wsCallback;
+    }
+
+    public static void setWsCallback(WsCallback wsCallback) {
+        ParseLiveQuery.wsCallback = wsCallback;
+    }
+
+    public static abstract class WsCallback {
+        public abstract void error(String op, int code, String error, boolean reconnect);
+
+        public void onOpen() {
+        }
+
+        ;
+
+        public void onClose(int var1, String var2) {
+        }
+
+        ;
+
+        public void onMessage(String var1) {
+        }
+
+        ;
+
+        public void onMessage(byte[] var1) {
+        }
+
+        ;
+
+        public void onError(Exception var1) {
+        }
+
+        ;
+    }
 }
-
-
