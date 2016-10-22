@@ -22,7 +22,8 @@ public abstract class ParseLiveQuery {
     private static String liveQueryServerURL;
     private static WebSocket webSocket;
     private static Map<Integer, ParseLiveQuery> lQuerys = new HashMap<>();
-    public static WsCallback wsCallback = new WsCallback() {
+
+    private static WsCallback wsCallback = new WsCallback() {
         @Override
         public void error(String op, int code, String error, boolean reconnect) {
             System.out.println(op + ", code:" + code + ", error:" + error);
@@ -52,7 +53,7 @@ public abstract class ParseLiveQuery {
 
             @Override
             protected void onClose(int i, String s) {
-                for (int j = 0; j < 5; j++)
+                for (int j = 0; s != null && j < 5; j++)
                     try {
                         Thread.sleep(3000);
                         init();
@@ -169,8 +170,13 @@ public abstract class ParseLiveQuery {
             webSocket.send(getSubscribe());
     }
 
-    public static void close() {
+    public static void close() throws JSONException {
+        for (Map.Entry<Integer, ParseLiveQuery> entry : lQuerys.entrySet())
+            entry.getValue().unsubscribe();
+        lQuerys.clear();
+        requestIds = 0;
         webSocket.close();
+        webSocket = null;
     }
 
     public static String getLiveQueryServerURL() {

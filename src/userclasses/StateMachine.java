@@ -7,6 +7,7 @@
 
 package userclasses;
 
+import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
@@ -17,6 +18,7 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.parse4cn1.Parse;
+import com.parse4cn1.ParseLiveQuery;
 import generated.StateMachineBase;
 
 import java.util.HashMap;
@@ -432,5 +434,14 @@ public class StateMachine extends StateMachineBase {
         s.setIcon(FontImage.createMaterial(icon, stl, 4));
         s.setExpires(expire);
         s.showDelayed(delay);
+    }
+
+    @Override
+    protected void exitRequests(Form f) {
+        try {
+            ParseLiveQuery.close();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

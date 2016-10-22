@@ -10,7 +10,7 @@
   </component>
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
     <layoutConstraint value="Center" />
-    <component type="Slider" name="Rate" cloudDestinationProperty="Rate" text="Slider" >
+    <component type="Slider" name="Rate" cloudDestinationProperty="Rate" text="" >
     </component>
     <component type="TextArea" name="Comment" cloudBoundProperty="text" cloudDestinationProperty="Comment" text="" hint="Comment" >
     </component>
