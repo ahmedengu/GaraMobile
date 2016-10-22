@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.codename1.io.Util.encodeUrl;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.model.Constants.CODE_ICON;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
@@ -139,10 +140,7 @@ public class HomeController {
     }
 
     private static void checkinAction(String contents, ParseObject object, Button checkIn, Form f, Resources resources, Button drive, Button ride, Button active, StateMachine stateMachine) {
-        if (contents.equals(object.getParseObject("trip").getObjectId())) {
-//            ToastBar.showErrorMessage("Checked in Successfully");
-            showDelayedToastBar("Checked in Successfully");
-
+        if (contents.equals(object.getParseObject("trip").getParseObject("driver").getObjectId())) {
             Map<String, Object> map = new HashMap<>();
             map.put("token", contents);
             map.put("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()));
@@ -154,9 +152,10 @@ public class HomeController {
                     data.put("tripObject", object);
                     showDelayedToastBar("You should pay the driver: " + object.get("cost"));
                     stateMachine.showForm("TripFeedback", null);
-                } else
+                } else {
+                    showDelayedToastBar("Checked in Successfully");
                     checkIn.setText("Check Out");
-
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -189,10 +188,10 @@ public class HomeController {
 
             Button checkin = new Button("Check In/Out");
             checkin.addActionListener(evt -> {
-                String objectId = object.getObjectId();
-                String url = Constants.GOOGLE_QR + objectId;
+                String objectId = ParseUser.getCurrent().getObjectId();
+                String url = Constants.GOOGLE_QR + encodeUrl(objectId);
 
-                Dialog.show("Token:" + objectId, new ImageViewer(URLImage.createToStorage(CODE_ICON().scaledEncoded(150, -1), objectId + ".png", url)), new Command("Back"));
+                Dialog.show("Token: " + objectId, new ImageViewer(URLImage.createToStorage(CODE_ICON().scaledEncoded(150, -1), objectId + ".png", url)), new Command("Back"));
             });
 
             north.add(checkin);

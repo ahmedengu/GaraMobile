@@ -47,11 +47,14 @@ public class MapController {
     private Coord[] coordsPath;
     private static MapController mapController;
 
-    public MapController(Resources theme, Container f) {
-        this.theme = theme;
-
+    public MapController(Container f) {
         f.addComponent(BorderLayout.CENTER, map);
         map.setRotateGestureEnabled(true);
+    }
+
+    public MapController(Resources theme, Container f) {
+        this(f);
+        this.theme = theme;
     }
 
     public void initMap(List<ParseObject> parseObjects, StateMachine stateMachine) {
@@ -104,11 +107,11 @@ public class MapController {
                 Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
 
 
-                String picUrl = driver.getParseFile("pic").getUrl();
                 double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
                 info.add(new Label("Distance: " + distanceInKilometers));
                 info.add(new Label("Cost: " + distanceInKilometers * trip.getInt("cost") + trip.getInt("toll")));
 
+                String picUrl = driver.getParseFile("pic").getUrl();
                 info.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
                 info.add(new Label("Username: " + driver.getString("username")));
                 info.add(new Label("Name: " + driver.getString("name")));
@@ -121,6 +124,11 @@ public class MapController {
                 }
                 info.add(new Label("Car: " + car.getString("name")));
                 info.add(new Label("Car Year: " + car.getString("year")));
+
+                Container mapContainer = new Container(new BorderLayout());
+                draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), mapContainer);
+                info.add(mapContainer);
+
                 info.setScrollableY(true);
                 dialog.add(BorderLayout.CENTER, info);
                 dialog.add(BorderLayout.SOUTH, container);
@@ -353,5 +361,18 @@ public class MapController {
 
     public static void setDestCoord(Coord destCoord) {
         MapController.destCoord = destCoord;
+    }
+
+    public static void draw2MarkerMap(ParseGeoPoint location, ParseGeoPoint dest, Container container) {
+        draw2MarkerMap(new Coord(location.getLatitude(), location.getLongitude()), new Coord(dest.getLatitude(), dest.getLongitude()), container);
+    }
+
+    public static void draw2MarkerMap(Coord locationCoord, Coord destCoord, Container container) {
+        MapContainer map = new MapController(container).map;
+        map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Hi marker", "Optional long description", null);
+        map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
+        map.zoom(locationCoord, 5);
+        map.setScrollableY(false);
+        map.addPath(MapController.decode(MapController.getRoutesEncoded(locationCoord, destCoord)));
     }
 }

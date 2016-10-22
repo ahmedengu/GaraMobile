@@ -1,6 +1,6 @@
 package com.g_ara.gara.controller;
 
-import ca.weblite.codename1.json.JSONException;
+import com.codename1.components.ImageViewer;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.maps.Coord;
@@ -16,7 +16,9 @@ import userclasses.StateMachine;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
+import static com.g_ara.gara.model.Constants.PROFILE_ICON;
 import static userclasses.StateMachine.data;
 import static userclasses.StateMachine.showDelayedToastBar;
 
@@ -34,16 +36,16 @@ public class RequestsController {
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                     results = q.find();
 
-                    try {
-                        new ParseLiveQuery(q) {
-                            @Override
-                            public void event(String op, int requestId, ParseObject object) {
-                                System.out.println(op + "  " + object.getObjectId());
-                            }
-                        };
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        new ParseLiveQuery(q) {
+//                            @Override
+//                            public void event(String op, int requestId, ParseObject object) {
+//                                System.out.println(op + "  " + object.getObjectId());
+//                            }
+//                        };
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
 
                 } else {
                     showDelayedToastBar("You have no remaining seats!");
@@ -104,12 +106,18 @@ public class RequestsController {
 
                     Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
 
+                    String picUrl = user.getParseFile("pic").getUrl();
+                    center.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
                     center.add(new Label("Name: " + user.getString("name")));
                     center.add(new Label("Username: " + user.getString("username")));
                     center.add(new Label("Mobile: " + user.getString("mobile")));
                     center.add(new Label("Cost: " + object.get("cost")));
 
+                    Container mapContainer = new Container(new BorderLayout());
+                    draw2MarkerMap(user.getParseGeoPoint("location"), object.getParseGeoPoint("to"), mapContainer);
+                    center.add(mapContainer);
 
+                    center.setScrollableY(true);
                     dialog.add(BorderLayout.CENTER, center);
                     dialog.add(BorderLayout.SOUTH, container);
                     dialog.show();
