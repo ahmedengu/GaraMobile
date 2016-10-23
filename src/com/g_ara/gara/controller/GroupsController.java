@@ -64,6 +64,7 @@ public class GroupsController {
 
             ParseObject groupUser = ParseObject.create("GroupUser");
             groupUser.put("group", group);
+            ParseUser.getCurrent().setDirty(false);
             groupUser.put("user", ParseUser.getCurrent());
             groupUser.put("verified", false);
             groupUser.save();

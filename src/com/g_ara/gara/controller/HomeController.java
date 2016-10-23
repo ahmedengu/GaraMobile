@@ -15,6 +15,7 @@ import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import userclasses.StateMachine;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,7 @@ public class HomeController {
 
             });
 
-            if (object.getString("checkin") != null) {
+            if (object.get("checkin") != null) {
                 checkIn.setText("Check Out");
             }
             north.add(checkIn);
@@ -287,7 +288,11 @@ public class HomeController {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
-
+        List groupUser = getUserVerifiedGroups();
+        if (groupUser.size() == 0) {
+            ToastBar.showErrorMessage("You don't have any active groups");
+            return;
+        }
         try {
             ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
             query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), 5000000);
@@ -295,6 +300,7 @@ public class HomeController {
             tripQuery.include("driver");
             tripQuery.include("car");
             tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), 5000000);
+            tripQuery.whereContainedIn("groups", groupUser);
             List<ParseObject> results = tripQuery.find();
             if (results.size() == 0) {
                 ToastBar.showErrorMessage("There is no rides available");
@@ -308,6 +314,24 @@ public class HomeController {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
         }
+    }
+
+    public static List getUserVerifiedGroups() {
+        List groups = new ArrayList();
+        try {
+            ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
+            groupQuery.include("group");
+            groupQuery.whereEqualTo("user", ParseUser.getCurrent());
+            groupQuery.whereEqualTo("verified", true);
+            List<ParseObject> list = groupQuery.find();
+            for (int i = 0; i < list.size(); i++) {
+                groups.add(list.get(i).getParseObject("group"));
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return groups;
     }
 
     public static void driveAction(StateMachine stateMachine) {
