@@ -43,9 +43,19 @@ import static com.g_ara.gara.controller.UserSearch.usersAction;
 public class StateMachine extends StateMachineBase {
     public static java.util.Map<String, Object> data = new HashMap<>();
     public Dialog progressDialog;
+    private static StateMachine stateMachine;
+
+    public static StateMachine getStateMachine() {
+        return stateMachine;
+    }
+
+    public static void showForm(String f) {
+        stateMachine.showForm(f, null);
+    }
 
     public StateMachine(String resFile) {
         super(resFile);
+        stateMachine = this;
         // do not modify, write code in initVars and initialize class members there,
         // the constructor might be invoked too late due to race conditions that might occur
     }

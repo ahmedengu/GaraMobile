@@ -20,11 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
+import static com.g_ara.gara.controller.ChatController.getUserChat;
+import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
+import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.model.Constants.CODE_ICON;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
-import static userclasses.StateMachine.data;
-import static userclasses.StateMachine.showDelayedToastBar;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -51,6 +53,7 @@ public class HomeController {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("TripRequest");
             query.include("trip");
             query.include("trip.driver");
+            query.include("trip.car");
             query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("tripRequest").getObjectId());
             fetch = query.find().get(0);
 
@@ -122,14 +125,19 @@ public class HomeController {
             map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
-            ParseObject tripUser = fetch.getParseObject("trip").getParseObject("driver");
-            ParseGeoPoint location = tripUser.getParseGeoPoint("location");
-            String url = tripUser.getParseFile("pic").getUrl();
+            ParseObject trip = fetch.getParseObject("trip");
+            ParseUser driver = (ParseUser) trip.getParseObject("driver");
+            ParseGeoPoint location = driver.getParseGeoPoint("location");
+            String url = driver.getParseFile("pic").getUrl();
 
             URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
             URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
-            map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+            map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+                Dialog dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
+                getCancelChatSouth(driver, dialog);
+                dialog.show();
+            });
 
 
             data.put("active", fetch);
@@ -204,20 +212,43 @@ public class HomeController {
             if (tripRequests != null)
                 for (int i = 0; i < tripRequests.size(); i++) {
                     if (tripRequests.get(i).getBoolean("active")) {
-                        ParseObject tripUser = tripRequests.get(i).getParseObject("user");
+                        final ParseObject tripR = tripRequests.get(i);
+                        final ParseUser tripUser = (ParseUser) tripR.getParseObject("user");
                         ParseGeoPoint location = tripUser.getParseGeoPoint("location");
                         String url = tripUser.getParseFile("pic").getUrl();
 
                         URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
                         URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
-                        map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", null);
+                        map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+                            Dialog dialog = getRequestUserDialog(tripR, tripUser, "Info");
+                            getCancelChatSouth(tripUser, dialog);
+                            dialog.show();
+                        });
                     }
                 }
             data.put("active", fetch);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void getCancelChatSouth(ParseUser user, Dialog dialog) {
+        Button cancel = new Button("cancel");
+        cancel.addActionListener(evt1 -> dialog.dispose());
+        Button chat = new Button("chat");
+        chat.addActionListener(evt1 -> {
+            try {
+                getUserChat(user);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Container south = new Container(new GridLayout(2));
+        south.add(cancel);
+        south.add(chat);
+        dialog.add(BorderLayout.SOUTH, south);
     }
 
     public static void CancelActive(Form f, Resources resources, Button drive, Button ride, Button active, ParseObject object) {

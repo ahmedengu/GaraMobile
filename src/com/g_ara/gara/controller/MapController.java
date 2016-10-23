@@ -70,11 +70,15 @@ public class MapController {
             URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
             map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
-                Dialog dialog = new Dialog("Ride Info");
-                dialog.setLayout(new BorderLayout());
+
+
+                Dialog dialog = getDriveInfoDialog(trip, driver, car, "Ride Info");
+
+
+                Container south = new Container(new GridLayout(2));
                 Button cancel = new Button("Cancel");
                 cancel.addActionListener(evt1 -> dialog.dispose());
-
+                south.add(cancel);
                 Button confirm = new Button("Confirm");
                 confirm.addActionListener(evt1 -> {
                     ParseObject tripRequest = ParseObject.create("TripRequest");
@@ -84,10 +88,10 @@ public class MapController {
                     tripRequest.put("user", user);
                     tripRequest.put("accept", -1);
                     tripRequest.put("active", true);
-                    double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
-                    tripRequest.put("cost", distanceInKilometers * trip.getInt("cost") + trip.getInt("toll"));
+                    double distanceinkilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
+                    tripRequest.put("cost", distanceinkilometers * trip.getInt("cost") + trip.getInt("toll"));
                     tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
-                    tripRequest.put("distance", distanceInKilometers);
+                    tripRequest.put("distance", distanceinkilometers);
                     try {
                         tripRequest.save();
                         user.put("tripRequest", tripRequest);
@@ -101,42 +105,49 @@ public class MapController {
                         ToastBar.showErrorMessage(e.getMessage());
                     }
                 });
-                Container container = new Container(new GridLayout(2));
-                container.add(cancel);
-                container.add(confirm);
-                Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
-
-
-                double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
-                info.add(new Label("Distance: " + distanceInKilometers));
-                info.add(new Label("Cost: " + distanceInKilometers * trip.getInt("cost") + trip.getInt("toll")));
-
-                String picUrl = driver.getParseFile("pic").getUrl();
-                info.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
-                info.add(new Label("Username: " + driver.getString("username")));
-                info.add(new Label("Name: " + driver.getString("name")));
-                info.add(new Label("Mobile: " + driver.getString("mobile")));
-
-                List<ParseFile> carPics = car.getList("pics");
-                for (int j = 0; j < carPics.size(); j++) {
-                    String carUrl = FILE_PATH + carPics.get(j).getName();
-                    info.add(new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(dialog.getWidth(), -1), carUrl.substring(carUrl.lastIndexOf("/") + 1), carUrl)));
-                }
-                info.add(new Label("Car: " + car.getString("name")));
-                info.add(new Label("Car Year: " + car.getString("year")));
-
-                Container mapContainer = new Container(new BorderLayout());
-                draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), mapContainer);
-                info.add(mapContainer);
-
-                info.setScrollableY(true);
-                dialog.add(BorderLayout.CENTER, info);
-                dialog.add(BorderLayout.SOUTH, container);
+                south.add(confirm);
+                dialog.add(BorderLayout.SOUTH, south);
                 dialog.show();
             });
 
         }
 
+    }
+
+    public static Dialog getDriveInfoDialog(ParseObject trip, ParseObject driver, ParseObject car, String title) {
+        Dialog dialog = new Dialog(title);
+        dialog.setLayout(new BorderLayout());
+
+
+        Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+
+
+        double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
+        info.add(new Label("Distance: " + distanceInKilometers));
+        info.add(new Label("Cost: " + distanceInKilometers * trip.getInt("cost") + trip.getInt("toll")));
+
+        String picUrl = driver.getParseFile("pic").getUrl();
+        info.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
+        info.add(new Label("Username: " + driver.getString("username")));
+        info.add(new Label("Name: " + driver.getString("name")));
+        info.add(new Label("Mobile: " + driver.getString("mobile")));
+
+        if (car != null) {
+            List<ParseFile> carPics = car.getList("pics");
+            for (int j = 0; j < carPics.size(); j++) {
+                String carUrl = FILE_PATH + carPics.get(j).getName();
+                info.add(new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(dialog.getWidth(), -1), carUrl.substring(carUrl.lastIndexOf("/") + 1), carUrl)));
+            }
+            info.add(new Label("Car: " + car.getString("name")));
+            info.add(new Label("Car Year: " + car.getString("year")));
+        }
+        Container mapContainer = new Container(new BorderLayout());
+        draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), mapContainer);
+        info.add(mapContainer);
+
+        info.setScrollableY(true);
+        dialog.add(BorderLayout.CENTER, info);
+        return dialog;
     }
 
     public void initMap() {
@@ -253,7 +264,7 @@ public class MapController {
         return locationCoord;
     }
 
-    public void addToMarkers(EncodedImage encodedImage, Coord coord, String s, String s1, Object o) {
+    public void addToMarkers(EncodedImage encodedImage, Coord coord, String s, String s1, ActionListener o) {
         Map<String, Object> m = new HashMap<>();
         m.put("icon", encodedImage);
         m.put("coord", coord);
@@ -261,7 +272,7 @@ public class MapController {
         m.put("desc", s1);
         m.put("action", o);
         markers.add(m);
-        map.addMarker(encodedImage, coord, s, s1, (ActionListener) o);
+        map.addMarker(encodedImage, coord, s, s1, o);
     }
 
     public void clearMarkers() {

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static userclasses.StateMachine.data;
+import static userclasses.StateMachine.showForm;
 
 /**
  * Created by ahmedengu.
@@ -97,5 +98,28 @@ public class ChatController {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
         }
+    }
+
+    public static void getUserChat(ParseUser object) throws ParseException {
+
+        List<ParseUser> parseUsers = new ArrayList<>();
+        parseUsers.add(ParseUser.getCurrent());
+        parseUsers.add(object);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
+        query.whereContainsAll("members", parseUsers);
+        List<ParseObject> results = query.find();
+
+        ParseObject chat;
+        if (results.size() > 0) {
+            chat = results.get(0);
+        } else {
+            chat = ParseObject.create("Chat");
+            chat.put("members", parseUsers);
+            chat.save();
+        }
+
+        data.put("chat", chat);
+        showForm("Conversion");
     }
 }

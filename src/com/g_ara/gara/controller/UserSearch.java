@@ -8,7 +8,6 @@ import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
 import com.parse4cn1.ParseException;
-import com.parse4cn1.ParseObject;
 import com.parse4cn1.ParseQuery;
 import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static userclasses.StateMachine.data;
+import static com.g_ara.gara.controller.ChatController.getUserChat;
 
 /**
  * Created by ahmedengu.
@@ -58,33 +57,13 @@ public class UserSearch {
 
     public static void usersAction(StateMachine stateMachine, MultiList users) {
         try {
-            Map<String, Object> itemAt = (Map<String, Object>) users.getSelectedItem();
-            ParseUser object = (ParseUser) itemAt.get("object");
-
-            List<ParseUser> parseUsers = new ArrayList<>();
-            parseUsers.add(ParseUser.getCurrent());
-            parseUsers.add(object);
-
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
-            query.whereContainsAll("members", parseUsers);
-            List<ParseObject> results = query.find();
-
-            ParseObject chat;
-            if (results.size() > 0) {
-                chat = results.get(0);
-            } else {
-                chat = ParseObject.create("Chat");
-                chat.put("members", parseUsers);
-                chat.save();
-            }
-
-            data.put("chat", chat);
-            stateMachine.showForm("Conversion", null);
+            getUserChat((ParseUser) ((Map<String, Object>) users.getSelectedItem()).get("object"));
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
         }
     }
+
 
 
 

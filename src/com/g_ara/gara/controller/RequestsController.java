@@ -65,8 +65,10 @@ public class RequestsController {
 
 
                 map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
-                    Dialog dialog = new Dialog("Requests");
-                    dialog.setLayout(new BorderLayout());
+
+                    Dialog dialog = getRequestUserDialog(object, user,"Request");
+
+                    Container south = new Container(new GridLayout(2));
                     Button cancel = new Button("Reject");
                     cancel.addActionListener(evt1 -> {
                         object.put("accept", 0);
@@ -80,7 +82,7 @@ public class RequestsController {
                         dialog.dispose();
                         stateMachine.showForm("Home", null);
                     });
-
+                    south.add(cancel);
                     Button confirm = new Button("Accept");
                     confirm.addActionListener(evt1 -> {
                         object.put("accept", 1);
@@ -100,26 +102,8 @@ public class RequestsController {
                         dialog.dispose();
                         stateMachine.showForm("Home", null);
                     });
-                    Container container = new Container(new GridLayout(2));
-                    container.add(cancel);
-                    container.add(confirm);
-
-                    Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
-
-                    String picUrl = user.getParseFile("pic").getUrl();
-                    center.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
-                    center.add(new Label("Name: " + user.getString("name")));
-                    center.add(new Label("Username: " + user.getString("username")));
-                    center.add(new Label("Mobile: " + user.getString("mobile")));
-                    center.add(new Label("Cost: " + object.get("cost")));
-
-                    Container mapContainer = new Container(new BorderLayout());
-                    draw2MarkerMap(user.getParseGeoPoint("location"), object.getParseGeoPoint("to"), mapContainer);
-                    center.add(mapContainer);
-
-                    center.setScrollableY(true);
-                    dialog.add(BorderLayout.CENTER, center);
-                    dialog.add(BorderLayout.SOUTH, container);
+                    south.add(confirm);
+                    dialog.add(BorderLayout.SOUTH, south);
                     dialog.show();
 
                 });
@@ -130,6 +114,28 @@ public class RequestsController {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
         }
+    }
+
+    public static Dialog getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser,String title) {
+        Dialog dialog = new Dialog(title);
+        dialog.setLayout(new BorderLayout());
+
+        Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+
+        String picUrl = TrUser.getParseFile("pic").getUrl();
+        center.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
+        center.add(new Label("Name: " + TrUser.getString("name")));
+        center.add(new Label("Username: " + TrUser.getString("username")));
+        center.add(new Label("Mobile: " + TrUser.getString("mobile")));
+        center.add(new Label("Cost: " + tripRequest.get("cost")));
+
+        Container mapContainer = new Container(new BorderLayout());
+        draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), mapContainer);
+        center.add(mapContainer);
+
+        center.setScrollableY(true);
+        dialog.add(BorderLayout.CENTER, center);
+        return dialog;
     }
 
 }
