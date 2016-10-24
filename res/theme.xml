@@ -641,6 +641,7 @@
     <image name="TabsContainer.borderTop_1.png" type="multi"  />
     <image name="TabsContainer.borderTopL_1.png" type="multi"  />
     <image name="TabsContainer.borderTopR_1.png" type="multi"  />
+    <ui name="Test" />
     <image name="TextField.sel#border:1"  />
     <image name="TextField.sel#border:2"  />
     <image name="TextField.sel#border:3"  />

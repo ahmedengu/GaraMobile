@@ -28,9 +28,9 @@ import com.codename1.ui.events.ActionListener;
 import com.parse4cn1.Parse;
 import com.parse4cn1.ParseConstants;
 import com.parse4cn1.ParseException;
-import com.parse4cn1.ParseUser;
 import com.parse4cn1.callback.ProgressCallback;
 import com.parse4cn1.util.Logger;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
@@ -76,7 +76,7 @@ public abstract class ParseCommand {
         final ParseResponse response = new ParseResponse();
         final ConnectionRequest request = createConnectionRequest(response);
         setUpRequest(request);
-        
+
         if (progressCallback != null) {
             NetworkManager.getInstance().addProgressListener(new ActionListener() {
 

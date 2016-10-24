@@ -1,5 +1,6 @@
 package com.g_ara.gara.controller;
 
+import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.ImageViewer;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
@@ -36,16 +37,50 @@ public class RequestsController {
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                     results = q.find();
 
-//                    try {
-//                        new ParseLiveQuery(q) {
-//                            @Override
-//                            public void event(String op, int requestId, ParseObject object) {
-//                                System.out.println(op + "  " + object.getObjectId());
-//                            }
-//                        };
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
+                    ParseLiveQuery.setWsCallback(new ParseLiveQuery.WsCallback() {
+                        @Override
+                        public void error(String op, int code, String error, boolean reconnect) {
+
+                        }
+
+                        @Override
+                        public void onOpen() {
+                            super.onOpen();
+                        }
+
+                        @Override
+                        public void onClose(int var1, String var2) {
+                            super.onClose(var1, var2);
+                        }
+
+                        @Override
+                        public void onMessage(String var1) {
+                            super.onMessage(var1);
+                        }
+
+                        @Override
+                        public void onMessage(byte[] var1) {
+                            super.onMessage(var1);
+                        }
+
+                        @Override
+                        public void onError(Exception var1) {
+                            super.onError(var1);
+                        }
+                    });
+                    try {
+                        ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
+                        query.whereEqualTo("playerName", "Sean Plott").whereEqualTo("cheatMode", false);
+
+                        new ParseLiveQuery(q) {
+                            @Override
+                            public void event(String op, int requestId, ParseObject object) {
+                                System.out.println(op + "  " + object.getObjectId());
+                            }
+                        };
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 } else {
                     showDelayedToastBar("You have no remaining seats!");
@@ -66,7 +101,7 @@ public class RequestsController {
 
                 map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
 
-                    Dialog dialog = getRequestUserDialog(object, user,"Request");
+                    Dialog dialog = getRequestUserDialog(object, user, "Request");
 
                     Container south = new Container(new GridLayout(2));
                     Button cancel = new Button("Reject");
@@ -116,7 +151,7 @@ public class RequestsController {
         }
     }
 
-    public static Dialog getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser,String title) {
+    public static Dialog getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser, String title) {
         Dialog dialog = new Dialog(title);
         dialog.setLayout(new BorderLayout());
 

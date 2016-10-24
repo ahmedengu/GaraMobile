@@ -860,6 +860,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("Test".equals(f.getName())) {
+            exitTest(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Home".equals(f.getName())) {
             exitHome(f);
             aboutToShowThisContainer = null;
@@ -956,6 +962,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void exitTest(Form f) {
+    }
+
+
     protected void exitHome(Form f) {
     }
 
@@ -1031,6 +1041,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("newGroup".equals(f.getName())) {
             beforeNewGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Test".equals(f.getName())) {
+            beforeTest(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1131,6 +1147,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeTest(Form f) {
+    }
+
+
     protected void beforeHome(Form f) {
     }
 
@@ -1206,6 +1226,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("newGroup".equals(c.getName())) {
             beforeContainerNewGroup(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Test".equals(c.getName())) {
+            beforeContainerTest(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1306,6 +1332,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeContainerTest(Container c) {
+    }
+
+
     protected void beforeContainerHome(Container c) {
     }
 
@@ -1380,6 +1410,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("newGroup".equals(f.getName())) {
             postNewGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Test".equals(f.getName())) {
+            postTest(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1480,6 +1516,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postTest(Form f) {
+    }
+
+
     protected void postHome(Form f) {
     }
 
@@ -1554,6 +1594,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("newGroup".equals(c.getName())) {
             postContainerNewGroup(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Test".equals(c.getName())) {
+            postContainerTest(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1654,6 +1700,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postContainerTest(Container c) {
+    }
+
+
     protected void postContainerHome(Container c) {
     }
 
@@ -1728,6 +1778,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("newGroup".equals(rootName)) {
             onCreateNewGroup();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Test".equals(rootName)) {
+            onCreateTest();
             aboutToShowThisContainer = null;
             return;
         }
@@ -1828,6 +1884,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void onCreateTest() {
+    }
+
+
     protected void onCreateHome() {
     }
 
@@ -1903,6 +1963,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("newGroup".equals(f.getName())) {
             getStateNewGroup(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Test".equals(f.getName())) {
+            getStateTest(f, h);
             aboutToShowThisContainer = null;
             return h;
         }
@@ -2003,6 +2069,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void getStateTest(Form f, Hashtable h) {
+    }
+
+
     protected void getStateHome(Form f, Hashtable h) {
     }
 
@@ -2078,6 +2148,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("newGroup".equals(f.getName())) {
             setStateNewGroup(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Test".equals(f.getName())) {
+            setStateTest(f, state);
             aboutToShowThisContainer = null;
             return;
         }
@@ -2175,6 +2251,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void setStateNewGroup(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateTest(Form f, Hashtable state) {
     }
 
 

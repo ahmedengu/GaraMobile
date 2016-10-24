@@ -18,11 +18,13 @@ public abstract class ParseLiveQuery {
     private String subscribeData;
     private int requestId;
 
+    // LiveQuery subscription id
     private static int requestIds = 0;
     private static String liveQueryServerURL;
     private static WebSocket webSocket;
     private static Map<Integer, ParseLiveQuery> lQuerys = new HashMap<>();
 
+    // optional to handle the websocket events and errors that not related to a specific query
     private static WsCallback wsCallback = new WsCallback() {
         @Override
         public void error(String op, int code, String error, boolean reconnect) {
@@ -30,12 +32,16 @@ public abstract class ParseLiveQuery {
         }
     };
 
+    // query callback event
     public abstract void event(String op, int requestId, ParseObject object);
 
+    // subscribe to a ParseQuery
     public ParseLiveQuery(ParseQuery query) throws JSONException, ParseException {
         this(query.encode());
     }
 
+    // subscribe to a JSONObject query
+    // you should provide classname , where , fields [optional]
     private ParseLiveQuery(JSONObject query) throws JSONException, ParseException {
         this.query = query;
         requestIds++;
@@ -43,6 +49,10 @@ public abstract class ParseLiveQuery {
         subscribe();
     }
 
+    // initialzie the websocket connection to the liveQury server
+    // when it's open its gonna send the connect message
+    // when it's connected it gonna subscribe to all the available queries [in case there was a disconnection]
+    //onClose: if it not triggered using .close() it gonna try to reconnect 5 times
     private static void init() {
         webSocket = new WebSocket(getLiveQueryServerURL()) {
             @Override
@@ -113,7 +123,7 @@ public abstract class ParseLiveQuery {
         webSocket.connect();
     }
 
-
+    //liveQuery connect message
     private static String getConnect() {
         JSONObject output = new JSONObject();
         try {
@@ -128,7 +138,7 @@ public abstract class ParseLiveQuery {
         return output.toString();
     }
 
-
+    //liveQuery subscribe message
     private String getSubscribe() throws JSONException {
         if (subscribeData == null) {
             JSONObject output = new JSONObject();
@@ -151,6 +161,7 @@ public abstract class ParseLiveQuery {
         return subscribeData;
     }
 
+    //liveQuery unsubscribe message
     public void unsubscribe() throws JSONException {
         lQuerys.remove(requestId);
         JSONObject output = new JSONObject();
@@ -159,6 +170,7 @@ public abstract class ParseLiveQuery {
         webSocket.send(output.toString());
     }
 
+    //subscribe action .. gonna be called in the constructor , but it's public in case there was a disconnection and you want to resubscribe
     public void subscribe() throws ParseException, JSONException {
         lQuerys.put(requestId, this);
 
@@ -170,6 +182,7 @@ public abstract class ParseLiveQuery {
             webSocket.send(getSubscribe());
     }
 
+    //unsubscribe from all then close the websocket
     public static void close() throws JSONException {
         for (Map.Entry<Integer, ParseLiveQuery> entry : lQuerys.entrySet())
             entry.getValue().unsubscribe();
@@ -179,6 +192,7 @@ public abstract class ParseLiveQuery {
         webSocket = null;
     }
 
+    // LiveQuery server URL from the parse server URL
     public static String getLiveQueryServerURL() {
         if (liveQueryServerURL == null) {
             String endpoint = Parse.getApiEndpoint();
@@ -200,6 +214,7 @@ public abstract class ParseLiveQuery {
         return wsCallback;
     }
 
+    // optional to handle the websocket events and errors that not related to a specific query
     public static void setWsCallback(WsCallback wsCallback) {
         ParseLiveQuery.wsCallback = wsCallback;
     }

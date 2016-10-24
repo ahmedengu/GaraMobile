@@ -71,7 +71,7 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected String getFirstFormName() {
         if (onStart()) {
-            return "Home";
+            return "Test";
         } else
             return super.getFirstFormName();
     }
@@ -452,4 +452,65 @@ public class StateMachine extends StateMachineBase {
 //            e.printStackTrace();
 //        }
 //    }
+
+    @Override
+    protected void beforeTest(Form f) {
+//        // optional to handle the websocket events and errors that not related to a specific query
+//        ParseLiveQuery.setWsCallback(new ParseLiveQuery.WsCallback() {
+//            @Override
+//            public void error(String op, int code, String error, boolean reconnect) {
+//
+//            }
+//
+//            @Override
+//            public void onOpen() {
+//                super.onOpen();
+//            }
+//
+//            @Override
+//            public void onClose(int var1, String var2) {
+//                super.onClose(var1, var2);
+//            }
+//
+//            @Override
+//            public void onMessage(String var1) {
+//                super.onMessage(var1);
+//            }
+//
+//            @Override
+//            public void onMessage(byte[] var1) {
+//                super.onMessage(var1);
+//            }
+//
+//            @Override
+//            public void onError(Exception var1) {
+//                super.onError(var1);
+//            }
+//        });
+//        try {
+//
+//            // query support $lt, $lte, $gt, $gte, $ne, $in, $nin, $exists, $all, $regex, $nearSphere, $within :: https://github.com/ParsePlatform/parse-server/wiki/Parse-LiveQuery-Protocol-Specification
+//            ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
+//            query.whereEqualTo("playerName", "Sean Plott").whereEqualTo("cheatMode", false);
+//
+//            // subscribe
+//            ParseLiveQuery liveQuery = new ParseLiveQuery(query) {
+//                @Override
+//                public void event(String op, int requestId, ParseObject object) {
+//                    System.out.println(op + "  " + object.getObjectId());
+//                }
+//            };
+//
+//            // unsubscribe
+//            liveQuery.unsubscribe();
+//
+//            // close the Websocket
+//            ParseLiveQuery.close();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+
+    }
 }
