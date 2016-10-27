@@ -28,6 +28,7 @@ import com.parse4cn1.encode.PointerEncodingStrategy;
 import com.parse4cn1.util.Logger;
 import com.parse4cn1.encode.ParseEncoder;
 import com.parse4cn1.util.ParseRegistry;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +53,7 @@ public class ParseQuery<T extends ParseObject> {
     private int skip;
     private String order;
     private boolean caseSensitive = true;
+    private String sessionToken = null;
 
     /**
      * Creates a ParseQuery for the specified class type.
@@ -84,8 +86,8 @@ public class ParseQuery<T extends ParseObject> {
      * work, {@code subclass} needs to have been registered via
      * {@link ParseRegistry#registerSubclass(java.lang.Class, java.lang.String)}.
      *
-     * @param <T> The type of the class to be associated with the newly created
-     * query.
+     * @param <T>      The type of the class to be associated with the newly created
+     *                 query.
      * @param subclass The ParseObject subclass type.
      * @return The newly created ParseQuery.
      */
@@ -97,66 +99,66 @@ public class ParseQuery<T extends ParseObject> {
      * Creates a ParseQuery for the ParseObject sub-class with the specified
      * name..
      *
-     * @param <T> The type of the class to be associated with the newly created
-     * query.
+     * @param <T>       The type of the class to be associated with the newly created
+     *                  query.
      * @param className The ParseObject subclass name.
      * @return The newly created ParseQuery.
      */
     public static <T extends ParseObject> ParseQuery<T> getQuery(String className) {
         return new ParseQuery<T>(className);
     }
-    
+
     /**
-     * Create a ParseQuery whose where-clause is the disjunction of the 
+     * Create a ParseQuery whose where-clause is the disjunction of the
      * where-clauses of the provided {@code queries}.
-     * 
-     * @param <T> The type of the class to be associated with the newly created
-     * query.
-     * @param queries A collection of at least two queries to be combined. Each 
-     * of these queries must have a non-empty 'where' clause and have the same class.
+     *
+     * @param <T>     The type of the class to be associated with the newly created
+     *                query.
+     * @param queries A collection of at least two queries to be combined. Each
+     *                of these queries must have a non-empty 'where' clause and have the same class.
      * @return The newly created ParseQuery.
-     * @throws ParseException if the {@code queries} are not at least two, any 
-     * of them is missing a where-clause, or the target class is different.
+     * @throws ParseException if the {@code queries} are not at least two, any
+     *                        of them is missing a where-clause, or the target class is different.
      */
     public static <T extends ParseObject> ParseQuery<T> getOrQuery(
             final Collection<ParseQuery> queries) throws ParseException {
-       if (queries.size() < 2) {
-           throw new ParseException(ParseException.OTHER_CAUSE, 
-                   "At least two queries must be provided.");
-       } 
-       
-       String targetClass = null;
-       JSONArray array = new JSONArray();
-       for (ParseQuery query : queries) {
-           if (query.getQueryConstraints().isEmpty()) {
-              throw new ParseException(ParseException.OTHER_CAUSE, 
-                   "Query has no query constraints."); 
-           }
-           
-           if (targetClass == null) {
-               targetClass = query.getClassName();
-           } else if (!targetClass.equals(query.getClassName())) {
-              throw new ParseException(ParseException.OTHER_CAUSE, 
-                   "All queries should be of the same target class: " + targetClass + ".");  
-           }
-           
-           array.put(query.getQueryConstraints());
-       }
-       
-       if (targetClass == null) {
-           throw new ParseException(ParseException.OTHER_CAUSE, 
-                   "A query target class is required."); 
-       }
-       ParseQuery query = ParseQuery.getQuery(targetClass);
-       query.whereEqualTo("$or", array);
-       return query;
+        if (queries.size() < 2) {
+            throw new ParseException(ParseException.OTHER_CAUSE,
+                    "At least two queries must be provided.");
+        }
+
+        String targetClass = null;
+        JSONArray array = new JSONArray();
+        for (ParseQuery query : queries) {
+            if (query.getQueryConstraints().isEmpty()) {
+                throw new ParseException(ParseException.OTHER_CAUSE,
+                        "Query has no query constraints.");
+            }
+
+            if (targetClass == null) {
+                targetClass = query.getClassName();
+            } else if (!targetClass.equals(query.getClassName())) {
+                throw new ParseException(ParseException.OTHER_CAUSE,
+                        "All queries should be of the same target class: " + targetClass + ".");
+            }
+
+            array.put(query.getQueryConstraints());
+        }
+
+        if (targetClass == null) {
+            throw new ParseException(ParseException.OTHER_CAUSE,
+                    "A query target class is required.");
+        }
+        ParseQuery query = ParseQuery.getQuery(targetClass);
+        query.whereEqualTo("$or", array);
+        return query;
     }
 
     /**
      * Add a constraint to the query that requires a particular key's value to
      * be equal to the provided value.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param value The value that the ParseObject must contain.
      * @return {@code this} object so that calls can be chained.
      */
@@ -169,7 +171,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value to
      * be less than the provided value.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param value The value that provides an upper bound.
      * @return {@code this} object so that calls can be chained.
      */
@@ -182,7 +184,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value to
      * be not equal to the provided value.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param value The value that must not be equalled.
      * @return {@code this} object so that calls can be chained.
      */
@@ -195,7 +197,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value to
      * be greater than the provided value.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param value The value that provides a lower bound.
      * @return {@code this} object so that calls can be chained.
      */
@@ -208,7 +210,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value to
      * be less than or equal to the provided value.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param value The value that provides an upper bound.
      * @return {@code this} object so that calls can be chained.
      */
@@ -221,7 +223,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value to
      * be greater than or equal to the provided value.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param value The value that provides a lower bound.
      * @return {@code this} object so that calls can be chained.
      */
@@ -234,7 +236,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value to
      * be contained in the provided list of values.
      *
-     * @param key The key to check.
+     * @param key    The key to check.
      * @param values The values that will match.
      * @return {@code this} object so that calls can be chained.
      */
@@ -248,7 +250,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value not
      * to be contained in the provided list of values.
      *
-     * @param key The key to check.
+     * @param key    The key to check.
      * @param values The values that will not match.
      * @return {@code this} object so that calls can be chained.
      */
@@ -264,7 +266,7 @@ public class ParseQuery<T extends ParseObject> {
      * <p>
      * This only works on keys whose values are of array type.
      *
-     * @param key The key to check. This key's value must be an array.
+     * @param key    The key to check. This key's value must be an array.
      * @param values The values that will match.
      * @return {@code this} object so that calls can be chained.
      */
@@ -281,7 +283,7 @@ public class ParseQuery<T extends ParseObject> {
      * This only works on keys whose values are ParseObjects or lists of
      * ParseObjects.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param query The query that the value should match.
      * @return {@code this} object so that calls can be chained.
      */
@@ -297,7 +299,7 @@ public class ParseQuery<T extends ParseObject> {
      * This only works on keys whose values are ParseObjects or lists of
      * ParseObjects.
      *
-     * @param key The key to check.
+     * @param key   The key to check.
      * @param query The query that the value should not match
      * @return {@code this} object so that calls can be chained.
      */
@@ -310,15 +312,15 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value
      * matches a value for a key in the results of another ParseQuery.
      *
-     * @param key The key whose value is being checked.
+     * @param key        The key whose value is being checked.
      * @param keyInQuery The key in the objects from the sub query to look in.
-     * @param query The nested query to run.
+     * @param query      The nested query to run.
      * @return {@code this} object so that calls can be chained.
      * @throws ParseException if something goes wrong with creating the
-     * constraint.
+     *                        constraint.
      */
     public ParseQuery<T> whereMatchesKeyInQuery(String key,
-            String keyInQuery, ParseQuery<?> query) throws ParseException {
+                                                String keyInQuery, ParseQuery<?> query) throws ParseException {
         JSONObject condition = new JSONObject();
         try {
             condition.put("key", keyInQuery);
@@ -334,15 +336,15 @@ public class ParseQuery<T extends ParseObject> {
      * Add a constraint to the query that requires a particular key's value does
      * not match any value for a key in the results of another ParseQuery.
      *
-     * @param key The key whose value is being checked and excluded.
+     * @param key        The key whose value is being checked and excluded.
      * @param keyInQuery The key in the objects from the sub query to look in.
-     * @param query The nested query to run.
+     * @param query      The nested query to run.
      * @return {@code this} object so that calls can be chained.
      * @throws ParseException if something goes wrong with creating the
-     * constraint.
+     *                        constraint.
      */
     public ParseQuery<T> whereDoesNotMatchKeyInQuery(String key,
-            String keyInQuery, ParseQuery<?> query) throws ParseException {
+                                                     String keyInQuery, ParseQuery<?> query) throws ParseException {
         JSONObject condition = new JSONObject();
         try {
             condition.put("key", keyInQuery);
@@ -358,7 +360,7 @@ public class ParseQuery<T extends ParseObject> {
      * Add a proximity based constraint for finding objects with key point
      * values near the point given.
      *
-     * @param key The key that the ParseGeoPoint is stored in.
+     * @param key   The key that the ParseGeoPoint is stored in.
      * @param point The reference ParseGeoPoint that is used.
      * @return {@code this} object so that calls can be chained.
      */
@@ -373,8 +375,8 @@ public class ParseQuery<T extends ParseObject> {
      * <p>
      * Radius of earth used is 3958.8 miles.
      *
-     * @param key The key that the ParseGeoPoint is stored in.
-     * @param point The reference ParseGeoPoint that is used.
+     * @param key         The key that the ParseGeoPoint is stored in.
+     * @param point       The reference ParseGeoPoint that is used.
      * @param maxDistance Maximum distance (in miles) of results to return.
      * @return {@code this} object so that calls can be chained.
      */
@@ -389,8 +391,8 @@ public class ParseQuery<T extends ParseObject> {
      * <p>
      * Radius of earth used is 6371.0 kilometers.
      *
-     * @param key The key that the ParseGeoPoint is stored in.
-     * @param point The reference ParseGeoPoint that is used.
+     * @param key         The key that the ParseGeoPoint is stored in.
+     * @param point       The reference ParseGeoPoint that is used.
      * @param maxDistance Maximum distance (in kilometers) of results to return.
      * @return {@code this} object so that calls can be chained.
      */
@@ -403,8 +405,8 @@ public class ParseQuery<T extends ParseObject> {
      * Add a proximity based constraint for finding objects with key point
      * values near the point given and within the maximum distance given.
      *
-     * @param key The key that the ParseGeoPoint is stored in.
-     * @param point The reference ParseGeoPoint that is used.
+     * @param key         The key that the ParseGeoPoint is stored in.
+     * @param point       The reference ParseGeoPoint that is used.
      * @param maxDistance Maximum distance (in radians) of results to return.
      * @return {@code this} object so that calls can be chained.
      */
@@ -419,7 +421,7 @@ public class ParseQuery<T extends ParseObject> {
      * coordinates be contained within a given rectangular geographic bounding
      * box.
      *
-     * @param key The key to be constrained.
+     * @param key       The key to be constrained.
      * @param southwest The lower-left inclusive corner of the box.
      * @param northeast The upper-right inclusive corner of the box.
      * @return {@code this} object so that calls can be chained.
@@ -440,7 +442,7 @@ public class ParseQuery<T extends ParseObject> {
      * <p>
      * This may be slow for large datasets.
      *
-     * @param key The key that the string to match is stored in.
+     * @param key   The key that the string to match is stored in.
      * @param regex The regular expression pattern to match.
      * @return {@code this} object so that calls can be chained.
      */
@@ -455,11 +457,11 @@ public class ParseQuery<T extends ParseObject> {
      * <p>
      * This may be slow for large datasets.
      *
-     * @param key The key that the string to match is stored in.
-     * @param regex The regular expression pattern to match.
+     * @param key       The key that the string to match is stored in.
+     * @param regex     The regular expression pattern to match.
      * @param modifiers Any of the following supported PCRE modifiers:
-     * <br>i - Case insensitive search
-     * <br>m - Search across multiple lines of input
+     *                  <br>i - Case insensitive search
+     *                  <br>m - Search across multiple lines of input
      * @return {@code this} object so that calls can be chained.
      */
     public ParseQuery<T> whereMatches(String key, String regex, String modifiers) {
@@ -478,7 +480,7 @@ public class ParseQuery<T extends ParseObject> {
      * <p>
      * This will be slow for large datasets.
      *
-     * @param key The key that the string to match is stored in.
+     * @param key       The key that the string to match is stored in.
      * @param substring The substring that the value must contain.
      * @return {@code this} object so that calls can be chained.
      */
@@ -496,7 +498,7 @@ public class ParseQuery<T extends ParseObject> {
      * This query will use the backend index, so it will be fast even for large
      * datasets.
      *
-     * @param key The key that the string to match is stored in.
+     * @param key    The key that the string to match is stored in.
      * @param prefix The substring that the value must start with.
      * @return {@code this} object so that calls can be chained.
      */
@@ -514,7 +516,7 @@ public class ParseQuery<T extends ParseObject> {
      * <p>
      * This will be slow for large datasets.
      *
-     * @param key The key that the string to match is stored in.
+     * @param key    The key that the string to match is stored in.
      * @param suffix The substring that the value must end with.
      * @return {@code this} object so that calls can be chained.
      */
@@ -551,7 +553,7 @@ public class ParseQuery<T extends ParseObject> {
      * by the given {@code key}.
      *
      * @param parent The ParseObject to be used in the relation.
-     * @param key The key that should be used in the relation.
+     * @param key    The key that should be used in the relation.
      * @return {@code this} object so that calls can be chained.
      */
     public ParseQuery<T> whereRelatedTo(ParseObject parent, String key) {
@@ -577,7 +579,7 @@ public class ParseQuery<T extends ParseObject> {
      * Sorts the results in ascending order by the given key.
      * <p>
      * <b>Note:</b> {@code key} overrides any previous ordering criteria!
-     * Use {@link #addAscendingOrder(java.lang.String)} or 
+     * Use {@link #addAscendingOrder(java.lang.String)} or
      * {@link #addDescendingOrder(java.lang.String)} to concatenate ordering criteria.
      *
      * @param key The key to order by.
@@ -609,7 +611,7 @@ public class ParseQuery<T extends ParseObject> {
      * Sorts the results in descending order by the given key.
      * <p>
      * <b>Note:</b> {@code key} overrides any previous ordering criteria!
-     * Use {@link #addAscendingOrder(java.lang.String)} or 
+     * Use {@link #addAscendingOrder(java.lang.String)} or
      * {@link #addDescendingOrder(java.lang.String)} to concatenate ordering criteria.
      *
      * @param key The key to order by.
@@ -738,8 +740,8 @@ public class ParseQuery<T extends ParseObject> {
      *
      * @param objectId Object id of the ParseObject to fetch.
      * @return The first object returned found with {@code objectId} or
-     * {@code null} if none is found. <b>Note that this deviates from the 
-     * corresponding Parse Android API method where an exception is thrown when  
+     * {@code null} if none is found. <b>Note that this deviates from the
+     * corresponding Parse Android API method where an exception is thrown when
      * there is no such object.</b>
      * @throws ParseException if anything goes wrong.
      * @see <a href="http://www.parse.com/docs/android/api/com/parse/ParseQuery.html#get(java.lang.String)">Parse Android API get() method</a>
@@ -763,8 +765,8 @@ public class ParseQuery<T extends ParseObject> {
      * Retrieves a list of ParseObjects that satisfy this query.
      *
      * @return A list of the ParseObjects matching the query or an empty list if
-     * none is found. <b>Note that this deviates from the 
-     * corresponding Parse Android API method where an exception is thrown when 
+     * none is found. <b>Note that this deviates from the
+     * corresponding Parse Android API method where an exception is thrown when
      * the query returns no results.</b>
      * @throws ParseException if anything goes wrong.
      * @see <a href="http://www.parse.com/docs/android/api/com/parse/ParseQuery.html#find()">Parse Android API find() method</a>
@@ -778,7 +780,7 @@ public class ParseQuery<T extends ParseObject> {
      *
      * @return The JSONObject corresponding to this query.
      * @throws ParseException if anything goes wrong with the conversion to
-     * JSON.
+     *                        JSON.
      */
     public JSONObject encode() throws ParseException {
         JSONObject params = new JSONObject();
@@ -817,10 +819,11 @@ public class ParseQuery<T extends ParseObject> {
 
         return params;
     }
-    
+
     /**
      * Retrieves the query constraints (i.e., where-clause) of this ParseQuery.
-     * @return The QueryConstraints of this ParseQuery. 
+     *
+     * @return The QueryConstraints of this ParseQuery.
      */
     QueryConstraints getQueryConstraints() {
         return where;
@@ -840,6 +843,8 @@ public class ParseQuery<T extends ParseObject> {
         ParseGetCommand command = new ParseGetCommand(getEndPoint());
         query.remove(ParseConstants.FIELD_CLASSNAME);
         addDataToCommand(command, query);
+        if (sessionToken != null)
+            command.addHeader(ParseConstants.HEADER_SESSION_TOKEN, sessionToken);
         ParseResponse response = command.perform();
         List<T> results = new ArrayList<T>();
         if (!response.isFailed()) {
@@ -865,7 +870,7 @@ public class ParseQuery<T extends ParseObject> {
             } catch (JSONException e) {
                 LOGGER.error(
                         ParseException.ERR_INVALID_RESPONSE + " Error: "
-                        + e.getMessage());
+                                + e.getMessage());
                 throw new ParseException(
                         ParseException.INVALID_JSON,
                         ParseException.ERR_INVALID_RESPONSE,
@@ -884,15 +889,15 @@ public class ParseQuery<T extends ParseObject> {
     }
 
     /**
-     * Adds the query data as url-encoded parameters of the provided 
+     * Adds the query data as url-encoded parameters of the provided
      * GET {@code command}.
-     * 
+     *
      * @param command The command to which the query is to be added.
-     * @param data The query to be added.
+     * @param data    The query to be added.
      * @throws ParseException if anything goes wrong while parsing the JSON data.
      */
-    private void addDataToCommand(final ParseGetCommand command, 
-            final JSONObject data) throws ParseException {
+    private void addDataToCommand(final ParseGetCommand command,
+                                  final JSONObject data) throws ParseException {
         Iterator<?> it = data.keys();
         while (it.hasNext()) {
             String key = (String) it.next();
@@ -900,7 +905,7 @@ public class ParseQuery<T extends ParseObject> {
             command.addArgument(key, value.toString());
         }
     }
- 
+
     /**
      * Counts the number of objects that match this query.
      *
@@ -932,7 +937,7 @@ public class ParseQuery<T extends ParseObject> {
             } catch (JSONException e) {
                 LOGGER.error(
                         ParseException.ERR_INVALID_RESPONSE + " Error: "
-                        + e.getMessage());
+                                + e.getMessage());
                 throw new ParseException(
                         ParseException.INVALID_JSON,
                         ParseException.ERR_INVALID_RESPONSE,
@@ -947,9 +952,9 @@ public class ParseQuery<T extends ParseObject> {
     /**
      * Add a {@link KeyConstraints} to this query.
      *
-     * @param key The key associated with the constraint.
+     * @param key       The key associated with the constraint.
      * @param condition The condition that must be met.
-     * @param value The desired value.
+     * @param value     The desired value.
      */
     private void addCondition(String key, String condition, Object value) {
         KeyConstraints whereValue = null;
@@ -981,10 +986,10 @@ public class ParseQuery<T extends ParseObject> {
     }
 
     /**
-     * Creates an end point formed by concatenating 
-     * {@value ParseConstants#CLASSES_PATH} and the result of 
+     * Creates an end point formed by concatenating
+     * {@value ParseConstants#CLASSES_PATH} and the result of
      * {@link #getClassName()}
-     * 
+     *
      * @return The end point.
      */
     private String getEndPoint() {
@@ -1049,7 +1054,7 @@ public class ParseQuery<T extends ParseObject> {
          * Constructors a relation constraint with the provided {@code key} and
          * {@code object}.
          *
-         * @param key The key associated with this relation.
+         * @param key    The key associated with this relation.
          * @param object The ParseObject associated with this relation.
          */
         public RelationConstraint(String key, ParseObject object) {
@@ -1106,5 +1111,21 @@ public class ParseQuery<T extends ParseObject> {
             }
             return json;
         }
+    }
+
+    /**
+     * Add the current user sesseonToken to the request headers
+     */
+    public void addSessionToken() {
+        addSessionToken(ParseUser.getCurrent().getSessionToken());
+    }
+
+    /**
+     * Add sesseonToken to the request headers.
+     *
+     * @param sessionToken a session token.
+     */
+    public void addSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
     }
 }

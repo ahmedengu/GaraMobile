@@ -10,12 +10,15 @@ package userclasses;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
+import com.codename1.location.LocationManager;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
+import com.g_ara.gara.controller.MapController;
 import com.parse4cn1.Parse;
 import generated.StateMachineBase;
 
@@ -71,7 +74,7 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected String getFirstFormName() {
         if (onStart()) {
-            return "Test";
+            return "Home";
         } else
             return super.getFirstFormName();
     }
@@ -511,6 +514,9 @@ public class StateMachine extends StateMachineBase {
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
+        f.setLayout(new BorderLayout());
+        MapController mapController = new MapController(f);
+        mapController.map.addPath(MapController.drawCircle(LocationManager.getLocationManager().getLastKnownLocation(),10));
 
     }
 }

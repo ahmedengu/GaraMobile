@@ -386,4 +386,33 @@ public class MapController {
         map.setScrollableY(false);
         map.addPath(MapController.decode(MapController.getRoutesEncoded(locationCoord, destCoord)));
     }
+
+    public static Coord[] drawCircle(Location location, double radius) {
+        return drawCircle(location.getLatitude(), location.getLongitude(), radius);
+    }
+
+    public static Coord[] drawCircle(Coord location, double radius) {
+        return drawCircle(location.getLatitude(), location.getLongitude(), radius);
+    }
+
+    public static Coord[] drawCircle(double latitude, double longitude, double radius) {
+        Coord[] locs = new Coord[361];
+        double lat1 = latitude * Math.PI / 180.0;
+        double lon1 = longitude * Math.PI / 180.0;
+        double d = radius / 3956;
+        for (int i = 0; i <= 360; i++) {
+            double tc = (i / 90) * Math.PI / 2;
+            double lat = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(tc));
+            lat = 180.0 * lat / Math.PI;
+            double lon;
+            if (Math.cos(lat1) == 0) {
+                lon = longitude;
+            } else {
+                lon = ((lon1 - Math.asin(Math.sin(tc) * Math.sin(d) / Math.cos(lat1)) + Math.PI) % (2 * Math.PI)) - Math.PI;
+            }
+            lon = 180.0 * lon / Math.PI;
+            locs[i] = new Coord(lat, lon);
+        }
+        return locs;
+    }
 }

@@ -288,11 +288,11 @@ public class HomeController {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
-        List groupUser = getUserVerifiedGroups();
-        if (groupUser.size() == 0) {
-            ToastBar.showErrorMessage("You don't have any active groups");
-            return;
-        }
+//        List groupUser = getUserVerifiedGroups();
+//        if (groupUser.size() == 0) {
+//            ToastBar.showErrorMessage("You don't have any active groups");
+//            return;
+//        }
         try {
             ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
             query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), 5000000);
@@ -300,7 +300,8 @@ public class HomeController {
             tripQuery.include("driver");
             tripQuery.include("car");
             tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), 5000000);
-            tripQuery.whereContainedIn("groups", groupUser);
+//            tripQuery.whereContainedIn("groups", groupUser);
+            tripQuery.addSessionToken();
             List<ParseObject> results = tripQuery.find();
             if (results.size() == 0) {
                 ToastBar.showErrorMessage("There is no rides available");
