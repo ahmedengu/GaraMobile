@@ -6,11 +6,7 @@ import com.codename1.io.Preferences;
 import com.codename1.io.Storage;
 import com.codename1.ui.*;
 import com.codename1.ui.util.ImageIO;
-import com.parse4cn1.ParseException;
-import com.parse4cn1.ParseFile;
-import com.parse4cn1.ParseObject;
-import com.parse4cn1.ParseUser;
-import com.parse4cn1.util.ExternalizableParseObject;
+import com.parse4cn1.*;
 import userclasses.StateMachine;
 
 import java.io.ByteArrayOutputStream;
@@ -39,8 +35,8 @@ public class UserController {
                 file.save();
                 user.put("pic", file);
                 user.save();
-
-                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
+                currentParseUserSave();
+//                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
 
 //                Preferences.set("username", username.getText());
 //                Preferences.set("password", password.getText());
@@ -79,7 +75,8 @@ public class UserController {
             user.login();
             if (user.isAuthenticated()) {
                 stateMachine.showForm("Home", null);
-                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
+                currentParseUserSave();
+//                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
 //                Preferences.set("currentUser", user.getParseData().toString());
 //                Preferences.set("username", username);
 //                Preferences.set("password", password);
@@ -162,9 +159,9 @@ public class UserController {
 
     public static boolean onStart() {
 
-        ExternalizableParseObject<ParseUser> currentUser = (ExternalizableParseObject<ParseUser>) Storage.getInstance().readObject("currentUser");
-        if (ParseUser.getCurrent() != null && ParseUser.getCurrent().isAuthenticated())
-            return true;
+//        ExternalizableParseObject<ParseUser> currentUser = (ExternalizableParseObject<ParseUser>) Storage.getInstance().readObject("currentUser");
+//        if (ParseUser.getCurrent() != null && ParseUser.getCurrent().isAuthenticated())
+//            return true;
         return false;
     }
 
@@ -172,39 +169,53 @@ public class UserController {
 
         ParseUser current = ParseUser.getCurrent();
         current.save();
-        if (System.currentTimeMillis() - last > 5000) {
-            ParseObject trip = current.getParseObject("trip");
-            ParseObject tripRequest = current.getParseObject("tripRequest");
+//        if (System.currentTimeMillis() - last > 5000) {
+//            ParseObject trip = current.getParseObject("trip");
+//            ParseObject tripRequest = current.getParseObject("tripRequest");
+//
+//            Object driver = null;
+//            if (trip != null) {
+//                driver = trip.get("driver");
+//                trip.remove("driver");
+//                trip.setDirty(false);
+//            }
+//
+//            Object user = null;
+//            if (tripRequest != null) {
+//                user = tripRequest.get("user");
+//                tripRequest.remove("user");
+//                tripRequest.setDirty(false);
+//            }
+//            current.setDirty(false);
+//            last = System.currentTimeMillis();
+//            Storage.getInstance().writeObject("currentUser", current.asExternalizable());
+//
+//            if (trip != null && driver != null) {
+//                trip.put("driver", driver);
+//                trip.setDirty(false);
+//
+//            }
+//
+//            if (tripRequest != null && user != null) {
+//                tripRequest.put("user", user);
+//                tripRequest.setDirty(false);
+//            }
+//            current.setDirty(false);
+//        }
+    }
 
-            Object driver = null;
-            if (trip != null) {
-                driver = trip.get("driver");
-                trip.remove("driver");
-                trip.setDirty(false);
 
-            }
+    public static ParseObject getUserEmptyObject() {
+        return getParseEmptyObject(ParseUser.getCurrent());
+    }
 
-            Object user = null;
-            if (tripRequest != null) {
-                user = tripRequest.get("user");
-                tripRequest.remove("user");
-                tripRequest.setDirty(false);
-            }
-            current.setDirty(false);
-            last = System.currentTimeMillis();
-            Storage.getInstance().writeObject("currentUser", current.asExternalizable());
-
-            if (trip != null && driver != null) {
-                trip.put("driver", driver);
-                trip.setDirty(false);
-
-            }
-
-            if (tripRequest != null && user != null) {
-                tripRequest.put("user", user);
-                tripRequest.setDirty(false);
-            }
-            current.setDirty(false);
+    public static ParseObject getParseEmptyObject(ParseObject parseObject) {
+        ParseObject object = null;
+        try {
+            object = ParseObject.fetch(parseObject.getClassName(), parseObject.getObjectId());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return object;
     }
 }

@@ -7,7 +7,9 @@ import com.codename1.ext.codescan.ScanResult;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
@@ -27,7 +29,8 @@ import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.model.Constants.CODE_ICON;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
-import static userclasses.StateMachine.*;
+import static userclasses.StateMachine.data;
+import static userclasses.StateMachine.showDelayedToastBar;
 
 /**
  * Created by ahmedengu.
@@ -75,8 +78,11 @@ public class HomeController {
             }
             Button active = new Button("cancel: " + fetch.getClassName());
             final ParseObject object = fetch;
-            active.addActionListener(evt -> {
-                CancelActive(f, resources, drive, ride, active, object);
+            active.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    CancelActive(f, resources, drive, ride, active, object);
+                }
             });
 
             drive.setHidden(true);
@@ -150,7 +156,7 @@ public class HomeController {
 
     private static void checkinAction(String contents, ParseObject object, Button checkIn, Form f, Resources resources, Button drive, Button ride, Button active, StateMachine stateMachine) {
         if (contents.equals(object.getParseObject("trip").getParseObject("driver").getObjectId())) {
-            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("token", contents);
             map.put("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()));
             object.put((checkIn.getText().equals("Check Out")) ? "checkout" : "checkin", map);
@@ -253,15 +259,12 @@ public class HomeController {
     }
 
     public static void CancelActive(Form f, Resources resources, Button drive, Button ride, Button active, ParseObject object) {
-
         CancelActiveRequest(object);
         new MapController(resources, f).initMap();
-
-        f.repaint();
-        f.removeComponent(active);
         drive.setHidden(false);
         ride.setHidden(false);
-
+        active.getParent().remove();
+        f.repaint();
     }
 
     public static void CancelActiveRequest(ParseObject object) {
@@ -301,7 +304,7 @@ public class HomeController {
             tripQuery.include("car");
             tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), 5000000);
 //            tripQuery.whereContainedIn("groups", groupUser);
-            tripQuery.addSessionToken();
+
             List<ParseObject> results = tripQuery.find();
             if (results.size() == 0) {
                 ToastBar.showErrorMessage("There is no rides available");
@@ -357,8 +360,9 @@ public class HomeController {
             data.put("car", item);
         });
         Dialog dialog = new Dialog("Choose a car");
-        dialog.setLayout(new GridLayout(1));
-        dialog.add(list);
+        dialog.setLayout(new BorderLayout());
+        Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        center.add(list);
         TextField cost = new TextField("");
         TextField toll = new TextField("");
         TextField seats = new TextField("");
@@ -369,10 +373,10 @@ public class HomeController {
         seats.setHint("Available seats");
         notes.setHint("Notes:");
 
-        dialog.add(cost);
-        dialog.add(toll);
-        dialog.add(seats);
-        dialog.add(notes);
+        center.add(cost);
+        center.add(toll);
+        center.add(seats);
+        center.add(notes);
 
         Button cancel = new Button("Cancel");
         cancel.addActionListener(evt -> dialog.dispose());
@@ -388,11 +392,12 @@ public class HomeController {
 
             stateMachine.showForm("DriveSummary", null);
         });
-        Container container = new Container();
-        container.setLayout(new GridLayout(2));
-        container.add(cancel);
-        container.add(confirm);
-        dialog.add(container);
+        Container south = new Container();
+        south.setLayout(new GridLayout(2));
+        south.add(cancel);
+        south.add(confirm);
+        dialog.add(south, BorderLayout.SOUTH);
+        dialog.add(center, BorderLayout.CENTER);
         dialog.show();
     }
 

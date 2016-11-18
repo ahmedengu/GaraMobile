@@ -14,6 +14,7 @@ import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
 
 import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
+import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static userclasses.StateMachine.data;
 
 /**
@@ -25,8 +26,7 @@ public class DriveSummary {
         try {
             ParseObject trip = ParseObject.create("Trip");
             ParseUser current = ParseUser.getCurrent();
-            current.setDirty(false);
-            trip.put("driver", current);
+            trip.put("driver", getUserEmptyObject());
             Coord locationCoord = MapController.getLocationCoord();
             trip.put("from", locationCoord.getLatitude() + "," + locationCoord.getLongitude());
             Coord destCoord = MapController.getDestCoord();

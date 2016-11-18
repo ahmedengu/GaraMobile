@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.List;
 
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
+import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.*;
 
 /**
@@ -38,12 +39,12 @@ import static com.g_ara.gara.model.Constants.*;
  */
 public class MapController {
 
-    private static Coord destCoord, locationCoord;
+    private static Coord destCoord, locationCoord, lastDestCoord;
     private static Long lastLocationUpdate = 0L, lastLocationSent = 0L;
     private static int locationUpdateThreshold = 3000, locationSentThreshold = 10000;
     public final MapContainer map = new MapContainer(new GoogleMapsProvider(Constants.MAPS_KEY));
     private Resources theme;
-    private List<Map<String, Object>> markers = new ArrayList<>();
+    private List<Map<String, Object>> markers = new ArrayList<Map<String, Object>>();
     private Coord[] coordsPath;
     private static MapController mapController;
 
@@ -69,45 +70,55 @@ public class MapController {
             URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
             URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
-            map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", (ActionEvent evt) -> {
+            map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
 
 
-                Dialog dialog = getDriveInfoDialog(trip, driver, car, "Ride Info");
+                    Dialog dialog = getDriveInfoDialog(trip, driver, car, "Ride Info");
 
 
-                Container south = new Container(new GridLayout(2));
-                Button cancel = new Button("Cancel");
-                cancel.addActionListener(evt1 -> dialog.dispose());
-                south.add(cancel);
-                Button confirm = new Button("Confirm");
-                confirm.addActionListener(evt1 -> {
-                    ParseObject tripRequest = ParseObject.create("TripRequest");
-                    tripRequest.put("trip", trip);
-                    ParseUser user = ParseUser.getCurrent();
-                    user.setDirty(false);
-                    tripRequest.put("user", user);
-                    tripRequest.put("accept", -1);
-                    tripRequest.put("active", true);
-                    double distanceinkilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
-                    tripRequest.put("cost", distanceinkilometers * trip.getInt("cost") + trip.getInt("toll"));
-                    tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
-                    tripRequest.put("distance", distanceinkilometers);
-                    try {
-                        tripRequest.save();
-                        user.put("tripRequest", tripRequest);
-                        currentParseUserSave();
+                    Container south = new Container(new GridLayout(2));
+                    Button cancel = new Button("Cancel");
+                    cancel.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent evt1) {
+                            dialog.dispose();
+                        }
+                    });
+                    south.add(cancel);
+                    Button confirm = new Button("Confirm");
+                    confirm.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent evt1) {
+                            ParseObject tripRequest = ParseObject.create("TripRequest");
+                            tripRequest.put("trip", trip);
+                            ParseUser user = ParseUser.getCurrent();
+                            tripRequest.put("user", getUserEmptyObject());
+                            tripRequest.put("accept", -1);
+                            tripRequest.put("active", true);
+                            double distanceinkilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
+                            tripRequest.put("cost", distanceinkilometers * trip.getInt("cost") + trip.getInt("toll"));
+                            tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
+                            tripRequest.put("distance", distanceinkilometers);
+                            try {
+                                tripRequest.save();
+                                user.put("tripRequest", tripRequest);
+                                currentParseUserSave();
 
-                        StateMachine.data.put("active", tripRequest);
-                        dialog.dispose();
-                        stateMachine.showForm("Countdown", null);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        ToastBar.showErrorMessage(e.getMessage());
-                    }
-                });
-                south.add(confirm);
-                dialog.add(BorderLayout.SOUTH, south);
-                dialog.show();
+                                StateMachine.data.put("active", tripRequest);
+                                dialog.dispose();
+                                stateMachine.showForm("Countdown", null);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                ToastBar.showErrorMessage(e.getMessage());
+                            }
+                        }
+                    });
+                    south.add(confirm);
+                    dialog.add(BorderLayout.SOUTH, south);
+                    dialog.show();
+                }
             });
 
         }
@@ -168,7 +179,7 @@ public class MapController {
         if (currentLocation != null) {
             locationCoord = new Coord(currentLocation.getLatitude(), currentLocation.getLongitude());
             map.zoom(locationCoord, 5);
-            map.setShowMyLocation(true);
+//            map.setShowMyLocation(true);
         }
         locationListener(map);
     }
@@ -232,25 +243,26 @@ public class MapController {
     private Location updateMarkers(MapContainer map, Location location) {
         map.clearMapLayers();
         //TODO: edit the text and icon below
+        if (destCoord != null) {
+            map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
+            if (coordsPath == null && !destCoord.equals(lastDestCoord) ) {
+                lastDestCoord = destCoord;
+                getRoutesCoordsAsync();
+            }
+        }
         if (location != null) {
             locationCoord = new Coord(location.getLatitude(), location.getLongitude());
-
-
             map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Hi marker", "Optional long description", null);
             lastLocationUpdate = System.currentTimeMillis();
         }
-        if (destCoord != null) {
-            map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
-            if (coordsPath == null)
-                getRoutesCoordsAsync();
-        }
+
         for (int i = 0; i < markers.size(); i++) {
             Map<String, Object> m = markers.get(i);
             map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
 
         }
 
-        if (coordsPath != null)
+        if (coordsPath != null && coordsPath.length > 0)
             map.addPath(coordsPath);
         return location;
     }
@@ -326,7 +338,11 @@ public class MapController {
 
             NetworkManager.getInstance().addToQueueAndWait(request);
             Map<String, Object> response = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(request.getResponseData()), "UTF-8"));
-            ret = ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) response.get("routes")).get(0)).get("overview_polyline")).get("points").toString();
+            if (response.get("routes") != null) {
+                ArrayList routes = (ArrayList) response.get("routes");
+                if (routes.size() > 0)
+                    ret = ((LinkedHashMap) ((LinkedHashMap) ((ArrayList) response.get("routes")).get(0)).get("overview_polyline")).get("points").toString();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -338,7 +354,11 @@ public class MapController {
             @Override
             protected void readResponse(InputStream input) throws IOException {
                 Map<String, Object> response = new JSONParser().parseJSON(new InputStreamReader(input, "UTF-8"));
-                coordsPath = decode(((LinkedHashMap) ((LinkedHashMap) ((ArrayList) response.get("routes")).get(0)).get("overview_polyline")).get("points").toString());
+                if (response.get("routes") != null) {
+                    ArrayList routes = (ArrayList) response.get("routes");
+                    if (routes.size() > 0)
+                        coordsPath = decode(((LinkedHashMap) ((LinkedHashMap) routes.get(0)).get("overview_polyline")).get("points").toString());
+                }
             }
         };
         request.addArgument("key", MAPS_KEY);
@@ -384,7 +404,9 @@ public class MapController {
         map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
         map.zoom(locationCoord, 5);
         map.setScrollableY(false);
-        map.addPath(MapController.decode(MapController.getRoutesEncoded(locationCoord, destCoord)));
+        Coord[] coords = MapController.decode(MapController.getRoutesEncoded(locationCoord, destCoord));
+        if (coords != null && coords.length > 0)
+            map.addPath(coords);
     }
 
     public static Coord[] drawCircle(Location location, double radius) {
@@ -402,13 +424,13 @@ public class MapController {
         double d = radius / 3956;
         for (int i = 0; i <= 360; i++) {
             double tc = (i / 90) * Math.PI / 2;
-            double lat = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(tc));
+            double lat = MathUtil.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(tc));
             lat = 180.0 * lat / Math.PI;
             double lon;
             if (Math.cos(lat1) == 0) {
                 lon = longitude;
             } else {
-                lon = ((lon1 - Math.asin(Math.sin(tc) * Math.sin(d) / Math.cos(lat1)) + Math.PI) % (2 * Math.PI)) - Math.PI;
+                lon = ((lon1 - MathUtil.asin(Math.sin(tc) * Math.sin(d) / Math.cos(lat1)) + Math.PI) % (2 * Math.PI)) - Math.PI;
             }
             lon = 180.0 * lon / Math.PI;
             locs[i] = new Coord(lat, lon);

@@ -34,7 +34,7 @@ public class UserSearch {
             List<ParseUser> results = query.find();
 
 //            if (results.size() > 0) {
-            ArrayList<Map<String, Object>> data = new ArrayList<>();
+            ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
@@ -46,7 +46,9 @@ public class UserSearch {
                 entry.put("object", results.get(i));
                 data.add(entry);
             }
-
+            if (data.size() == 0) {
+                ToastBar.showErrorMessage("No user found!");
+            }
             users.setModel(new DefaultListModel<>(data));
 //            }
         } catch (ParseException e) {
@@ -63,8 +65,6 @@ public class UserSearch {
             ToastBar.showErrorMessage(e.getMessage());
         }
     }
-
-
 
 
 }

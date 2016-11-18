@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
+
 /**
  * Created by ahmedengu.
  */
@@ -27,7 +29,7 @@ public class GroupsController {
             query.whereEqualTo("user", ParseUser.getCurrent());
             List<ParseObject> results = query.find();
 //            if (results.size() > 0) {
-                ArrayList<Map<String, Object>> data = new ArrayList<>();
+                ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
                 for (int i = 0; i < results.size(); i++) {
                     Map<String, Object> entry = new HashMap<>();
@@ -64,8 +66,7 @@ public class GroupsController {
 
             ParseObject groupUser = ParseObject.create("GroupUser");
             groupUser.put("group", group);
-            ParseUser.getCurrent().setDirty(false);
-            groupUser.put("user", ParseUser.getCurrent());
+            groupUser.put("user", getUserEmptyObject());
             groupUser.put("verified", false);
             groupUser.save();
             stateMachine.back();
@@ -76,6 +77,11 @@ public class GroupsController {
 
     public static void beforeGroupsForm(Form f, MultiList groups) {
         refreshGroups(groups);
-        f.addPullToRefresh(() -> refreshGroups(groups));
+        f.addPullToRefresh(new Runnable() {
+            @Override
+            public void run() {
+                refreshGroups(groups);
+            }
+        });
     }
 }

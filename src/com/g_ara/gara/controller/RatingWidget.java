@@ -5,6 +5,8 @@ import com.codename1.io.Preferences;
 import com.codename1.io.Util;
 import com.codename1.messaging.Message;
 import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.FlowLayout;
@@ -39,7 +41,12 @@ public class RatingWidget {
         this.appstoreUrl = appstoreUrl;
         this.supportEmail = supportEmail;
         running = true;
-        Thread t = Display.getInstance().startThread(() -> checkTimerThread(), "Review thread");
+        Thread t = Display.getInstance().startThread(new Runnable() {
+            @Override
+            public void run() {
+                RatingWidget.this.checkTimerThread();
+            }
+        }, "Review thread");
         t.start();
     }
 
@@ -85,13 +92,19 @@ public class RatingWidget {
         id.add(BorderLayout.CENTER, FlowLayout.encloseCenterMiddle(rate)).
                 add(BorderLayout.SOUTH, GridLayout.encloseIn(2, no, ok));
         id.show(f.getHeight() - height - f.getTitleArea().getHeight(), 0, 0, 0);
-        no.addActionListener(e -> {
-            if (noCallback == null) id.dispose();
-            else noCallback.done(rate);
+        no.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (noCallback == null) id.dispose();
+                else noCallback.done(rate);
+            }
         });
-        ok.addActionListener(e -> {
-            id.dispose();
-            okCallback.done(rate);
+        ok.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                id.dispose();
+                okCallback.done(rate);
+            }
         });
     }
 

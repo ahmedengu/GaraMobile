@@ -44,7 +44,7 @@ import static com.g_ara.gara.controller.UserSearch.usersAction;
  * @author Your name here
  */
 public class StateMachine extends StateMachineBase {
-    public static java.util.Map<String, Object> data = new HashMap<>();
+    public static java.util.Map<String, Object> data = new HashMap<String, Object>();
     public Dialog progressDialog;
     private static StateMachine stateMachine;
 
@@ -54,6 +54,10 @@ public class StateMachine extends StateMachineBase {
 
     public static void showForm(String f) {
         stateMachine.showForm(f, null);
+    }
+
+    public static Resources getResources() {
+        return stateMachine.fetchResourceFile();
     }
 
     public StateMachine(String resFile) {
@@ -68,7 +72,7 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
-        Parse.initialize("http://localhost:1337/parse", "myAppId", "master");
+        Parse.initialize("http://env-2631048.mircloud.host/parse", "myAppId", "mySecretMasterKey");
     }
 
     @Override
@@ -516,7 +520,7 @@ public class StateMachine extends StateMachineBase {
 //        }
         f.setLayout(new BorderLayout());
         MapController mapController = new MapController(f);
-        mapController.map.addPath(MapController.drawCircle(LocationManager.getLocationManager().getLastKnownLocation(),10));
+        mapController.map.addPath(MapController.drawCircle(LocationManager.getLocationManager().getLastKnownLocation(), 10));
 
     }
 }

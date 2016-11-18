@@ -5,6 +5,8 @@ import com.codename1.ui.FontImage;
 import com.codename1.ui.Image;
 import com.codename1.ui.plaf.Style;
 
+import static com.codename1.ui.FontImage.createMaterial;
+
 /**
  * Created by ahmedengu.
  */
@@ -29,28 +31,28 @@ public class Constants {
         Style s = new Style();
         s.setBgTransparency(0);
         s.setFgColor(0xFF0000);
-        return FontImage.createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
+        return createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
     }
 
     public static EncodedImage CURRENT_LOCATION_ICON() {
         Style s = new Style();
         s.setBgTransparency(0);
         s.setFgColor(0);
-        return FontImage.createMaterial(FontImage.MATERIAL_MY_LOCATION, s).toEncodedImage();
+        return createMaterial(FontImage.MATERIAL_MY_LOCATION, s).toEncodedImage();
     }
 
     public static EncodedImage GREEN_LOCATION_ICON() {
         Style s = new Style();
         s.setBgTransparency(0);
         s.setFgColor(0x00FF00);
-        return FontImage.createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
+        return createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
     }
 
     public static EncodedImage BLUE_LOCATION_ICON() {
         Style s = new Style();
         s.setBgTransparency(0);
         s.setFgColor(0x0000FF);
-        return FontImage.createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
+        return createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
     }
 
     public static Image MASK_LOCATION_ICON() {
@@ -59,14 +61,15 @@ public class Constants {
         s.setBgColor(0);
         s.setFgColor(0xFFFFFF);
 
-        return FontImage.createMaterial(FontImage.MATERIAL_NAVIGATION, s).toEncodedImage().rotate(180);
+        return createMaterial(FontImage.MATERIAL_NAVIGATION, s).toEncodedImage().rotate(180);
     }
+
 
     public static EncodedImage PROFILE_ICON() {
         Style s = new Style();
         s.setBgTransparency(0);
         s.setFgColor(0x0000FF);
-        return FontImage.createMaterial(FontImage.MATERIAL_ACCOUNT_BOX, s).toEncodedImage();
+        return createMaterial(FontImage.MATERIAL_ACCOUNT_BOX, s).toEncodedImage();
     }
 
     public static EncodedImage CAR_ICON() {
@@ -74,7 +77,7 @@ public class Constants {
         s.setBgTransparency(0);
         s.setFgColor(0x0000FF);
 
-        return FontImage.createMaterial(FontImage.MATERIAL_DIRECTIONS_CAR, s).toEncodedImage();
+        return createMaterial(FontImage.MATERIAL_DIRECTIONS_CAR, s).toEncodedImage();
     }
 
     public static EncodedImage CODE_ICON() {
@@ -82,6 +85,6 @@ public class Constants {
         s.setBgTransparency(0);
         s.setFgColor(0x000000);
 
-        return FontImage.createMaterial(FontImage.MATERIAL_CODE, s).toEncodedImage();
+        return createMaterial(FontImage.MATERIAL_CODE, s).toEncodedImage();
     }
 }

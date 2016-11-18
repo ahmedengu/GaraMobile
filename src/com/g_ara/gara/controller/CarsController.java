@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
+
 /**
  * Created by ahmedengu.
  */
@@ -26,7 +28,7 @@ public class CarsController {
             java.util.List<ParseObject> results = query.find();
 
 //            if (results.size() > 0) {
-            ArrayList<Map<String, Object>> data = new ArrayList<>();
+            ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
@@ -67,7 +69,7 @@ public class CarsController {
             ParseObject car = ParseObject.create("Car");
             car.put("name", name.getText());
             car.put("year", year.getText());
-            car.put("user", ParseUser.getCurrent());
+            car.put("user", getUserEmptyObject());
             car.save();
             int count = pics.getComponentCount();
             if (count > 1) {
@@ -95,6 +97,11 @@ public class CarsController {
 
     public static void beforeCarsForm(Form f, MultiList cars) {
         refreshCars(cars);
-        f.addPullToRefresh(() -> refreshCars(cars));
+        f.addPullToRefresh(new Runnable() {
+            @Override
+            public void run() {
+                refreshCars(cars);
+            }
+        });
     }
 }

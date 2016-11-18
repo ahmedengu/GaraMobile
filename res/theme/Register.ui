@@ -8,11 +8,11 @@
     </component>
     <component type="TextField" name="Username" cloudBoundProperty="text" cloudDestinationProperty="Username" text="" hint="Username" >
     </component>
-    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" text="" hint="Email" >
+    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" text="" constraint="1" hint="Email" >
     </component>
-    <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" text="" hint="Password" >
+    <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" text="" constraint="65536" hint="Password" >
     </component>
-    <component type="TextField" name="Mobile" cloudBoundProperty="text" cloudDestinationProperty="Mobile" text="" hint="Mobile" >
+    <component type="TextField" name="Mobile" cloudBoundProperty="text" cloudDestinationProperty="Mobile" text="" constraint="3" hint="Mobile" >
     </component>
     <component type="Button" name="Register" cloudDestinationProperty="Register" commandName="Register" commandId="4" commandAction="" commandBack="false" text="Register" >
     </component>

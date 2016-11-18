@@ -1,11 +1,12 @@
 package com.g_ara.gara.controller;
 
-import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.ImageViewer;
 import com.codename1.components.ToastBar;
 import com.codename1.googlemaps.MapContainer;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.GridLayout;
@@ -29,7 +30,7 @@ import static userclasses.StateMachine.showDelayedToastBar;
 public class RequestsController {
     public static void beforeRequestsForm(Form f, Resources resources, StateMachine stateMachine) {
         try {
-            List<ParseObject> results = new ArrayList<>();
+            List<ParseObject> results = new ArrayList<ParseObject>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
                 if (((ParseObject) data.get("active")).getList("tripRequests") == null || ((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
                     ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
@@ -37,50 +38,8 @@ public class RequestsController {
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                     results = q.find();
 
-                    ParseLiveQuery.setWsCallback(new ParseLiveQuery.WsCallback() {
-                        @Override
-                        public void error(String op, int code, String error, boolean reconnect) {
 
-                        }
 
-                        @Override
-                        public void onOpen() {
-                            super.onOpen();
-                        }
-
-                        @Override
-                        public void onClose(int var1, String var2) {
-                            super.onClose(var1, var2);
-                        }
-
-                        @Override
-                        public void onMessage(String var1) {
-                            super.onMessage(var1);
-                        }
-
-                        @Override
-                        public void onMessage(byte[] var1) {
-                            super.onMessage(var1);
-                        }
-
-                        @Override
-                        public void onError(Exception var1) {
-                            super.onError(var1);
-                        }
-                    });
-                    try {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
-                        query.whereEqualTo("playerName", "Sean Plott").whereEqualTo("cheatMode", false);
-
-                        new ParseLiveQuery(q) {
-                            @Override
-                            public void event(String op, int requestId, ParseObject object) {
-                                System.out.println(op + "  " + object.getObjectId());
-                            }
-                        };
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
                 } else {
                     showDelayedToastBar("You have no remaining seats!");
@@ -99,48 +58,54 @@ public class RequestsController {
                 URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
 
-                map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+                map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
 
-                    Dialog dialog = getRequestUserDialog(object, user, "Request");
+                        Dialog dialog = getRequestUserDialog(object, user, "Request");
 
-                    Container south = new Container(new GridLayout(2));
-                    Button cancel = new Button("Reject");
-                    cancel.addActionListener(evt1 -> {
-                        object.put("accept", 0);
-                        try {
-                            object.save();
-                            data.put("active", object);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            ToastBar.showErrorMessage(e.getMessage());
-                        }
-                        dialog.dispose();
-                        stateMachine.showForm("Home", null);
-                    });
-                    south.add(cancel);
-                    Button confirm = new Button("Accept");
-                    confirm.addActionListener(evt1 -> {
-                        object.put("accept", 1);
+                        Container south = new Container(new GridLayout(2));
+                        Button cancel = new Button("Reject");
+                        cancel.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent evt1) {
+                                object.put("accept", 0);
+                                try {
+                                    object.save();
+                                    data.put("active", object);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    ToastBar.showErrorMessage(e.getMessage());
+                                }
+                                dialog.dispose();
+                                stateMachine.showForm("Home", null);
+                            }
+                        });
+                        south.add(cancel);
+                        Button confirm = new Button("Accept");
+                        confirm.addActionListener(evt1 -> {
+                            object.put("accept", 1);
 
-                        ParseObject trip = object.getParseObject("trip");
-                        try {
-                            trip.addUniqueToArrayField("tripRequests", object);
-                            ParseBatch batch = ParseBatch.create();
-                            batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
-                            batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
-                            batch.execute();
-                            data.put("active", object);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            ToastBar.showErrorMessage(e.getMessage());
-                        }
-                        dialog.dispose();
-                        stateMachine.showForm("Home", null);
-                    });
-                    south.add(confirm);
-                    dialog.add(BorderLayout.SOUTH, south);
-                    dialog.show();
+                            ParseObject trip = object.getParseObject("trip");
+                            try {
+                                trip.addUniqueToArrayField("tripRequests", object);
+                                ParseBatch batch = ParseBatch.create();
+                                batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
+                                batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
+                                batch.execute();
+                                data.put("active", object);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                ToastBar.showErrorMessage(e.getMessage());
+                            }
+                            dialog.dispose();
+                            stateMachine.showForm("Home", null);
+                        });
+                        south.add(confirm);
+                        dialog.add(BorderLayout.SOUTH, south);
+                        dialog.show();
 
+                    }
                 });
             }
 
