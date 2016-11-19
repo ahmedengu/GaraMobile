@@ -1,6 +1,7 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.components.ImageViewer;
+import com.codename1.components.MultiButton;
 import com.codename1.components.ToastBar;
 import com.codename1.ext.codescan.CodeScanner;
 import com.codename1.ext.codescan.ScanResult;
@@ -11,7 +12,7 @@ import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.GridLayout;
-import com.codename1.ui.list.MultiList;
+import com.codename1.ui.list.GenericListCellRenderer;
 import com.codename1.ui.util.Resources;
 import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
+import static com.g_ara.gara.controller.CarsController.getCarsArr;
 import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
 import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
@@ -338,6 +340,8 @@ public class HomeController {
         return groups;
     }
 
+    static ComboBox<Map<String, Object>> combo;
+
     public static void driveAction(StateMachine stateMachine) {
         if (MapController.getDestCoord() == null) {
             ToastBar.showErrorMessage("You should choose a destination");
@@ -347,22 +351,21 @@ public class HomeController {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
-
-        MultiList list = new MultiList();
-        CarsController.refreshCars(list);
-
-        if (list.getModel().getSize() == 0) {
-            ToastBar.showErrorMessage("You dont have any cars");
-            return;
+        try {
+            HashMap<String, Object>[] carsArr = getCarsArr();
+            if (carsArr.length == 0) {
+                ToastBar.showErrorMessage("You dont have any cars");
+                return;
+            }
+            combo = new ComboBox<>(carsArr);
+            combo.setRenderer(new GenericListCellRenderer<>(new MultiButton(), new MultiButton()));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        list.addActionListener(evt -> {
-            ParseObject item = (ParseObject) ((Map<String, Object>) list.getSelectedItem()).get("object");
-            data.put("car", item);
-        });
+
         Dialog dialog = new Dialog("Choose a car");
         dialog.setLayout(new BorderLayout());
         Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
-        center.add(list);
         TextField cost = new TextField("");
         TextField toll = new TextField("");
         TextField seats = new TextField("");
@@ -377,14 +380,14 @@ public class HomeController {
         center.add(toll);
         center.add(seats);
         center.add(notes);
+        center.add(combo);
 
         Button cancel = new Button("Cancel");
         cancel.addActionListener(evt -> dialog.dispose());
         Button confirm = new Button("Confirm");
         confirm.addActionListener(evt -> {
-            if (data.get("car") == null) {
-                return;
-            }
+            ParseObject item = (ParseObject) ((Map<String, Object>) combo.getSelectedItem()).get("object");
+            data.put("car", item);
             data.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
             data.put("toll", Integer.parseInt(toll.getText().length() == 0 ? "0" : toll.getText()));
             data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
@@ -396,8 +399,8 @@ public class HomeController {
         south.setLayout(new GridLayout(2));
         south.add(cancel);
         south.add(confirm);
-        dialog.add(south, BorderLayout.SOUTH);
-        dialog.add(center, BorderLayout.CENTER);
+        dialog.add(BorderLayout.SOUTH, south);
+        dialog.add(BorderLayout.CENTER, center);
         dialog.show();
     }
 

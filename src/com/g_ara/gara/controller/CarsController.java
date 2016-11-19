@@ -12,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 
@@ -22,23 +21,7 @@ import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 public class CarsController {
     public static void refreshCars(MultiList cars) {
         try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Car");
-//            query.include("pics");
-            query.whereEqualTo("user", ParseUser.getCurrent());
-            java.util.List<ParseObject> results = query.find();
-
-//            if (results.size() > 0) {
-            ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-
-            for (int i = 0; i < results.size(); i++) {
-                Map<String, Object> entry = new HashMap<>();
-                entry.put("Line1", results.get(i).getString("name"));
-                entry.put("Line2", results.get(i).getString("year"));
-                entry.put("object", (ParseObject) results.get(i));
-
-                data.add(entry);
-
-            }
+            HashMap<String, Object>[] data = getCarsArr();
 
             cars.setModel(new DefaultListModel<>(data));
 //            }
@@ -46,6 +29,25 @@ public class CarsController {
             e.printStackTrace();
 
         }
+    }
+
+    public static HashMap<String, Object>[] getCarsArr() throws ParseException {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Car");
+//            query.include("pics");
+        query.whereEqualTo("user", ParseUser.getCurrent());
+        java.util.List<ParseObject> results = query.find();
+
+//            if (results.size() > 0) {
+        HashMap<String, Object>[] data = new HashMap[results.size()];
+
+        for (int i = 0; i < results.size(); i++) {
+            HashMap<String, Object> entry = new HashMap<>();
+            entry.put("Line1", results.get(i).getString("name"));
+            entry.put("Line2", results.get(i).getString("year"));
+            entry.put("object", (ParseObject) results.get(i));
+            data[i] = entry;
+        }
+        return data;
     }
 
     public static void addCarPic(Container pics) {

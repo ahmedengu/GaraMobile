@@ -605,8 +605,8 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     public static final int COMMAND_ChatFindUser = 20;
-    public static final int COMMAND_HomeSettings = 17;
     public static final int COMMAND_HomeChat = 11;
+    public static final int COMMAND_HomeSettings = 17;
     public static final int COMMAND_HomeProfile = 16;
     public static final int COMMAND_CarsNew = 19;
     public static final int COMMAND_LoginRegister = 2;
@@ -627,11 +627,11 @@ public abstract class StateMachineBase extends UIBuilder {
         return false;
     }
 
-    protected boolean onHomeSettings() {
+    protected boolean onHomeChat() {
         return false;
     }
 
-    protected boolean onHomeChat() {
+    protected boolean onHomeSettings() {
         return false;
     }
 
@@ -704,15 +704,15 @@ public abstract class StateMachineBase extends UIBuilder {
                 }
                 break;
 
-            case COMMAND_HomeSettings:
-                if(onHomeSettings()) {
+            case COMMAND_HomeChat:
+                if(onHomeChat()) {
                     ev.consume();
                     return;
                 }
                 break;
 
-            case COMMAND_HomeChat:
-                if(onHomeChat()) {
+            case COMMAND_HomeSettings:
+                if(onHomeSettings()) {
                     ev.consume();
                     return;
                 }

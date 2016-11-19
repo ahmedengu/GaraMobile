@@ -131,16 +131,16 @@
         <val key="@dlgCommandGridBool" value="true" />
         <val key="@dlgInvisibleButtons" value="1a1a1a" />
         <val key="@formTransitionIn" value="empty" />
-        <val key="@formTransitionOut" value="slide" />
+        <val key="@formTransitionOut" value="empty" />
         <val key="@hideBackCommandBool" value="false" />
         <val key="@includeNativeBool" value="true" />
-        <val key="@menuTransitionIn" value="bubble" />
-        <val key="@menuTransitionOut" value="fade" />
+        <val key="@menuTransitionIn" value="empty" />
+        <val key="@menuTransitionOut" value="empty" />
         <val key="@noTextModeBool" value="true" />
         <val key="@onOffIOSModeBool" value="true" />
         <val key="@otherPopupRendererBool" value="false" />
         <val key="@pureTouchBool" value="true" />
-        <val key="@showBackCommandOnTitleBool" value="true" />
+        <val key="@showBackCommandOnTitleBool" value="false" />
         <val key="@showMenuBelowTitleBool" value="false" />
         <val key="@tabPlacementInt" value="0" />
         <val key="Button.align" value="4" />

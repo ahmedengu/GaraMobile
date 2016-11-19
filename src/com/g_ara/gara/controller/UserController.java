@@ -211,11 +211,9 @@ public class UserController {
 
     public static ParseObject getParseEmptyObject(ParseObject parseObject) {
         ParseObject object = null;
-        try {
-            object = ParseObject.fetch(parseObject.getClassName(), parseObject.getObjectId());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        object = ParseObject.create(parseObject.getClassName());
+        object.setObjectId(parseObject.getObjectId());
+        object.setDirty(false);
         return object;
     }
 }
