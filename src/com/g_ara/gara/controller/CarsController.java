@@ -86,7 +86,7 @@ public class CarsController {
                     files.add(file);
                 }
 
-                car.put("pics", files);
+                car.addAllToArrayField("pics", files);
                 car.save();
             }
             stateMachine.back();

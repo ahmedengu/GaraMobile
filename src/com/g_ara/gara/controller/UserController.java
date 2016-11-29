@@ -123,7 +123,7 @@ public class UserController {
         email.setText(user.getEmail());
 
         EncodedImage placeholder = EncodedImage.createFromImage(pic.getIcon(), false);
-        String url = user.getParseFile("pic").getUrl();
+        String url = (user.getParseFile("pic") != null) ? user.getParseFile("pic").getUrl() : "http://www.aspirehire.co.uk/aspirehire-co-uk/_img/profile.svg";
         pic.setIcon(URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
 
     }

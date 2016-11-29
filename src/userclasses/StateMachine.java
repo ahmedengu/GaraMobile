@@ -72,7 +72,7 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
-        Parse.initialize("http://env-2631048.mircloud.host/parse", "myAppId", "mySecretMasterKey");
+        Parse.initialize("http://gara-app.back4app.io", "GBTIGT2xXUlBHF8ctBXoyEO7nIL18jvwQNyl3gkD", "H3Z3wBo73IOZRvNegnOIvFaxbhyOLnqX3XMA855l");
     }
 
     @Override
