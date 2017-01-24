@@ -11,10 +11,10 @@ import userclasses.StateMachine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
+import static com.g_ara.gara.model.Constants.FILE_PATH;
 import static userclasses.StateMachine.hideBlocking;
 import static userclasses.StateMachine.showBlocking;
 
@@ -47,6 +47,13 @@ public class CarsController {
             HashMap<String, Object> entry = new HashMap<>();
             entry.put("Line1", results.get(i).getString("name"));
             entry.put("Line2", results.get(i).getString("year"));
+            java.util.List<ParseFile> pics = results.get(i).getList("pics");
+            if (pics.size() > 0) {
+                EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
+                String url = FILE_PATH + pics.get(0).getName();
+                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+            }
+
             entry.put("object", (ParseObject) results.get(i));
             data[i] = entry;
         }
