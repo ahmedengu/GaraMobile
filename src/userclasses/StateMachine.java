@@ -262,7 +262,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        beforeDriveSummaryForm(findSummary(), fetchResourceFile(),f);
+        beforeDriveSummaryForm(findSummary(), fetchResourceFile(), f);
     }
 
 
@@ -528,5 +528,15 @@ public class StateMachine extends StateMachineBase {
             online = true;
         }
         return true;
+    }
+
+    @Override
+    protected void exitConversion(Form f) {
+        onConversationExit();
+    }
+
+    @Override
+    protected void postConversion(Form f) {
+        postConversionForm(findMessages(f));
     }
 }

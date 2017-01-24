@@ -8,7 +8,6 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.model.Constants;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseObject;
 import com.parse4cn1.ParseQuery;
@@ -29,15 +28,24 @@ import static userclasses.StateMachine.showForm;
  * Created by ahmedengu.
  */
 public class ChatController {
+    static ParseLiveQuery conversationLive;
+    static ParseUser toUser;
 
     public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine) {
         UserController.addUserSideMenu(f, stateMachine);
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
             query.include("from");
-            query.whereEqualTo("chat", (ParseObject) data.get("chat"));
-
-            ParseLiveQuery liveQuery = new ParseLiveQuery(query) {
+            ParseObject chat = (ParseObject) data.get("chat");
+            query.whereEqualTo("chat", chat);
+            List<ParseUser> members = chat.getList("members");
+            for (int i = 0; i < members.size(); i++) {
+                if (!members.get(i).getObjectId().equals(ParseUser.getCurrent().getObjectId())) {
+                    toUser = members.get(i);
+                    break;
+                }
+            }
+            conversationLive = new ParseLiveQuery(query) {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
@@ -67,10 +75,10 @@ public class ChatController {
 //        Label m = new Label(results.getString("message"));
 //        messages.add(m);
         SpanLabel t = new SpanLabel(results.getString("message"));
-        String url = results.getParseObject("from").getParseFile("pic").getUrl();
+//        String url = results.getParseObject("from").getParseFile("pic").getUrl();
+//        URLImage image = URLImage.createToStorage(Constants.PROFILE_ICON(), "chat_" + url.substring(url.lastIndexOf("/") + 1), url);
+//        t.setIcon(image);
 
-        URLImage image = URLImage.createToStorage(Constants.PROFILE_ICON(), "chat_" + url.substring(url.lastIndexOf("/") + 1), url);
-        t.setIcon(image);
         if (results.getParseObject("from").getObjectId().equals(ParseUser.getCurrent().getObjectId())) {
             t.setTextUIID("you");
             t.setTextBlockAlign(Component.RIGHT);
@@ -138,7 +146,8 @@ public class ChatController {
             message.put("message", messageField.getText());
             message.put("from", getUserEmptyObject());
             message.put("chat", (ParseObject) data.get("chat"));
-            addMessage(message, true, messages);
+            message.put("to", toUser);
+//            addMessage(message, true, messages);
             messageField.setText("");
             message.save();
         } catch (ParseException e) {
@@ -168,5 +177,18 @@ public class ChatController {
 
         data.put("chat", chat);
         showForm("Conversion");
+    }
+
+    public static void onConversationExit() {
+        if (conversationLive != null)
+            try {
+                conversationLive.unsubscribe();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+    }
+
+    public static void postConversionForm(Container messages) {
+        messages.scrollComponentToVisible(messages.getComponentAt(messages.getComponentCount()-1));
     }
 }

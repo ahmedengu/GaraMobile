@@ -1,11 +1,13 @@
 package com.g_ara.gara.controller;
 
+import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.ImageViewer;
 import com.codename1.components.MultiButton;
 import com.codename1.components.ToastBar;
 import com.codename1.ext.codescan.CodeScanner;
 import com.codename1.ext.codescan.ScanResult;
 import com.codename1.maps.Coord;
+import com.codename1.notifications.LocalNotification;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
@@ -38,6 +40,8 @@ import static userclasses.StateMachine.showDelayedToastBar;
  * Created by ahmedengu.
  */
 public class HomeController {
+    public static boolean initLiveQuery = true;
+
     public static void beforeHomeForm(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
         UserController.addUserSideMenu(f, stateMachine);
         f.setBackCommand(null);
@@ -52,6 +56,83 @@ public class HomeController {
 
         } else
             new MapController(resources, f).initMap();
+
+        if (initLiveQuery) {
+            initLiveQuery = false;
+            chatLiveQuery();
+            if (ParseUser.getCurrent().get("trip") != null)
+                requestsLiveQuery();
+        }
+    }
+
+    public static void requestsLiveQuery() {
+        ParseQuery<ParseObject> tripRequestQuery = ParseQuery.getQuery("TripRequest");
+        tripRequestQuery.include("user");
+        tripRequestQuery.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
+        try {
+            new ParseLiveQuery(tripRequestQuery) {
+                @Override
+                public void event(String op, int requestId, ParseObject object) {
+                    if (op.equals("create")) {
+                        if (Display.getInstance().isMinimized()) {
+                            LocalNotification n = new LocalNotification();
+                            n.setId("Requests");
+                            n.setAlertBody("You got a new trip request");
+                            n.setAlertTitle("Gara | New Trip Request");
+
+                            Display.getInstance().scheduleLocalNotification(
+                                    n,
+                                    System.currentTimeMillis() + 10,
+                                    LocalNotification.REPEAT_NONE
+                            );
+                        } else {
+                            String title = Display.getInstance().getCurrent().getTitle();
+                            if (!(title.equals("Requests")))
+                                Display.getInstance().callSerially(() -> ToastBar.showErrorMessage("New Trip Request"));
+                        }
+                    }
+                }
+            };
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void chatLiveQuery() {
+        ParseQuery<ParseObject> chatQuery = ParseQuery.getQuery("Message");
+        chatQuery.include("from");
+        chatQuery.whereEqualTo("to", ParseUser.getCurrent());
+        try {
+            new ParseLiveQuery(chatQuery) {
+                @Override
+                public void event(String op, int requestId, ParseObject object) {
+                    if (op.equals("create")) {
+                        if (Display.getInstance().isMinimized()) {
+                            LocalNotification n = new LocalNotification();
+                            n.setId("chat");
+                            n.setAlertBody("You got a new message");
+                            n.setAlertTitle("Gara | New Message");
+
+                            Display.getInstance().scheduleLocalNotification(
+                                    n,
+                                    System.currentTimeMillis() + 10,
+                                    LocalNotification.REPEAT_NONE
+                            );
+                        } else {
+                            String title = Display.getInstance().getCurrent().getTitle();
+                            if (!(title.equals("Chat") || title.equals("Conversion")))
+                                Display.getInstance().callSerially(() -> ToastBar.showErrorMessage("New message"));
+                        }
+                    }
+                }
+            };
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void tripRequestHome(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {

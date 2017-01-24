@@ -71,7 +71,7 @@ public class MapController {
             URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
             URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
-            map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Hi marker", "Optional long description", new ActionListener() {
+            map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Driver", "", new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
 
@@ -227,7 +227,7 @@ public class MapController {
 
             public void providerStateChanged(int newState) {
                 if (newState != 0)
-                    ToastBar.showErrorMessage("Please enable GPS");
+                    Display.getInstance().callSerially(() -> ToastBar.showErrorMessage("Please enable GPS"));
             }
         });
     }
@@ -263,7 +263,6 @@ public class MapController {
 
     private Location updateMarkers(MapContainer map, Location location) {
         map.clearMapLayers();
-        //TODO: edit the text and icon below
         if (location != null) {
             locationCoord = new Coord(location.getLatitude(), location.getLongitude());
             if (!map.isNativeMaps())
