@@ -18,9 +18,9 @@ import userclasses.StateMachine;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
-import static com.g_ara.gara.model.Constants.PROFILE_ICON;
 import static userclasses.StateMachine.data;
 import static userclasses.StateMachine.showDelayedToastBar;
 
@@ -29,6 +29,7 @@ import static userclasses.StateMachine.showDelayedToastBar;
  */
 public class RequestsController {
     public static void beforeRequestsForm(Form f, Resources resources, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
         try {
             List<ParseObject> results = new ArrayList<ParseObject>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
@@ -37,8 +38,6 @@ public class RequestsController {
                     q.include("user");
                     q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
                     results = q.find();
-
-
 
 
                 } else {
@@ -120,21 +119,38 @@ public class RequestsController {
         Dialog dialog = new Dialog(title);
         dialog.setLayout(new BorderLayout());
 
-        Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        Container north = new Container(new BoxLayout(BoxLayout.Y_AXIS));
 
-        String picUrl = TrUser.getParseFile("pic").getUrl();
-        center.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
-        center.add(new Label("Name: " + TrUser.getString("name")));
-        center.add(new Label("Username: " + TrUser.getString("username")));
-        center.add(new Label("Mobile: " + TrUser.getString("mobile")));
-        center.add(new Label("Cost: " + tripRequest.get("cost")));
+        ImageViewer imageViewer = new ImageViewer();
+        imageViewer.setImageList(new ImageList(new String[]{TrUser.getParseFile("pic").getUrl()}));
+        north.add(imageViewer);
+        north.add(new Label("Name: " + TrUser.getString("name")));
+        north.add(new Label("Username: " + TrUser.getString("username")));
+        north.add(new Label("Mobile: " + TrUser.getString("mobile")));
+        north.add(new Label("Cost: " + (int) tripRequest.get("cost")));
 
-        Container mapContainer = new Container(new BorderLayout());
-        draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), mapContainer);
-        center.add(mapContainer);
+        Button dial = new Button("Call");
+        FontImage.setMaterialIcon(dial, FontImage.MATERIAL_CALL);
+        dial.addActionListener(evt -> {
+            Display.getInstance().dial(TrUser.getString("mobile"));
+        });
 
-        center.setScrollableY(true);
-        dialog.add(BorderLayout.CENTER, center);
+        Button chat = new Button("Chat");
+        FontImage.setMaterialIcon(chat, FontImage.MATERIAL_CHAT);
+        chat.addActionListener(evt -> {
+            try {
+                getUserChat((ParseUser) TrUser);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                ToastBar.showErrorMessage(e.getMessage());
+            }
+        });
+
+        north.add(GridLayout.encloseIn(2, dial, chat));
+
+        north.setScrollableY(true);
+        dialog.add(BorderLayout.NORTH, north);
+        draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), dialog);
         return dialog;
     }
 

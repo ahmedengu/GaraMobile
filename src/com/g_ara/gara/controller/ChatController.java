@@ -1,5 +1,6 @@
 package com.g_ara.gara.controller;
 
+import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.codename1.ui.Display.SOUND_TYPE_INFO;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static userclasses.StateMachine.data;
 import static userclasses.StateMachine.showForm;
@@ -28,16 +30,31 @@ import static userclasses.StateMachine.showForm;
  */
 public class ChatController {
 
-    public static void beforeConversionForm(Container messages) {
+    public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
             query.include("from");
             query.whereEqualTo("chat", (ParseObject) data.get("chat"));
+
+            ParseLiveQuery liveQuery = new ParseLiveQuery(query) {
+                @Override
+                public void event(String op, int requestId, ParseObject object) {
+                    if (op.equals("create")) {
+                        Display.getInstance().callSerially(() -> {
+                            addMessage(object, true, messages);
+                        });
+                    }
+                }
+            };
+
             List<ParseObject> results = query.find();
             for (int i = 0; i < results.size(); i++) {
                 addMessage(results.get(i), messages);
             }
         } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -62,6 +79,9 @@ public class ChatController {
             t.setTextUIID("him");
             t.setTextBlockAlign(Component.LEFT);
             t.setIconPosition(BorderLayout.WEST);
+            if (repaint) {
+                Display.getInstance().playBuiltinSound(SOUND_TYPE_INFO);
+            }
         }
         messages.add(t);
         t.setY(messages.getHeight());
@@ -74,7 +94,8 @@ public class ChatController {
         }
     }
 
-    public static void beforeChatForm(MultiList chat, Resources stateMachine) {
+    public static void beforeChatForm(MultiList chat, Resources stateMachine, Form f, StateMachine machine) {
+        UserController.addUserSideMenu(f, machine);
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
             query.include("members");
@@ -87,7 +108,7 @@ public class ChatController {
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
                 entry.put("Line1", ((ParseUser) results.get(i).getList("members").get(1)).getUsername());
-                EncodedImage placeholder = EncodedImage.createFromImage(stateMachine.getImage("profile_icon.png"), false);
+                EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
                 String url = ((ParseUser) results.get(i).getList("members").get(1)).getParseFile("pic").getUrl();
                 entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
 
@@ -111,15 +132,15 @@ public class ChatController {
         stateMachine.showForm("Conversion", null);
     }
 
-    public static void conversionSendActcion(TextArea messageField, Container messages) {
+    public static void conversionSendAction(TextArea messageField, Container messages) {
         try {
             ParseObject message = ParseObject.create("Message");
             message.put("message", messageField.getText());
             message.put("from", getUserEmptyObject());
             message.put("chat", (ParseObject) data.get("chat"));
             addMessage(message, true, messages);
-            message.save();
             messageField.setText("");
+            message.save();
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());

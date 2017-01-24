@@ -3,16 +3,16 @@
 <component type="Form" name="TripFeedback" cloudDestinationProperty="TripFeedback" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Trip Feedback" >
   <component type="Container" name="Container1" cloudDestinationProperty="Container1" layout="GridLayout" gridLayoutRows="1" gridLayoutColumns="2" >
     <layoutConstraint value="South" />
-    <component type="Button" name="Cancel" cloudDestinationProperty="Cancel" text="Cancel" >
+    <component type="Button" name="Cancel" cloudDestinationProperty="Cancel" uiid="ToggleButtonFirst" text="Cancel" >
     </component>
-    <component type="Button" name="Ok" cloudDestinationProperty="Ok" text="Ok" >
+    <component type="Button" name="Ok" cloudDestinationProperty="Ok" uiid="ToggleButtonLast" text="Ok" >
     </component>
   </component>
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
     <layoutConstraint value="Center" />
     <component type="Slider" name="Rate" cloudDestinationProperty="Rate" text="" >
     </component>
-    <component type="TextArea" name="Comment" cloudBoundProperty="text" cloudDestinationProperty="Comment" text="" hint="Comment" >
+    <component type="TextArea" name="Comment" cloudBoundProperty="text" cloudDestinationProperty="Comment" uiid="GroupElementOnly" text="" hint="Comment" >
     </component>
   </component>
 </component>

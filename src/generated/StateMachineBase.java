@@ -43,6 +43,7 @@ public abstract class StateMachineBase extends UIBuilder {
         UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
         UIBuilder.registerCustomComponent("MultiList", com.codename1.ui.list.MultiList.class);
         UIBuilder.registerCustomComponent("MultiButton", com.codename1.components.MultiButton.class);
+        UIBuilder.registerCustomComponent("ShareButton", com.codename1.components.ShareButton.class);
         if(loadTheme) {
             if(res == null) {
                 try {
@@ -72,7 +73,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected String getFirstFormName() {
-        return "Login";
+        return "Splash";
     }
 
     public Container createWidget(Resources res, String resPath, boolean loadTheme) {
@@ -87,6 +88,7 @@ public abstract class StateMachineBase extends UIBuilder {
         UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
         UIBuilder.registerCustomComponent("MultiList", com.codename1.ui.list.MultiList.class);
         UIBuilder.registerCustomComponent("MultiButton", com.codename1.components.MultiButton.class);
+        UIBuilder.registerCustomComponent("ShareButton", com.codename1.components.ShareButton.class);
         if(loadTheme) {
             if(res == null) {
                 try {
@@ -95,7 +97,7 @@ public abstract class StateMachineBase extends UIBuilder {
             }
             initTheme(res);
         }
-        return createContainer(resPath, "Login");
+        return createContainer(resPath, "Splash");
     }
 
     protected void initTheme(Resources res) {
@@ -172,6 +174,30 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.Container findContainer3(Component root) {
+        return (com.codename1.ui.Container)findByName("Container3", root);
+    }
+
+    public com.codename1.ui.Container findContainer3() {
+        com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("Container3", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Container)findByName("Container3", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Container findLoadingCnt(Component root) {
+        return (com.codename1.ui.Container)findByName("LoadingCnt", root);
+    }
+
+    public com.codename1.ui.Container findLoadingCnt() {
+        com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("LoadingCnt", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Container)findByName("LoadingCnt", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.Container findContainer1(Component root) {
         return (com.codename1.ui.Container)findByName("Container1", root);
     }
@@ -180,6 +206,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("Container1", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Container)findByName("Container1", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Container findContainer2(Component root) {
+        return (com.codename1.ui.Container)findByName("Container2", root);
+    }
+
+    public com.codename1.ui.Container findContainer2() {
+        com.codename1.ui.Container cmp = (com.codename1.ui.Container)findByName("Container2", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Container)findByName("Container2", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -276,6 +314,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Reset", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Button)findByName("Reset", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.components.ShareButton findShareButton(Component root) {
+        return (com.codename1.components.ShareButton)findByName("ShareButton", root);
+    }
+
+    public com.codename1.components.ShareButton findShareButton() {
+        com.codename1.components.ShareButton cmp = (com.codename1.components.ShareButton)findByName("ShareButton", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.components.ShareButton)findByName("ShareButton", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -484,6 +534,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.Label findLabel1(Component root) {
+        return (com.codename1.ui.Label)findByName("Label1", root);
+    }
+
+    public com.codename1.ui.Label findLabel1() {
+        com.codename1.ui.Label cmp = (com.codename1.ui.Label)findByName("Label1", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Label)findByName("Label1", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.Button findPic(Component root) {
         return (com.codename1.ui.Button)findByName("Pic", root);
     }
@@ -528,6 +590,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.components.MultiButton cmp = (com.codename1.components.MultiButton)findByName("Analytics", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.components.MultiButton)findByName("Analytics", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Button findLogo(Component root) {
+        return (com.codename1.ui.Button)findByName("Logo", root);
+    }
+
+    public com.codename1.ui.Button findLogo() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Logo", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Logo", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -605,37 +679,17 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     public static final int COMMAND_ChatFindUser = 20;
-    public static final int COMMAND_HomeChat = 11;
-    public static final int COMMAND_HomeSettings = 17;
-    public static final int COMMAND_HomeProfile = 16;
     public static final int COMMAND_CarsNew = 19;
     public static final int COMMAND_LoginRegister = 2;
     public static final int COMMAND_CarSave = 10;
     public static final int COMMAND_DriveSummaryCancel = 21;
-    public static final int COMMAND_HomeHome = 5;
-    public static final int COMMAND_HomeCars = 6;
-    public static final int COMMAND_HomeRequests = 15;
-    public static final int COMMAND_HomeLogout = 8;
+    public static final int COMMAND_ProfileSave = 3;
     public static final int COMMAND_GroupsNew = 18;
     public static final int COMMAND_LoginLogin = 1;
     public static final int COMMAND_RideMapCancel = 22;
     public static final int COMMAND_RegisterRegister = 4;
-    public static final int COMMAND_RegisterLogin = 3;
-    public static final int COMMAND_HomeGroups = 13;
 
     protected boolean onChatFindUser() {
-        return false;
-    }
-
-    protected boolean onHomeChat() {
-        return false;
-    }
-
-    protected boolean onHomeSettings() {
-        return false;
-    }
-
-    protected boolean onHomeProfile() {
         return false;
     }
 
@@ -655,19 +709,7 @@ public abstract class StateMachineBase extends UIBuilder {
         return false;
     }
 
-    protected boolean onHomeHome() {
-        return false;
-    }
-
-    protected boolean onHomeCars() {
-        return false;
-    }
-
-    protected boolean onHomeRequests() {
-        return false;
-    }
-
-    protected boolean onHomeLogout() {
+    protected boolean onProfileSave() {
         return false;
     }
 
@@ -687,39 +729,10 @@ public abstract class StateMachineBase extends UIBuilder {
         return false;
     }
 
-    protected boolean onRegisterLogin() {
-        return false;
-    }
-
-    protected boolean onHomeGroups() {
-        return false;
-    }
-
     protected void processCommand(ActionEvent ev, Command cmd) {
         switch(cmd.getId()) {
             case COMMAND_ChatFindUser:
                 if(onChatFindUser()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeChat:
-                if(onHomeChat()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeSettings:
-                if(onHomeSettings()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeProfile:
-                if(onHomeProfile()) {
                     ev.consume();
                     return;
                 }
@@ -753,29 +766,8 @@ public abstract class StateMachineBase extends UIBuilder {
                 }
                 break;
 
-            case COMMAND_HomeHome:
-                if(onHomeHome()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeCars:
-                if(onHomeCars()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeRequests:
-                if(onHomeRequests()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeLogout:
-                if(onHomeLogout()) {
+            case COMMAND_ProfileSave:
+                if(onProfileSave()) {
                     ev.consume();
                     return;
                 }
@@ -809,20 +801,6 @@ public abstract class StateMachineBase extends UIBuilder {
                 }
                 break;
 
-            case COMMAND_RegisterLogin:
-                if(onRegisterLogin()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_HomeGroups:
-                if(onHomeGroups()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
         }
         if(ev.getComponent() != null) {
             handleComponentAction(ev.getComponent(), ev);
@@ -832,6 +810,36 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void exitForm(Form f) {
         if("Countdown".equals(f.getName())) {
             exitCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("TripFeedback".equals(f.getName())) {
+            exitTripFeedback(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            exitGroups(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            exitRegister(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("newGroup".equals(f.getName())) {
+            exitNewGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            exitHome(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -854,20 +862,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("TripFeedback".equals(f.getName())) {
-            exitTripFeedback(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Profile".equals(f.getName())) {
             exitProfile(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Groups".equals(f.getName())) {
-            exitGroups(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -878,26 +874,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Register".equals(f.getName())) {
-            exitRegister(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("newGroup".equals(f.getName())) {
-            exitNewGroup(f);
+        if("Splash".equals(f.getName())) {
+            exitSplash(f);
             aboutToShowThisContainer = null;
             return;
         }
 
         if("Requests".equals(f.getName())) {
             exitRequests(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Test".equals(f.getName())) {
-            exitTest(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -932,17 +916,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Home".equals(f.getName())) {
-            exitHome(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
 
     protected void exitCountdown(Form f) {
+    }
+
+
+    protected void exitTripFeedback(Form f) {
+    }
+
+
+    protected void exitGroups(Form f) {
+    }
+
+
+    protected void exitRegister(Form f) {
+    }
+
+
+    protected void exitNewGroup(Form f) {
+    }
+
+
+    protected void exitHome(Form f) {
     }
 
 
@@ -958,15 +956,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void exitTripFeedback(Form f) {
-    }
-
-
     protected void exitProfile(Form f) {
-    }
-
-
-    protected void exitGroups(Form f) {
     }
 
 
@@ -974,19 +964,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void exitRegister(Form f) {
-    }
-
-
-    protected void exitNewGroup(Form f) {
+    protected void exitSplash(Form f) {
     }
 
 
     protected void exitRequests(Form f) {
-    }
-
-
-    protected void exitTest(Form f) {
     }
 
 
@@ -1009,14 +991,40 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void exitDriveSummary(Form f) {
     }
 
-
-    protected void exitHome(Form f) {
-    }
-
     protected void beforeShow(Form f) {
     aboutToShowThisContainer = f;
         if("Countdown".equals(f.getName())) {
             beforeCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("TripFeedback".equals(f.getName())) {
+            beforeTripFeedback(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            beforeGroups(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            beforeRegister(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("newGroup".equals(f.getName())) {
+            beforeNewGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            beforeHome(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1039,20 +1047,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("TripFeedback".equals(f.getName())) {
-            beforeTripFeedback(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Profile".equals(f.getName())) {
             beforeProfile(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Groups".equals(f.getName())) {
-            beforeGroups(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1063,26 +1059,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Register".equals(f.getName())) {
-            beforeRegister(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("newGroup".equals(f.getName())) {
-            beforeNewGroup(f);
+        if("Splash".equals(f.getName())) {
+            beforeSplash(f);
             aboutToShowThisContainer = null;
             return;
         }
 
         if("Requests".equals(f.getName())) {
             beforeRequests(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Test".equals(f.getName())) {
-            beforeTest(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1117,17 +1101,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Home".equals(f.getName())) {
-            beforeHome(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
 
     protected void beforeCountdown(Form f) {
+    }
+
+
+    protected void beforeTripFeedback(Form f) {
+    }
+
+
+    protected void beforeGroups(Form f) {
+    }
+
+
+    protected void beforeRegister(Form f) {
+    }
+
+
+    protected void beforeNewGroup(Form f) {
+    }
+
+
+    protected void beforeHome(Form f) {
     }
 
 
@@ -1143,15 +1141,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void beforeTripFeedback(Form f) {
-    }
-
-
     protected void beforeProfile(Form f) {
-    }
-
-
-    protected void beforeGroups(Form f) {
     }
 
 
@@ -1159,19 +1149,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void beforeRegister(Form f) {
-    }
-
-
-    protected void beforeNewGroup(Form f) {
+    protected void beforeSplash(Form f) {
     }
 
 
     protected void beforeRequests(Form f) {
-    }
-
-
-    protected void beforeTest(Form f) {
     }
 
 
@@ -1194,14 +1176,40 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void beforeDriveSummary(Form f) {
     }
 
-
-    protected void beforeHome(Form f) {
-    }
-
     protected void beforeShowContainer(Container c) {
         aboutToShowThisContainer = c;
         if("Countdown".equals(c.getName())) {
             beforeContainerCountdown(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("TripFeedback".equals(c.getName())) {
+            beforeContainerTripFeedback(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(c.getName())) {
+            beforeContainerGroups(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(c.getName())) {
+            beforeContainerRegister(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("newGroup".equals(c.getName())) {
+            beforeContainerNewGroup(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(c.getName())) {
+            beforeContainerHome(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1224,20 +1232,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("TripFeedback".equals(c.getName())) {
-            beforeContainerTripFeedback(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Profile".equals(c.getName())) {
             beforeContainerProfile(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Groups".equals(c.getName())) {
-            beforeContainerGroups(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1248,26 +1244,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Register".equals(c.getName())) {
-            beforeContainerRegister(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("newGroup".equals(c.getName())) {
-            beforeContainerNewGroup(c);
+        if("Splash".equals(c.getName())) {
+            beforeContainerSplash(c);
             aboutToShowThisContainer = null;
             return;
         }
 
         if("Requests".equals(c.getName())) {
             beforeContainerRequests(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Test".equals(c.getName())) {
-            beforeContainerTest(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1302,17 +1286,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Home".equals(c.getName())) {
-            beforeContainerHome(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
 
     protected void beforeContainerCountdown(Container c) {
+    }
+
+
+    protected void beforeContainerTripFeedback(Container c) {
+    }
+
+
+    protected void beforeContainerGroups(Container c) {
+    }
+
+
+    protected void beforeContainerRegister(Container c) {
+    }
+
+
+    protected void beforeContainerNewGroup(Container c) {
+    }
+
+
+    protected void beforeContainerHome(Container c) {
     }
 
 
@@ -1328,15 +1326,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void beforeContainerTripFeedback(Container c) {
-    }
-
-
     protected void beforeContainerProfile(Container c) {
-    }
-
-
-    protected void beforeContainerGroups(Container c) {
     }
 
 
@@ -1344,19 +1334,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void beforeContainerRegister(Container c) {
-    }
-
-
-    protected void beforeContainerNewGroup(Container c) {
+    protected void beforeContainerSplash(Container c) {
     }
 
 
     protected void beforeContainerRequests(Container c) {
-    }
-
-
-    protected void beforeContainerTest(Container c) {
     }
 
 
@@ -1379,13 +1361,39 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void beforeContainerDriveSummary(Container c) {
     }
 
-
-    protected void beforeContainerHome(Container c) {
-    }
-
     protected void postShow(Form f) {
         if("Countdown".equals(f.getName())) {
             postCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("TripFeedback".equals(f.getName())) {
+            postTripFeedback(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            postGroups(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            postRegister(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("newGroup".equals(f.getName())) {
+            postNewGroup(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            postHome(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1408,20 +1416,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("TripFeedback".equals(f.getName())) {
-            postTripFeedback(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Profile".equals(f.getName())) {
             postProfile(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Groups".equals(f.getName())) {
-            postGroups(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1432,26 +1428,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Register".equals(f.getName())) {
-            postRegister(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("newGroup".equals(f.getName())) {
-            postNewGroup(f);
+        if("Splash".equals(f.getName())) {
+            postSplash(f);
             aboutToShowThisContainer = null;
             return;
         }
 
         if("Requests".equals(f.getName())) {
             postRequests(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Test".equals(f.getName())) {
-            postTest(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1486,17 +1470,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Home".equals(f.getName())) {
-            postHome(f);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
 
     protected void postCountdown(Form f) {
+    }
+
+
+    protected void postTripFeedback(Form f) {
+    }
+
+
+    protected void postGroups(Form f) {
+    }
+
+
+    protected void postRegister(Form f) {
+    }
+
+
+    protected void postNewGroup(Form f) {
+    }
+
+
+    protected void postHome(Form f) {
     }
 
 
@@ -1512,15 +1510,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void postTripFeedback(Form f) {
-    }
-
-
     protected void postProfile(Form f) {
-    }
-
-
-    protected void postGroups(Form f) {
     }
 
 
@@ -1528,19 +1518,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void postRegister(Form f) {
-    }
-
-
-    protected void postNewGroup(Form f) {
+    protected void postSplash(Form f) {
     }
 
 
     protected void postRequests(Form f) {
-    }
-
-
-    protected void postTest(Form f) {
     }
 
 
@@ -1563,13 +1545,39 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void postDriveSummary(Form f) {
     }
 
-
-    protected void postHome(Form f) {
-    }
-
     protected void postShowContainer(Container c) {
         if("Countdown".equals(c.getName())) {
             postContainerCountdown(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("TripFeedback".equals(c.getName())) {
+            postContainerTripFeedback(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(c.getName())) {
+            postContainerGroups(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(c.getName())) {
+            postContainerRegister(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("newGroup".equals(c.getName())) {
+            postContainerNewGroup(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(c.getName())) {
+            postContainerHome(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1592,20 +1600,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("TripFeedback".equals(c.getName())) {
-            postContainerTripFeedback(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Profile".equals(c.getName())) {
             postContainerProfile(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Groups".equals(c.getName())) {
-            postContainerGroups(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1616,26 +1612,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Register".equals(c.getName())) {
-            postContainerRegister(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("newGroup".equals(c.getName())) {
-            postContainerNewGroup(c);
+        if("Splash".equals(c.getName())) {
+            postContainerSplash(c);
             aboutToShowThisContainer = null;
             return;
         }
 
         if("Requests".equals(c.getName())) {
             postContainerRequests(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Test".equals(c.getName())) {
-            postContainerTest(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1670,17 +1654,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Home".equals(c.getName())) {
-            postContainerHome(c);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
 
     protected void postContainerCountdown(Container c) {
+    }
+
+
+    protected void postContainerTripFeedback(Container c) {
+    }
+
+
+    protected void postContainerGroups(Container c) {
+    }
+
+
+    protected void postContainerRegister(Container c) {
+    }
+
+
+    protected void postContainerNewGroup(Container c) {
+    }
+
+
+    protected void postContainerHome(Container c) {
     }
 
 
@@ -1696,15 +1694,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void postContainerTripFeedback(Container c) {
-    }
-
-
     protected void postContainerProfile(Container c) {
-    }
-
-
-    protected void postContainerGroups(Container c) {
     }
 
 
@@ -1712,19 +1702,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void postContainerRegister(Container c) {
-    }
-
-
-    protected void postContainerNewGroup(Container c) {
+    protected void postContainerSplash(Container c) {
     }
 
 
     protected void postContainerRequests(Container c) {
-    }
-
-
-    protected void postContainerTest(Container c) {
     }
 
 
@@ -1747,13 +1729,39 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void postContainerDriveSummary(Container c) {
     }
 
-
-    protected void postContainerHome(Container c) {
-    }
-
     protected void onCreateRoot(String rootName) {
         if("Countdown".equals(rootName)) {
             onCreateCountdown();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("TripFeedback".equals(rootName)) {
+            onCreateTripFeedback();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(rootName)) {
+            onCreateGroups();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(rootName)) {
+            onCreateRegister();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("newGroup".equals(rootName)) {
+            onCreateNewGroup();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(rootName)) {
+            onCreateHome();
             aboutToShowThisContainer = null;
             return;
         }
@@ -1776,20 +1784,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("TripFeedback".equals(rootName)) {
-            onCreateTripFeedback();
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Profile".equals(rootName)) {
             onCreateProfile();
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Groups".equals(rootName)) {
-            onCreateGroups();
             aboutToShowThisContainer = null;
             return;
         }
@@ -1800,26 +1796,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Register".equals(rootName)) {
-            onCreateRegister();
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("newGroup".equals(rootName)) {
-            onCreateNewGroup();
+        if("Splash".equals(rootName)) {
+            onCreateSplash();
             aboutToShowThisContainer = null;
             return;
         }
 
         if("Requests".equals(rootName)) {
             onCreateRequests();
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Test".equals(rootName)) {
-            onCreateTest();
             aboutToShowThisContainer = null;
             return;
         }
@@ -1854,17 +1838,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Home".equals(rootName)) {
-            onCreateHome();
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
 
     protected void onCreateCountdown() {
+    }
+
+
+    protected void onCreateTripFeedback() {
+    }
+
+
+    protected void onCreateGroups() {
+    }
+
+
+    protected void onCreateRegister() {
+    }
+
+
+    protected void onCreateNewGroup() {
+    }
+
+
+    protected void onCreateHome() {
     }
 
 
@@ -1880,15 +1878,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void onCreateTripFeedback() {
-    }
-
-
     protected void onCreateProfile() {
-    }
-
-
-    protected void onCreateGroups() {
     }
 
 
@@ -1896,19 +1886,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void onCreateRegister() {
-    }
-
-
-    protected void onCreateNewGroup() {
+    protected void onCreateSplash() {
     }
 
 
     protected void onCreateRequests() {
-    }
-
-
-    protected void onCreateTest() {
     }
 
 
@@ -1931,14 +1913,40 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void onCreateDriveSummary() {
     }
 
-
-    protected void onCreateHome() {
-    }
-
     protected Hashtable getFormState(Form f) {
         Hashtable h = super.getFormState(f);
         if("Countdown".equals(f.getName())) {
             getStateCountdown(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("TripFeedback".equals(f.getName())) {
+            getStateTripFeedback(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Groups".equals(f.getName())) {
+            getStateGroups(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Register".equals(f.getName())) {
+            getStateRegister(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("newGroup".equals(f.getName())) {
+            getStateNewGroup(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("Home".equals(f.getName())) {
+            getStateHome(f, h);
             aboutToShowThisContainer = null;
             return h;
         }
@@ -1961,20 +1969,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return h;
         }
 
-        if("TripFeedback".equals(f.getName())) {
-            getStateTripFeedback(f, h);
-            aboutToShowThisContainer = null;
-            return h;
-        }
-
         if("Profile".equals(f.getName())) {
             getStateProfile(f, h);
-            aboutToShowThisContainer = null;
-            return h;
-        }
-
-        if("Groups".equals(f.getName())) {
-            getStateGroups(f, h);
             aboutToShowThisContainer = null;
             return h;
         }
@@ -1985,26 +1981,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return h;
         }
 
-        if("Register".equals(f.getName())) {
-            getStateRegister(f, h);
-            aboutToShowThisContainer = null;
-            return h;
-        }
-
-        if("newGroup".equals(f.getName())) {
-            getStateNewGroup(f, h);
+        if("Splash".equals(f.getName())) {
+            getStateSplash(f, h);
             aboutToShowThisContainer = null;
             return h;
         }
 
         if("Requests".equals(f.getName())) {
             getStateRequests(f, h);
-            aboutToShowThisContainer = null;
-            return h;
-        }
-
-        if("Test".equals(f.getName())) {
-            getStateTest(f, h);
             aboutToShowThisContainer = null;
             return h;
         }
@@ -2039,17 +2023,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return h;
         }
 
-        if("Home".equals(f.getName())) {
-            getStateHome(f, h);
-            aboutToShowThisContainer = null;
-            return h;
-        }
-
             return h;
     }
 
 
     protected void getStateCountdown(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateTripFeedback(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateGroups(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateRegister(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateNewGroup(Form f, Hashtable h) {
+    }
+
+
+    protected void getStateHome(Form f, Hashtable h) {
     }
 
 
@@ -2065,15 +2063,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void getStateTripFeedback(Form f, Hashtable h) {
-    }
-
-
     protected void getStateProfile(Form f, Hashtable h) {
-    }
-
-
-    protected void getStateGroups(Form f, Hashtable h) {
     }
 
 
@@ -2081,19 +2071,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void getStateRegister(Form f, Hashtable h) {
-    }
-
-
-    protected void getStateNewGroup(Form f, Hashtable h) {
+    protected void getStateSplash(Form f, Hashtable h) {
     }
 
 
     protected void getStateRequests(Form f, Hashtable h) {
-    }
-
-
-    protected void getStateTest(Form f, Hashtable h) {
     }
 
 
@@ -2116,14 +2098,40 @@ public abstract class StateMachineBase extends UIBuilder {
     protected void getStateDriveSummary(Form f, Hashtable h) {
     }
 
-
-    protected void getStateHome(Form f, Hashtable h) {
-    }
-
     protected void setFormState(Form f, Hashtable state) {
         super.setFormState(f, state);
         if("Countdown".equals(f.getName())) {
             setStateCountdown(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("TripFeedback".equals(f.getName())) {
+            setStateTripFeedback(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Groups".equals(f.getName())) {
+            setStateGroups(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Register".equals(f.getName())) {
+            setStateRegister(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("newGroup".equals(f.getName())) {
+            setStateNewGroup(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("Home".equals(f.getName())) {
+            setStateHome(f, state);
             aboutToShowThisContainer = null;
             return;
         }
@@ -2146,20 +2154,8 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("TripFeedback".equals(f.getName())) {
-            setStateTripFeedback(f, state);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
         if("Profile".equals(f.getName())) {
             setStateProfile(f, state);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Groups".equals(f.getName())) {
-            setStateGroups(f, state);
             aboutToShowThisContainer = null;
             return;
         }
@@ -2170,26 +2166,14 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Register".equals(f.getName())) {
-            setStateRegister(f, state);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("newGroup".equals(f.getName())) {
-            setStateNewGroup(f, state);
+        if("Splash".equals(f.getName())) {
+            setStateSplash(f, state);
             aboutToShowThisContainer = null;
             return;
         }
 
         if("Requests".equals(f.getName())) {
             setStateRequests(f, state);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
-        if("Test".equals(f.getName())) {
-            setStateTest(f, state);
             aboutToShowThisContainer = null;
             return;
         }
@@ -2224,17 +2208,31 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
-        if("Home".equals(f.getName())) {
-            setStateHome(f, state);
-            aboutToShowThisContainer = null;
-            return;
-        }
-
             return;
     }
 
 
     protected void setStateCountdown(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateTripFeedback(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateGroups(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateRegister(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateNewGroup(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateHome(Form f, Hashtable state) {
     }
 
 
@@ -2250,15 +2248,7 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void setStateTripFeedback(Form f, Hashtable state) {
-    }
-
-
     protected void setStateProfile(Form f, Hashtable state) {
-    }
-
-
-    protected void setStateGroups(Form f, Hashtable state) {
     }
 
 
@@ -2266,19 +2256,11 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
-    protected void setStateRegister(Form f, Hashtable state) {
-    }
-
-
-    protected void setStateNewGroup(Form f, Hashtable state) {
+    protected void setStateSplash(Form f, Hashtable state) {
     }
 
 
     protected void setStateRequests(Form f, Hashtable state) {
-    }
-
-
-    protected void setStateTest(Form f, Hashtable state) {
     }
 
 
@@ -2299,10 +2281,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void setStateDriveSummary(Form f, Hashtable state) {
-    }
-
-
-    protected void setStateHome(Form f, Hashtable state) {
     }
 
     protected boolean setListModel(List cmp) {
@@ -2326,56 +2304,6 @@ public abstract class StateMachineBase extends UIBuilder {
             c = c.getParent().getLeadParent();
         }
         if(rootContainerName == null) return;
-        if(rootContainerName.equals("Settings")) {
-            if("Analytics".equals(c.getName())) {
-                onSettings_AnalyticsAction(c, event);
-                return;
-            }
-            if("Website".equals(c.getName())) {
-                onSettings_WebsiteAction(c, event);
-                return;
-            }
-            if("Rate".equals(c.getName())) {
-                onSettings_RateAction(c, event);
-                return;
-            }
-            if("Feedback".equals(c.getName())) {
-                onSettings_FeedbackAction(c, event);
-                return;
-            }
-        }
-        if(rootContainerName.equals("Cars")) {
-            if("Cars".equals(c.getName())) {
-                onCars_CarsAction(c, event);
-                return;
-            }
-            if("New".equals(c.getName())) {
-                onCars_NewAction(c, event);
-                return;
-            }
-        }
-        if(rootContainerName.equals("Login")) {
-            if("Username".equals(c.getName())) {
-                onLogin_UsernameAction(c, event);
-                return;
-            }
-            if("Reset".equals(c.getName())) {
-                onLogin_ResetAction(c, event);
-                return;
-            }
-            if("Password".equals(c.getName())) {
-                onLogin_PasswordAction(c, event);
-                return;
-            }
-            if("Login".equals(c.getName())) {
-                onLogin_LoginAction(c, event);
-                return;
-            }
-            if("Register".equals(c.getName())) {
-                onLogin_RegisterAction(c, event);
-                return;
-            }
-        }
         if(rootContainerName.equals("TripFeedback")) {
             if("Cancel".equals(c.getName())) {
                 onTripFeedback_CancelAction(c, event);
@@ -2390,36 +2318,6 @@ public abstract class StateMachineBase extends UIBuilder {
                 return;
             }
         }
-        if(rootContainerName.equals("Profile")) {
-            if("Pic".equals(c.getName())) {
-                onProfile_PicAction(c, event);
-                return;
-            }
-            if("Name".equals(c.getName())) {
-                onProfile_NameAction(c, event);
-                return;
-            }
-            if("Username".equals(c.getName())) {
-                onProfile_UsernameAction(c, event);
-                return;
-            }
-            if("Email".equals(c.getName())) {
-                onProfile_EmailAction(c, event);
-                return;
-            }
-            if("Password".equals(c.getName())) {
-                onProfile_PasswordAction(c, event);
-                return;
-            }
-            if("Mobile".equals(c.getName())) {
-                onProfile_MobileAction(c, event);
-                return;
-            }
-            if("Save".equals(c.getName())) {
-                onProfile_SaveAction(c, event);
-                return;
-            }
-        }
         if(rootContainerName.equals("Groups")) {
             if("New".equals(c.getName())) {
                 onGroups_NewAction(c, event);
@@ -2427,16 +2325,6 @@ public abstract class StateMachineBase extends UIBuilder {
             }
             if("Groups".equals(c.getName())) {
                 onGroups_GroupsAction(c, event);
-                return;
-            }
-        }
-        if(rootContainerName.equals("Chat")) {
-            if("Chat".equals(c.getName())) {
-                onChat_ChatAction(c, event);
-                return;
-            }
-            if("UserSearch".equals(c.getName())) {
-                onChat_UserSearchAction(c, event);
                 return;
             }
         }
@@ -2481,6 +2369,114 @@ public abstract class StateMachineBase extends UIBuilder {
             }
             if("New".equals(c.getName())) {
                 onNewGroup_NewAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Home")) {
+            if("Ride".equals(c.getName())) {
+                onHome_RideAction(c, event);
+                return;
+            }
+            if("Drive".equals(c.getName())) {
+                onHome_DriveAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Settings")) {
+            if("Analytics".equals(c.getName())) {
+                onSettings_AnalyticsAction(c, event);
+                return;
+            }
+            if("Website".equals(c.getName())) {
+                onSettings_WebsiteAction(c, event);
+                return;
+            }
+            if("ShareButton".equals(c.getName())) {
+                onSettings_ShareButtonAction(c, event);
+                return;
+            }
+            if("Rate".equals(c.getName())) {
+                onSettings_RateAction(c, event);
+                return;
+            }
+            if("Feedback".equals(c.getName())) {
+                onSettings_FeedbackAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Cars")) {
+            if("Cars".equals(c.getName())) {
+                onCars_CarsAction(c, event);
+                return;
+            }
+            if("New".equals(c.getName())) {
+                onCars_NewAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Login")) {
+            if("Logo".equals(c.getName())) {
+                onLogin_LogoAction(c, event);
+                return;
+            }
+            if("Username".equals(c.getName())) {
+                onLogin_UsernameAction(c, event);
+                return;
+            }
+            if("Password".equals(c.getName())) {
+                onLogin_PasswordAction(c, event);
+                return;
+            }
+            if("Login".equals(c.getName())) {
+                onLogin_LoginAction(c, event);
+                return;
+            }
+            if("Register".equals(c.getName())) {
+                onLogin_RegisterAction(c, event);
+                return;
+            }
+            if("Reset".equals(c.getName())) {
+                onLogin_ResetAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Profile")) {
+            if("Pic".equals(c.getName())) {
+                onProfile_PicAction(c, event);
+                return;
+            }
+            if("Name".equals(c.getName())) {
+                onProfile_NameAction(c, event);
+                return;
+            }
+            if("Username".equals(c.getName())) {
+                onProfile_UsernameAction(c, event);
+                return;
+            }
+            if("Email".equals(c.getName())) {
+                onProfile_EmailAction(c, event);
+                return;
+            }
+            if("Password".equals(c.getName())) {
+                onProfile_PasswordAction(c, event);
+                return;
+            }
+            if("Mobile".equals(c.getName())) {
+                onProfile_MobileAction(c, event);
+                return;
+            }
+            if("Save".equals(c.getName())) {
+                onProfile_SaveAction(c, event);
+                return;
+            }
+        }
+        if(rootContainerName.equals("Chat")) {
+            if("Chat".equals(c.getName())) {
+                onChat_ChatAction(c, event);
+                return;
+            }
+            if("UserSearch".equals(c.getName())) {
+                onChat_UserSearchAction(c, event);
                 return;
             }
         }
@@ -2546,50 +2542,7 @@ public abstract class StateMachineBase extends UIBuilder {
                 return;
             }
         }
-        if(rootContainerName.equals("Home")) {
-            if("Ride".equals(c.getName())) {
-                onHome_RideAction(c, event);
-                return;
-            }
-            if("Drive".equals(c.getName())) {
-                onHome_DriveAction(c, event);
-                return;
-            }
-        }
     }
-
-      protected void onSettings_AnalyticsAction(Component c, ActionEvent event) {
-      }
-
-      protected void onSettings_WebsiteAction(Component c, ActionEvent event) {
-      }
-
-      protected void onSettings_RateAction(Component c, ActionEvent event) {
-      }
-
-      protected void onSettings_FeedbackAction(Component c, ActionEvent event) {
-      }
-
-      protected void onCars_CarsAction(Component c, ActionEvent event) {
-      }
-
-      protected void onCars_NewAction(Component c, ActionEvent event) {
-      }
-
-      protected void onLogin_UsernameAction(Component c, ActionEvent event) {
-      }
-
-      protected void onLogin_ResetAction(Component c, ActionEvent event) {
-      }
-
-      protected void onLogin_PasswordAction(Component c, ActionEvent event) {
-      }
-
-      protected void onLogin_LoginAction(Component c, ActionEvent event) {
-      }
-
-      protected void onLogin_RegisterAction(Component c, ActionEvent event) {
-      }
 
       protected void onTripFeedback_CancelAction(Component c, ActionEvent event) {
       }
@@ -2600,37 +2553,10 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onTripFeedback_CommentAction(Component c, ActionEvent event) {
       }
 
-      protected void onProfile_PicAction(Component c, ActionEvent event) {
-      }
-
-      protected void onProfile_NameAction(Component c, ActionEvent event) {
-      }
-
-      protected void onProfile_UsernameAction(Component c, ActionEvent event) {
-      }
-
-      protected void onProfile_EmailAction(Component c, ActionEvent event) {
-      }
-
-      protected void onProfile_PasswordAction(Component c, ActionEvent event) {
-      }
-
-      protected void onProfile_MobileAction(Component c, ActionEvent event) {
-      }
-
-      protected void onProfile_SaveAction(Component c, ActionEvent event) {
-      }
-
       protected void onGroups_NewAction(Component c, ActionEvent event) {
       }
 
       protected void onGroups_GroupsAction(Component c, ActionEvent event) {
-      }
-
-      protected void onChat_ChatAction(Component c, ActionEvent event) {
-      }
-
-      protected void onChat_UserSearchAction(Component c, ActionEvent event) {
       }
 
       protected void onRegister_PicAction(Component c, ActionEvent event) {
@@ -2661,6 +2587,78 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onNewGroup_NewAction(Component c, ActionEvent event) {
+      }
+
+      protected void onHome_RideAction(Component c, ActionEvent event) {
+      }
+
+      protected void onHome_DriveAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_AnalyticsAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_WebsiteAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_ShareButtonAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_RateAction(Component c, ActionEvent event) {
+      }
+
+      protected void onSettings_FeedbackAction(Component c, ActionEvent event) {
+      }
+
+      protected void onCars_CarsAction(Component c, ActionEvent event) {
+      }
+
+      protected void onCars_NewAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_LogoAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_UsernameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_PasswordAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_LoginAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_RegisterAction(Component c, ActionEvent event) {
+      }
+
+      protected void onLogin_ResetAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_PicAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_NameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_UsernameAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_EmailAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_PasswordAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_MobileAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_SaveAction(Component c, ActionEvent event) {
+      }
+
+      protected void onChat_ChatAction(Component c, ActionEvent event) {
+      }
+
+      protected void onChat_UserSearchAction(Component c, ActionEvent event) {
       }
 
       protected void onConversion_MessageAction(Component c, ActionEvent event) {
@@ -2700,12 +2698,6 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onDriveSummary_ConfirmAction(Component c, ActionEvent event) {
-      }
-
-      protected void onHome_RideAction(Component c, ActionEvent event) {
-      }
-
-      protected void onHome_DriveAction(Component c, ActionEvent event) {
       }
 
 }

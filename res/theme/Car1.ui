@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Car1" cloudDestinationProperty="Car" layout="BoxLayout" boxLayoutAxis="Y" title="Car" >
+  <component type="Container" name="Pics" cloudDestinationProperty="Pics" scrollableX="false" layout="GridLayout" gridLayoutRows="1" gridLayoutColumns="3" >
+    <component type="Button" name="Add" cloudDestinationProperty="Add" text="" >
+    </component>
+  </component>
+  <component type="TextField" name="Name" cloudBoundProperty="text" cloudDestinationProperty="Name" text="" hint="Name" >
+  </component>
+  <component type="TextField" name="Year" cloudBoundProperty="text" cloudDestinationProperty="Year" text="" hint="Year" >
+  </component>
+  <component type="TextField" name="Notes" cloudBoundProperty="text" cloudDestinationProperty="Notes" text="" hint="Notes" >
+  </component>
+  <component type="Button" name="Save" cloudDestinationProperty="Save" text="Save" >
+  </component>
+<command name="Save" id="10" action="" backCommand="true" /></component>

@@ -7,19 +7,22 @@
 
 package userclasses;
 
+import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
+import com.codename1.io.NetworkManager;
 import com.codename1.io.Preferences;
 import com.codename1.location.LocationManager;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
-import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.controller.MapController;
+import com.g_ara.gara.controller.ParseLiveQuery;
 import com.parse4cn1.Parse;
+import com.parse4cn1.ParseException;
+import com.parse4cn1.ParseUser;
 import generated.StateMachineBase;
 
 import java.util.HashMap;
@@ -29,16 +32,14 @@ import static com.g_ara.gara.controller.ChatController.*;
 import static com.g_ara.gara.controller.CountdownController.beforeCountdownForm;
 import static com.g_ara.gara.controller.DriveSummary.beforeDriveSummaryForm;
 import static com.g_ara.gara.controller.DriveSummary.confirmAction;
-import static com.g_ara.gara.controller.GroupsController.beforeGroupsForm;
-import static com.g_ara.gara.controller.GroupsController.newGroup;
+import static com.g_ara.gara.controller.GroupsController.*;
 import static com.g_ara.gara.controller.HomeController.*;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
 import static com.g_ara.gara.controller.SettingsController.*;
 import static com.g_ara.gara.controller.TripFeedbackController.*;
 import static com.g_ara.gara.controller.UserController.*;
-import static com.g_ara.gara.controller.UserSearch.searchAction;
-import static com.g_ara.gara.controller.UserSearch.usersAction;
+import static com.g_ara.gara.controller.UserSearch.*;
 
 /**
  * @author Your name here
@@ -53,7 +54,8 @@ public class StateMachine extends StateMachineBase {
     }
 
     public static void showForm(String f) {
-        stateMachine.showForm(f, null);
+        if (!Display.getInstance().getCurrent().getTitle().equals(f))
+            stateMachine.showForm(f, null);
     }
 
     public static Resources getResources() {
@@ -72,16 +74,16 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
-        Parse.initialize("http://gara-app.back4app.io", "GBTIGT2xXUlBHF8ctBXoyEO7nIL18jvwQNyl3gkD", "H3Z3wBo73IOZRvNegnOIvFaxbhyOLnqX3XMA855l");
+        Parse.initialize("https://gara-app.back4app.io", "GBTIGT2xXUlBHF8ctBXoyEO7nIL18jvwQNyl3gkD", "H3Z3wBo73IOZRvNegnOIvFaxbhyOLnqX3XMA855l");
     }
 
-    @Override
-    protected String getFirstFormName() {
-        if (onStart()) {
-            return "Home";
-        } else
-            return super.getFirstFormName();
-    }
+//    @Override
+//    protected String getFirstFormName() {
+//        if (onStart()) {
+//            return "Home";
+//        } else
+//            return super.getFirstFormName();
+//    }
 
     @Override
     protected void beforeHome(Form f) {
@@ -90,7 +92,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onCars_CarsAction(Component c, ActionEvent event) {
-        showForm("Car", null);
+
     }
 
 
@@ -138,7 +140,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeGroups(Form f) {
-        beforeGroupsForm(f, (MultiList) findGroups());
+        beforeGroupsForm(f, (MultiList) findGroups(), this);
     }
 
     @Override
@@ -160,12 +162,12 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeCars(Form f) {
-        beforeCarsForm(f, (MultiList) findCars());
+        beforeCarsForm(f, (MultiList) findCars(), this);
     }
 
     @Override
     protected void beforeSettings(Form f) {
-        analyticsState(Preferences.get("Analytics", true), findAnalytics());
+        beforeSettingsForm(f, findRate(), findFeedback(), findWebsite(), findAnalytics(), this);
     }
 
     @Override
@@ -188,19 +190,16 @@ public class StateMachine extends StateMachineBase {
         feedbackAction();
     }
 
-
     @Override
     protected void onProfile_SaveAction(Component c, ActionEvent event) {
         saveUser(findUsername(), findPassword(), findMobile(), findPic(), this);
 
     }
 
-
     @Override
     protected void beforeProfile(Form f) {
-        beforeProffileForm(findName(), findUsername(), findPassword(), findMobile(), findPic(), findEmail());
+        beforeProfileForm(findName(), findUsername(), findPassword(), findMobile(), findPic(), findEmail(), f, this);
     }
-
 
     @Override
     protected void onProfile_PicAction(Component c, ActionEvent event) {
@@ -209,15 +208,8 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onLogin_ResetAction(Component c, ActionEvent event) {
-        resetPassword(findUsername());
+        resetPassword();
     }
-
-    @Override
-    protected boolean onHomeLogout() {
-        logout(this);
-        return true;
-    }
-
 
     @Override
     protected void postLogin(Form f) {
@@ -227,14 +219,14 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeConversion(Form f) {
-        beforeConversionForm(findMessages());
+        beforeConversionForm(findMessages(), f, this);
 
     }
 
 
     @Override
     protected void beforeChat(Form f) {
-        beforeChatForm((MultiList) findChat(), fetchResourceFile());
+        beforeChatForm((MultiList) findChat(), fetchResourceFile(), f, this);
     }
 
 
@@ -259,7 +251,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onConversion_SendAction(Component c, ActionEvent event) {
-        conversionSendActcion(findMessage(), findMessages());
+        conversionSendAction(findMessage(), findMessages());
     }
 
     @Override
@@ -270,7 +262,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        beforeDriveSummaryForm(findSummary(), fetchResourceFile());
+        beforeDriveSummaryForm(findSummary(), fetchResourceFile(),f);
     }
 
 
@@ -451,76 +443,90 @@ public class StateMachine extends StateMachineBase {
         s.showDelayed(delay);
     }
 
-//    @Override
-//    protected void exitRequests(Form f) {
-//        try {
-//            ParseLiveQuery.close();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    protected void exitRequests(Form f) {
+        try {
+            ParseLiveQuery.close();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
-    protected void beforeTest(Form f) {
-//        // optional to handle the websocket events and errors that not related to a specific query
-//        ParseLiveQuery.setWsCallback(new ParseLiveQuery.WsCallback() {
-//            @Override
-//            public void error(String op, int code, String error, boolean reconnect) {
-//
-//            }
-//
-//            @Override
-//            public void onOpen() {
-//                super.onOpen();
-//            }
-//
-//            @Override
-//            public void onClose(int var1, String var2) {
-//                super.onClose(var1, var2);
-//            }
-//
-//            @Override
-//            public void onMessage(String var1) {
-//                super.onMessage(var1);
-//            }
-//
-//            @Override
-//            public void onMessage(byte[] var1) {
-//                super.onMessage(var1);
-//            }
-//
-//            @Override
-//            public void onError(Exception var1) {
-//                super.onError(var1);
-//            }
-//        });
-//        try {
-//
-//            // query support $lt, $lte, $gt, $gte, $ne, $in, $nin, $exists, $all, $regex, $nearSphere, $within :: https://github.com/ParsePlatform/parse-server/wiki/Parse-LiveQuery-Protocol-Specification
-//            ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
-//            query.whereEqualTo("playerName", "Sean Plott").whereEqualTo("cheatMode", false);
-//
-//            // subscribe
-//            ParseLiveQuery liveQuery = new ParseLiveQuery(query) {
-//                @Override
-//                public void event(String op, int requestId, ParseObject object) {
-//                    System.out.println(op + "  " + object.getObjectId());
-//                }
-//            };
-//
-//            // unsubscribe
-//            liveQuery.unsubscribe();
-//
-//            // close the Websocket
-//            ParseLiveQuery.close();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-        f.setLayout(new BorderLayout());
-        MapController mapController = new MapController(f);
-        mapController.map.addPath(MapController.drawCircle(LocationManager.getLocationManager().getLastKnownLocation(), 10));
+    protected void beforeRegister(Form f) {
+        FontImage.setMaterialIcon(findPic(), FontImage.MATERIAL_ADD_A_PHOTO);
+    }
 
+    @Override
+    protected void beforeCar(Form f) {
+        FontImage.setMaterialIcon(findAdd(), FontImage.MATERIAL_ADD);
+    }
+
+    @Override
+    protected void beforeNewGroup(Form f) {
+        beforeNewGroupForm(f, this);
+    }
+
+
+    @Override
+    protected void beforeUserSearch(Form f) {
+        beforeUserSearchForm(f, this);
+    }
+
+    static Dialog dialogBlocking;
+
+    public static void showBlocking() {
+        if (dialogBlocking == null)
+            dialogBlocking = new InfiniteProgress().showInifiniteBlocking();
+        dialogBlocking.show();
+    }
+
+    public static void hideBlocking() {
+        if (dialogBlocking != null)
+            dialogBlocking.dispose();
+    }
+
+
+    @Override
+    protected void postSplash(Form f) {
+        boolean b = !am_i_online();
+        boolean b1 = LocationManager.getLocationManager().getStatus() != 0;
+        if (b && b1) {
+            ToastBar.showErrorMessage("Gara require internet connection & GPS");
+            findLoadingCnt(f).remove();
+            f.revalidate();
+        } else if (b) {
+            ToastBar.showErrorMessage("Gara require internet connection");
+            findLoadingCnt(f).remove();
+            f.revalidate();
+        } else if (b1) {
+            ToastBar.showErrorMessage("Gara require GPS");
+            findLoadingCnt(f).remove();
+            f.revalidate();
+        } else if (Preferences.get("sessionToken", "").length() > 0) {
+            try {
+                ParseUser user = ParseUser.fetchBySession(Preferences.get("sessionToken", ""));
+                if (user.isAuthenticated()) {
+                    showForm("Home", null);
+                } else {
+                    showForm("Login", null);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            showForm("Login", null);
+        }
+    }
+
+    public static boolean am_i_online() {
+        boolean online = false;
+        String net = NetworkManager.getInstance().getCurrentAccessPoint();
+        if (net == null || net == "" || net.equals(null)) {
+            online = false;
+        } else {
+            online = true;
+        }
+        return true;
     }
 }

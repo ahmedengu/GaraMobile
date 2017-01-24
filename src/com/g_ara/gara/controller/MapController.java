@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.List;
 
+import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.*;
@@ -98,7 +99,7 @@ public class MapController {
                             tripRequest.put("accept", -1);
                             tripRequest.put("active", true);
                             double distanceinkilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
-                            tripRequest.put("cost", distanceinkilometers * trip.getInt("cost") + trip.getInt("toll"));
+                            tripRequest.put("cost", (int) (distanceinkilometers * trip.getInt("cost") + trip.getInt("toll")));
                             tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
                             tripRequest.put("distance", distanceinkilometers);
                             try {
@@ -132,32 +133,50 @@ public class MapController {
 
         Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
 
+        List<ParseFile> carPics = car.getList("pics");
+        String[] carImages = new String[carPics.size() + 1];
+        for (int j = 0; j < carPics.size(); j++) {
+            carImages[j] = FILE_PATH + carPics.get(j).getName();
+        }
+        carImages[carPics.size()] = driver.getParseFile("pic").getUrl();
+        ImageViewer carImageViewer = new ImageViewer();
+        carImageViewer.setImageList(new ImageList(carImages));
+
+        info.add(carImageViewer);
+
 
         double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
-        info.add(new Label("Distance: " + distanceInKilometers));
-        info.add(new Label("Cost: " + distanceInKilometers * trip.getInt("cost") + trip.getInt("toll")));
 
-        String picUrl = driver.getParseFile("pic").getUrl();
-        info.add(new ImageViewer(URLImage.createToStorage(PROFILE_ICON().scaledEncoded(dialog.getWidth(), -1), picUrl.substring(picUrl.lastIndexOf("/") + 1), picUrl)));
+        info.add(GridLayout.encloseIn(2, new Label("Cost: " + (int) (distanceInKilometers * trip.getInt("cost") + trip.getInt("toll"))), new Label("Distance: " + (int) distanceInKilometers)));
+
         info.add(new Label("Username: " + driver.getString("username")));
         info.add(new Label("Name: " + driver.getString("name")));
         info.add(new Label("Mobile: " + driver.getString("mobile")));
+        Button dial = new Button("Call");
+        FontImage.setMaterialIcon(dial, FontImage.MATERIAL_CALL);
+        dial.addActionListener(evt -> {
+            Display.getInstance().dial(driver.getString("mobile"));
+        });
 
-        if (car != null) {
-            List<ParseFile> carPics = car.getList("pics");
-            for (int j = 0; j < carPics.size(); j++) {
-                String carUrl = FILE_PATH + carPics.get(j).getName();
-                info.add(new ImageViewer(URLImage.createToStorage(CAR_ICON().scaledEncoded(dialog.getWidth(), -1), carUrl.substring(carUrl.lastIndexOf("/") + 1), carUrl)));
+        Button chat = new Button("Chat");
+        FontImage.setMaterialIcon(chat, FontImage.MATERIAL_CHAT);
+        chat.addActionListener(evt -> {
+            try {
+                getUserChat((ParseUser) driver);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                ToastBar.showErrorMessage(e.getMessage());
             }
-            info.add(new Label("Car: " + car.getString("name")));
-            info.add(new Label("Car Year: " + car.getString("year")));
-        }
-        Container mapContainer = new Container(new BorderLayout());
-        draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), mapContainer);
-        info.add(mapContainer);
+        });
+
+
+        info.add(GridLayout.encloseIn(2, new Label("Car: " + car.getString("name")), new Label("Car Year: " + car.getString("year"))));
+        info.add(GridLayout.encloseIn(2, dial, chat));
+
 
         info.setScrollableY(true);
-        dialog.add(BorderLayout.CENTER, info);
+        dialog.add(BorderLayout.NORTH, info);
+        draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), dialog);
         return dialog;
     }
 
@@ -179,7 +198,8 @@ public class MapController {
         if (currentLocation != null) {
             locationCoord = new Coord(currentLocation.getLatitude(), currentLocation.getLongitude());
             map.zoom(locationCoord, 5);
-//            map.setShowMyLocation(true);
+            if (map.isNativeMaps())
+                map.setShowMyLocation(true);
         }
         locationListener(map);
     }
@@ -206,7 +226,8 @@ public class MapController {
 
 
             public void providerStateChanged(int newState) {
-                //TODO: handle gps state
+                if (newState != 0)
+                    ToastBar.showErrorMessage("Please enable GPS");
             }
         });
     }
@@ -243,19 +264,19 @@ public class MapController {
     private Location updateMarkers(MapContainer map, Location location) {
         map.clearMapLayers();
         //TODO: edit the text and icon below
+        if (location != null) {
+            locationCoord = new Coord(location.getLatitude(), location.getLongitude());
+            if (!map.isNativeMaps())
+                map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
+            lastLocationUpdate = System.currentTimeMillis();
+        }
         if (destCoord != null) {
-            map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
-            if (coordsPath == null && !destCoord.equals(lastDestCoord) ) {
+            map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
+            if (coordsPath == null && !destCoord.equals(lastDestCoord)) {
                 lastDestCoord = destCoord;
                 getRoutesCoordsAsync();
             }
         }
-        if (location != null) {
-            locationCoord = new Coord(location.getLatitude(), location.getLongitude());
-            map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Hi marker", "Optional long description", null);
-            lastLocationUpdate = System.currentTimeMillis();
-        }
-
         for (int i = 0; i < markers.size(); i++) {
             Map<String, Object> m = markers.get(i);
             map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
@@ -400,8 +421,8 @@ public class MapController {
 
     public static void draw2MarkerMap(Coord locationCoord, Coord destCoord, Container container) {
         MapContainer map = new MapController(container).map;
-        map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Hi marker", "Optional long description", null);
-        map.addMarker(RED_LOCATION_ICON(), destCoord, "Hi marker", "Optional long description", null);
+        map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
+        map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
         map.zoom(locationCoord, 5);
         map.setScrollableY(false);
         Coord[] coords = MapController.decode(MapController.getRoutesEncoded(locationCoord, destCoord));

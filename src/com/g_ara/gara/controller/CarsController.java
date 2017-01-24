@@ -1,6 +1,7 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.capture.Capture;
+import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
 
 /**
  * Created by ahmedengu.
@@ -57,6 +60,10 @@ public class CarsController {
                 Image img = Image.createImage(filePath);
                 Button button = new Button();
                 button.setIcon(img.scaledWidth(50));
+                button.addActionListener(evt -> {
+                    button.remove();
+                    pics.revalidate();
+                });
                 pics.add(button);
                 pics.revalidate();
             } catch (IOException e) {
@@ -72,6 +79,7 @@ public class CarsController {
             car.put("name", name.getText());
             car.put("year", year.getText());
             car.put("user", getUserEmptyObject());
+            showBlocking();
             car.save();
             int count = pics.getComponentCount();
             if (count > 1) {
@@ -89,15 +97,19 @@ public class CarsController {
                 car.addAllToArrayField("pics", files);
                 car.save();
             }
+            hideBlocking();
             stateMachine.back();
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
+            ToastBar.showErrorMessage(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void beforeCarsForm(Form f, MultiList cars) {
+    public static void beforeCarsForm(Form f, MultiList cars, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
         refreshCars(cars);
         f.addPullToRefresh(new Runnable() {
             @Override

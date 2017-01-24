@@ -1,11 +1,10 @@
 package com.g_ara.gara.controller;
 
-import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
 import com.codename1.maps.Coord;
 import com.codename1.ui.Container;
+import com.codename1.ui.Form;
 import com.codename1.ui.Label;
-import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.util.Resources;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseGeoPoint;
@@ -51,20 +50,15 @@ public class DriveSummary {
         }
     }
 
-    public static void beforeDriveSummaryForm(Container summary, Resources resources) {
+    public static void beforeDriveSummaryForm(Container summary, Resources resources, Form f) {
         Coord locationCoord = MapController.getLocationCoord();
         Coord destCoord = MapController.getDestCoord();
-        summary.add(new Label("Distance: " + MapController.distanceInKilometers(locationCoord, destCoord)));
+        summary.add(new Label("Distance: " + (int) MapController.distanceInKilometers(locationCoord, destCoord)));
         summary.add(new Label("Cost per kilo: " + data.get("cost")));
         summary.add(new Label("Tolls cost: " + data.get("toll")));
         summary.add(new Label("available seats: " + data.get("seats")));
-        summary.add(new SpanLabel("notes:\n" + data.get("notes")));
         summary.add(new Label("Car: " + ((ParseObject) data.get("car")).getString("name")));
 
-        Container container = new Container(new BorderLayout());
-        draw2MarkerMap(locationCoord, destCoord, container);
-        summary.add(container);
+        draw2MarkerMap(locationCoord, destCoord, f);
     }
-
-
 }

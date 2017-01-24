@@ -1,9 +1,7 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.components.ToastBar;
-import com.codename1.ui.EncodedImage;
-import com.codename1.ui.TextArea;
-import com.codename1.ui.URLImage;
+import com.codename1.ui.*;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.Resources;
@@ -40,7 +38,7 @@ public class UserSearch {
                 Map<String, Object> entry = new HashMap<>();
                 entry.put("Line1", results.get(i).getUsername());
                 entry.put("Line2", results.get(i).getString("name"));
-                EncodedImage placeholder = EncodedImage.createFromImage(resources.getImage("profile_icon.png"), false);
+                EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
                 String url = results.get(i).getParseFile("pic").getUrl();
                 entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
                 entry.put("object", results.get(i));
@@ -66,5 +64,8 @@ public class UserSearch {
         }
     }
 
+    public static void beforeUserSearchForm(Form f, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
+    }
 
 }

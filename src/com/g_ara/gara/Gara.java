@@ -2,6 +2,7 @@ package com.g_ara.gara;
 
 
 import com.codename1.analytics.AnalyticsService;
+import com.codename1.io.NetworkManager;
 import com.codename1.io.Preferences;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
@@ -33,6 +34,7 @@ public class Gara {
             AnalyticsService.init("UA-80287405-1", "g-ara.com");
         }
         Display.getInstance().lockOrientation(true);
+        NetworkManager.getInstance().updateThreadCount(2);
 
         if (current != null) {
             current.show();

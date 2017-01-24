@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Home1" cloudDestinationProperty="Home" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Home" >
+  <component type="Container" name="Container" cloudDestinationProperty="Container" layout="FlowLayout" flowLayoutFillRows="true" flowLayoutAlign="1" flowLayoutValign="0" >
+    <layoutConstraint value="South" />
+    <component type="Button" name="Ride" cloudDestinationProperty="Ride" text="Get A Ride" >
+    </component>
+    <component type="Button" name="Drive" cloudDestinationProperty="Drive" text="Drive" >
+    </component>
+  </component>
+<command name="Home" id="5" action="" backCommand="false" /><command name="Profile" id="16" action="Profile" backCommand="false" /><command name="Requests" id="15" action="Requests" backCommand="false" /><command name="Chat" id="11" action="Chat" backCommand="false" /><command name="Groups" id="13" action="Groups" backCommand="false" /><command name="Cars" id="6" action="Cars" backCommand="false" /><command name="Settings" id="17" action="Settings" backCommand="false" /><command name="logout" id="8" action="" backCommand="false" /></component>

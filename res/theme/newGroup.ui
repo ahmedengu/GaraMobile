@@ -2,9 +2,9 @@
 
 <component type="Form" name="newGroup" cloudDestinationProperty="newGroup" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="New Group" >
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
-    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" text="" hint="Email" >
+    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" nextFocusDown="New" uiid="GroupElementFirst" text="" hint="Email" >
     </component>
-    <component type="Button" name="New" cloudDestinationProperty="New" text="New" >
+    <component type="Button" name="New" cloudDestinationProperty="New" nextFocusUp="Email" uiid="ButtonGroupLast" text="Add" >
     </component>
   </component>
 </component>

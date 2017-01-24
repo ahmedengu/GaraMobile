@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Login1" cloudDestinationProperty="Login" uiid="CarBackground" scrollVisible="false" snapToGrid="false" flatten="false" scrollableY="false" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="" >
+  <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
+    <component type="Button" name="Logo" cloudDestinationProperty="Logo" uiid="ButtonGroupFirst" focusable="false" enabled="false" tactileTouch="false" flatten="false" text="" icon="images-logo (3).png" gap="0" verticalAlignment="4" >
+    </component>
+    <component type="TextField" name="Username" cloudBoundProperty="text" cloudDestinationProperty="Username" uiid="GroupElement" snapToGrid="true" flatten="false" text="" hint="Username" >
+    </component>
+    <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" uiid="GroupElement" flatten="false" text="" constraint="65536" hint="Password" >
+    </component>
+    <component type="Button" name="Login" cloudDestinationProperty="Login" commandName="Login" commandId="1" commandAction="" commandBack="false" uiid="ButtonGroup" text="Login" >
+    </component>
+    <component type="Button" name="Register" cloudDestinationProperty="Register" commandName="Register" commandId="2" commandAction="Register" commandBack="false" uiid="ButtonGroupLast" focusable="true" text="Register" >
+    </component>
+    <component type="Button" name="Reset" cloudDestinationProperty="Reset" uiid="Button" focusable="true" snapToGrid="false" flatten="false" text="Rest password" toggle="false" >
+      <custom name="maskName" type="java.lang.String" value="" />
+    </component>
+  </component>
+</component>

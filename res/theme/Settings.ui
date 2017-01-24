@@ -8,12 +8,14 @@
     <custom name="radioButton" type="java.lang.Boolean" value="true" />
     <custom name="selected" type="java.lang.Boolean" value="true" />
   </component>
-  <component type="Label" name="Label" cloudDestinationProperty="Label" text="About" >
+  <component type="Label" name="Label" cloudDestinationProperty="Label" text="  " >
   </component>
-  <component type="Button" name="Website" cloudDestinationProperty="Website" text="Website" >
+  <component type="Button" name="Website" cloudDestinationProperty="Website" uiid="ButtonGroupFirst" text="Website" >
   </component>
-  <component type="Button" name="Rate" cloudDestinationProperty="Rate" text="Rate" >
+  <component type="ShareButton" name="ShareButton" cloudDestinationProperty="ShareButton" uiid="ButtonGroupLast" text="Share" >
   </component>
-  <component type="Button" name="Feedback" cloudDestinationProperty="Feedback" text="Feedback" >
+  <component type="Button" name="Rate" cloudDestinationProperty="Rate" uiid="ButtonGroupFirst" text="Rate" >
+  </component>
+  <component type="Button" name="Feedback" cloudDestinationProperty="Feedback" uiid="ButtonGroupLast" text="Feedback" >
   </component>
 </component>

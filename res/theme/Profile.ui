@@ -2,19 +2,19 @@
 
 <component type="Form" name="Profile" cloudDestinationProperty="Profile" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="Profile" >
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
-    <component type="Button" name="Pic" cloudDestinationProperty="Pic" text="" icon="profile_icon.png" >
+    <component type="Button" name="Pic" cloudDestinationProperty="Pic" nextFocusLeft="Name" uiid="ButtonGroupFirst" text="" >
     </component>
-    <component type="TextField" name="Name" cloudBoundProperty="text" cloudDestinationProperty="Name" text="" hint="Name" >
+    <component type="TextField" name="Name" cloudBoundProperty="text" cloudDestinationProperty="Name" nextFocusDown="Username" nextFocusUp="Pic" uiid="GroupElement" text="" hint="Name" >
     </component>
-    <component type="TextField" name="Username" cloudBoundProperty="text" cloudDestinationProperty="Username" text="" hint="Username" >
+    <component type="TextField" name="Username" cloudBoundProperty="text" cloudDestinationProperty="Username" nextFocusDown="Password" nextFocusUp="Name" uiid="GroupElement" text="" hint="Username" >
     </component>
-    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" uiid="Label" focusable="false" enabled="true" text="" editable="false" hint="Email" >
+    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" uiid="GroupElement" focusable="false" enabled="false" text="" editable="false" hint="Email" >
     </component>
-    <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" text="" hint="Password" >
+    <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" nextFocusDown="Mobile" nextFocusUp="Username" uiid="GroupElement" text="" hint="Password" >
     </component>
-    <component type="TextField" name="Mobile" cloudBoundProperty="text" cloudDestinationProperty="Mobile" text="" hint="Mobile" >
+    <component type="TextField" name="Mobile" cloudBoundProperty="text" cloudDestinationProperty="Mobile" nextFocusDown="Save" nextFocusUp="Password" uiid="GroupElement" focusable="true" enabled="true" text="" hint="Mobile" >
     </component>
-    <component type="Button" name="Save" cloudDestinationProperty="Login" commandName="Save" commandId="3" commandAction="" commandBack="false" text="Save" >
+    <component type="Button" name="Save" cloudDestinationProperty="Login" commandName="Save" commandId="3" commandAction="" commandBack="false" uiid="ButtonGroupLast" text="Save" >
     </component>
   </component>
 </component>

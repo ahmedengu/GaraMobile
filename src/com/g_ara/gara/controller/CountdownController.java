@@ -13,7 +13,7 @@ import static userclasses.StateMachine.data;
  */
 public class CountdownController {
     public static void beforeCountdownForm(Container container, StateMachine stateMachine) {
-        container.add(new Countdown(90, new CallbackController() {
+        container.add(new Countdown(300, new CallbackController() {
             @Override
             public void done(Object... objects) {
                 stateMachine.showDialog();

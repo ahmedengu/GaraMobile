@@ -39,6 +39,7 @@ import static userclasses.StateMachine.showDelayedToastBar;
  */
 public class HomeController {
     public static void beforeHomeForm(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
         f.setBackCommand(null);
         ParseObject fetch = null;
         if (ParseUser.getCurrent().get("trip") != null) {
@@ -193,6 +194,7 @@ public class HomeController {
             fetch = query.find().get(0);
 
             Button active = new Button("cancel: " + fetch.getClassName());
+            active.setUIID("ToggleButtonFirst");
             final ParseObject object = fetch;
             active.addActionListener(evt -> {
                 CancelActive(f, resources, drive, ride, active, object);
@@ -204,6 +206,7 @@ public class HomeController {
             north.add(active);
 
             Button checkin = new Button("Check In/Out");
+            checkin.setUIID("ToggleButtonLast");
             checkin.addActionListener(evt -> {
                 String objectId = ParseUser.getCurrent().getObjectId();
                 String url = Constants.GOOGLE_QR + encodeUrl(objectId);
@@ -363,24 +366,26 @@ public class HomeController {
             e.printStackTrace();
         }
 
-        Dialog dialog = new Dialog("Choose a car");
+        Dialog dialog = new Dialog("Drive Settings");
         dialog.setLayout(new BorderLayout());
+        dialog.setUIID("Form");
         Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
         TextField cost = new TextField("");
         TextField toll = new TextField("");
         TextField seats = new TextField("");
         TextArea notes = new TextArea("");
+        notes.setGrowByContent(false);
 
         cost.setHint("Cost per kilo");
         toll.setHint("Toll cost");
         seats.setHint("Available seats");
         notes.setHint("Notes:");
 
-        center.add(cost);
-        center.add(toll);
-        center.add(seats);
-        center.add(notes);
-        center.add(combo);
+        combo.setUIID("ButtonGroupFirst");
+        cost.setUIID("GroupElement1");
+        toll.setUIID("GroupElement2");
+        seats.setUIID("GroupElement3");
+        notes.setUIID("GroupElementLast");
 
         Button cancel = new Button("Cancel");
         cancel.addActionListener(evt -> dialog.dispose());
@@ -395,12 +400,10 @@ public class HomeController {
 
             stateMachine.showForm("DriveSummary", null);
         });
-        Container south = new Container();
-        south.setLayout(new GridLayout(2));
-        south.add(cancel);
-        south.add(confirm);
-        dialog.add(BorderLayout.SOUTH, south);
-        dialog.add(BorderLayout.CENTER, center);
+
+
+        dialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, confirm));
+        dialog.add(BorderLayout.CENTER, BoxLayout.encloseY(combo, GridLayout.encloseIn(3, cost, toll, seats), notes));
         dialog.show();
     }
 

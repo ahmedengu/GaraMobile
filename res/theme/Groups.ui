@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <component type="Form" name="Groups" cloudDestinationProperty="Groups" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Groups" >
-  <component type="Button" name="New" cloudDestinationProperty="New" commandName="New" commandId="18" commandAction="newGroup" commandBack="false" text="New" >
+  <component type="Button" name="New" cloudDestinationProperty="New" commandName="New" commandId="18" commandAction="newGroup" commandBack="false" uiid="ToggleButtonOnly" text="New" >
     <layoutConstraint value="South" />
   </component>
   <component type="MultiList" name="Groups" cloudDestinationProperty="Groups" >

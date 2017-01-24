@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Register1" cloudDestinationProperty="Register" uiid="CarBackground" focusable="false" scrollableY="false" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="" cyclicFocus="true" >
+  <component type="Container" name="Container" cloudDestinationProperty="Container" scrollableY="false" layout="BoxLayout" boxLayoutAxis="Y" >
+    <component type="Button" name="Pic" cloudDestinationProperty="Pic" uiid="ButtonGroupFirst" focusable="true" text="" >
+    </component>
+    <component type="TextField" name="Name" cloudBoundProperty="text" cloudDestinationProperty="Name" uiid="GroupElement" text="" hint="Name" >
+    </component>
+    <component type="TextField" name="Username" cloudBoundProperty="text" cloudDestinationProperty="Username" uiid="GroupElement" focusable="true" text="" hint="Username" >
+    </component>
+    <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" uiid="GroupElement" text="" constraint="1" hint="Email" >
+    </component>
+    <component type="TextField" name="Password" cloudBoundProperty="text" cloudDestinationProperty="Password" uiid="GroupElement" text="" constraint="65536" hint="Password" >
+    </component>
+    <component type="TextField" name="Mobile" cloudBoundProperty="text" cloudDestinationProperty="Mobile" uiid="GroupElement" text="" constraint="3" hint="Mobile" >
+    </component>
+    <component type="Button" name="Register" cloudDestinationProperty="Register" commandName="Register" commandId="4" commandAction="" commandBack="false" uiid="ButtonGroup" text="Register" >
+    </component>
+    <component type="Button" name="Login" cloudDestinationProperty="Login" commandName="Login" commandId="3" commandAction="Login" commandBack="false" uiid="ButtonGroupLast" text="Login" >
+    </component>
+  </component>
+</component>

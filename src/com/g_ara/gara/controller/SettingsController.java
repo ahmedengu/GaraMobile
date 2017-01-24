@@ -3,8 +3,9 @@ package com.g_ara.gara.controller;
 import com.codename1.components.MultiButton;
 import com.codename1.io.Preferences;
 import com.codename1.messaging.Message;
-import com.codename1.ui.Display;
+import com.codename1.ui.*;
 import com.g_ara.gara.model.Constants;
+import userclasses.StateMachine;
 
 /**
  * Created by ahmedengu.
@@ -31,5 +32,14 @@ public class SettingsController {
     public static void feedbackAction() {
         Message m = new Message("Body of message");
         Display.getInstance().sendMessage(new String[]{Constants.EMAIL}, "[" + Display.getInstance().getPlatformName() + "] Feedback ", m);
+    }
+
+    public static void beforeSettingsForm(Form f, Component rate, Button feedback, Button website, MultiButton analytics, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
+        FontImage.setMaterialIcon((Button) rate, FontImage.MATERIAL_STAR);
+        FontImage.setMaterialIcon(feedback, FontImage.MATERIAL_FEEDBACK);
+        FontImage.setMaterialIcon(website, FontImage.MATERIAL_LINK);
+
+        analyticsState(Preferences.get("Analytics", true), analytics);
     }
 }

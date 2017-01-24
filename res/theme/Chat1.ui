@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="Form" name="Chat1" cloudDestinationProperty="Chat" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Chat" >
+  <component type="MultiList" name="Chat" cloudDestinationProperty="Chat" >
+    <layoutConstraint value="Center" />
+  </component>
+  <component type="Button" name="UserSearch" cloudDestinationProperty="UserSearch" commandName="Find User" commandId="20" commandAction="UserSearch" commandBack="false" text="Find User" >
+    <layoutConstraint value="South" />
+  </component>
+</component>

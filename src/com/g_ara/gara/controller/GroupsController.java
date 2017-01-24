@@ -29,16 +29,16 @@ public class GroupsController {
             query.whereEqualTo("user", ParseUser.getCurrent());
             List<ParseObject> results = query.find();
 //            if (results.size() > 0) {
-                ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+            ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
-                for (int i = 0; i < results.size(); i++) {
-                    Map<String, Object> entry = new HashMap<>();
-                    entry.put("Line1", results.get(i).getParseObject("group").getString("domain"));
-                    entry.put("Line2", results.get(i).getBoolean("verified") ? "Verified" : "Check your email");
-                    data.add(entry);
-                }
+            for (int i = 0; i < results.size(); i++) {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("Line1", results.get(i).getParseObject("group").getString("domain"));
+                entry.put("Line2", results.get(i).getBoolean("verified") ? "Verified" : "Check your email");
+                data.add(entry);
+            }
 
-                groups.setModel(new DefaultListModel<>(data));
+            groups.setModel(new DefaultListModel<>(data));
 //            }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -75,7 +75,8 @@ public class GroupsController {
         }
     }
 
-    public static void beforeGroupsForm(Form f, MultiList groups) {
+    public static void beforeGroupsForm(Form f, MultiList groups, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
         refreshGroups(groups);
         f.addPullToRefresh(new Runnable() {
             @Override
@@ -83,5 +84,9 @@ public class GroupsController {
                 refreshGroups(groups);
             }
         });
+    }
+
+    public static void beforeNewGroupForm(Form f, StateMachine stateMachine) {
+        UserController.addUserSideMenu(f, stateMachine);
     }
 }
