@@ -118,18 +118,18 @@ public class CarsController {
         }
     }
 
-    public static void beforeCarsForm(Form f, MultiList cars, StateMachine stateMachine) {
-        UserController.addUserSideMenu(f, stateMachine);
-        refreshCars(cars);
-        f.addPullToRefresh(new Runnable() {
-            @Override
-            public void run() {
-                refreshCars(cars);
-            }
-        });
+    public static void beforeCarsForm(Form f, MultiList cars) {
+        UserController.addUserSideMenu(f);
+        cars.addPullToRefresh(() -> refreshCars(cars));
 
         FloatingActionButton floatingActionButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
         floatingActionButton.addActionListener(evt -> showForm("Car"));
         floatingActionButton.bindFabToContainer(f.getContentPane());
+    }
+
+    public static void postCarsForm(MultiList cars) {
+        showBlocking();
+        refreshCars(cars);
+        hideBlocking();
     }
 }

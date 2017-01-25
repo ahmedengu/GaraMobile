@@ -138,7 +138,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeGroups(Form f) {
-        beforeGroupsForm(f, (MultiList) findGroups(), this);
+        beforeGroupsForm(f, (MultiList) findGroups(f));
     }
 
     @Override
@@ -160,7 +160,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeCars(Form f) {
-        beforeCarsForm(f, (MultiList) findCars(), this);
+        beforeCarsForm(f, (MultiList) findCars(f));
     }
 
     @Override
@@ -224,7 +224,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeChat(Form f) {
-        beforeChatForm((MultiList) findChat(), fetchResourceFile(), f, this);
+        beforeChatForm((MultiList) findChat(f), f);
     }
 
 
@@ -458,7 +458,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeCar(Form f) {
-        addUserSideMenu(f, this);
+        addUserSideMenu(f);
         FontImage.setMaterialIcon(findAdd(), FontImage.MATERIAL_ADD);
         FontImage.setMaterialIcon(findSave(), FontImage.MATERIAL_SAVE);
     }
@@ -477,8 +477,9 @@ public class StateMachine extends StateMachineBase {
     static Dialog dialogBlocking;
 
     public static void showBlocking() {
-        if (dialogBlocking == null)
-            dialogBlocking = new InfiniteProgress().showInifiniteBlocking();
+        if (dialogBlocking != null)
+            dialogBlocking.dispose();
+        dialogBlocking = new InfiniteProgress().showInifiniteBlocking();
         dialogBlocking.show();
     }
 
@@ -549,5 +550,20 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void onSettings_ReportAction(Component c, ActionEvent event) {
         reportAction();
+    }
+
+    @Override
+    protected void postGroups(Form f) {
+        postGroupsForm((MultiList) findGroups(f));
+    }
+
+    @Override
+    protected void postCars(Form f) {
+        postCarsForm((MultiList) findCars(f));
+    }
+
+    @Override
+    protected void postChat(Form f) {
+        postChatForm((MultiList) findChat(f));
     }
 }

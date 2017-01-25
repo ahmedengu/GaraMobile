@@ -7,7 +7,6 @@ import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
-import com.codename1.ui.util.Resources;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseObject;
 import com.parse4cn1.ParseQuery;
@@ -21,8 +20,7 @@ import java.util.Map;
 
 import static com.codename1.ui.Display.SOUND_TYPE_INFO;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
-import static userclasses.StateMachine.data;
-import static userclasses.StateMachine.showForm;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -32,7 +30,7 @@ public class ChatController {
     static ParseUser toUser;
 
     public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine, Button send) {
-        UserController.addUserSideMenu(f, stateMachine);
+        UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon(send, FontImage.MATERIAL_SEND);
 
         try {
@@ -104,8 +102,20 @@ public class ChatController {
         }
     }
 
-    public static void beforeChatForm(MultiList chat, Resources stateMachine, Form f, StateMachine machine) {
-        UserController.addUserSideMenu(f, machine);
+    public static void beforeChatForm(MultiList chat,Form f) {
+        UserController.addUserSideMenu(f);
+        refreshChatForm(chat);
+
+        chat.addPullToRefresh(() -> refreshChatForm(chat));
+    }
+
+    public static void postChatForm(MultiList chat) {
+        showBlocking();
+        refreshChatForm(chat);
+        hideBlocking();
+    }
+
+    public static void refreshChatForm(MultiList chat) {
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
             query.include("members");

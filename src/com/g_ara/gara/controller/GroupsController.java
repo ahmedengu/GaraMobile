@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
 import static userclasses.StateMachine.showForm;
 
 /**
@@ -38,7 +40,8 @@ public class GroupsController {
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
                 entry.put("Line1", results.get(i).getParseObject("group").getString("domain"));
-                entry.put("Line2", results.get(i).getBoolean("verified") ? "Verified" : "Check your email");
+                entry.put("Line3", results.get(i).getBoolean("verified") ? "Verified" : "Check your email");
+                entry.put("Line2", results.get(i).getString("email"));
                 data.add(entry);
             }
 
@@ -72,6 +75,8 @@ public class GroupsController {
             groupUser.put("group", group);
             groupUser.put("user", getUserEmptyObject());
             groupUser.put("verified", false);
+            groupUser.put("email", email);
+
             groupUser.save();
             stateMachine.back();
         } catch (ParseException e) {
@@ -79,24 +84,28 @@ public class GroupsController {
         }
     }
 
-    public static void beforeGroupsForm(Form f, MultiList groups, StateMachine stateMachine) {
-        UserController.addUserSideMenu(f, stateMachine);
-        refreshGroups(groups);
-        f.addPullToRefresh(new Runnable() {
+    public static void beforeGroupsForm(Form f, MultiList groups) {
+        UserController.addUserSideMenu(f);
+        groups.addPullToRefresh(new Runnable() {
             @Override
             public void run() {
                 refreshGroups(groups);
             }
         });
-
         FloatingActionButton floatingActionButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
         floatingActionButton.addActionListener(evt -> showForm("newGroup"));
         floatingActionButton.bindFabToContainer(f.getContentPane());
     }
 
+    public static void postGroupsForm(MultiList groups) {
+        showBlocking();
+        refreshGroups(groups);
+        hideBlocking();
+    }
+
     public static void beforeNewGroupForm(Form f, StateMachine stateMachine, Button aNew) {
-        UserController.addUserSideMenu(f, stateMachine);
-        FontImage.setMaterialIcon(aNew,FontImage.MATERIAL_ADD);
+        UserController.addUserSideMenu(f);
+        FontImage.setMaterialIcon(aNew, FontImage.MATERIAL_ADD);
 
     }
 }

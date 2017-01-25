@@ -74,7 +74,7 @@ public class SettingsController {
     }
 
     public static void beforeSettingsForm(Form f, Component rate, Button feedback, Button website, MultiButton analytics, StateMachine stateMachine, Button report) {
-        UserController.addUserSideMenu(f, stateMachine);
+        UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon((Button) rate, FontImage.MATERIAL_STAR);
         FontImage.setMaterialIcon(feedback, FontImage.MATERIAL_FEEDBACK);
         FontImage.setMaterialIcon(website, FontImage.MATERIAL_LINK);

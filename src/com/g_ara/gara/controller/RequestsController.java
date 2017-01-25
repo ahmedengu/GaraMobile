@@ -29,7 +29,7 @@ import static userclasses.StateMachine.showDelayedToastBar;
  */
 public class RequestsController {
     public static void beforeRequestsForm(Form f, Resources resources, StateMachine stateMachine) {
-        UserController.addUserSideMenu(f, stateMachine);
+        UserController.addUserSideMenu(f);
         try {
             List<ParseObject> results = new ArrayList<ParseObject>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {

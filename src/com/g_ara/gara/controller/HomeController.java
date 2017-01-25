@@ -41,7 +41,7 @@ public class HomeController {
     public static boolean initLiveQuery = true;
 
     public static void beforeHomeForm(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
-        UserController.addUserSideMenu(f, stateMachine);
+        UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon(drive, FontImage.MATERIAL_DRIVE_ETA);
         FontImage.setMaterialIcon(ride, FontImage.MATERIAL_THUMB_UP);
 

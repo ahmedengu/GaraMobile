@@ -137,7 +137,7 @@ public class UserController {
     }
 
     public static void beforeProfileForm(TextField name, TextField username, TextField password, TextField mobile, Button pic, TextField email, Form f, StateMachine stateMachine, Button save) {
-        UserController.addUserSideMenu(f, stateMachine);
+        UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon(save,FontImage.MATERIAL_SAVE);
 
         ParseUser user = ParseUser.getCurrent();
@@ -176,7 +176,7 @@ public class UserController {
     }
 
 
-    public static void logout(StateMachine stateMachine) {
+    public static void logout() {
         Preferences.clearAll();
         try {
             ParseUser user = ParseUser.getCurrent();
@@ -188,7 +188,7 @@ public class UserController {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
         }
-        stateMachine.showForm("Login", null);
+        showForm("Login");
     }
 
     public static boolean onStart() {
@@ -254,7 +254,7 @@ public class UserController {
         return object;
     }
 
-    public static void addUserSideMenu(Form f, StateMachine stateMachine) {
+    public static void addUserSideMenu(Form f) {
         ParseUser user = ParseUser.getCurrent();
         EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
         String url = (user.getParseFile("pic") != null) ? user.getParseFile("pic").getUrl() : "https://static.xx.fbcdn.net/rsrc.php/v1/yi/r/odA9sNLrE86.jpg";
@@ -284,6 +284,6 @@ public class UserController {
         tb.addMaterialCommandToSideMenu("Cars", FontImage.MATERIAL_DIRECTIONS_CAR, e -> showForm("Cars"));
         tb.addMaterialCommandToSideMenu("Profile", FontImage.MATERIAL_EDIT, e -> showForm("Profile"));
         tb.addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> showForm("Settings"));
-        tb.addMaterialCommandToSideMenu("Logout", FontImage.MATERIAL_EXIT_TO_APP, e -> logout(stateMachine));
+        tb.addMaterialCommandToSideMenu("Logout", FontImage.MATERIAL_EXIT_TO_APP, e -> logout());
     }
 }
