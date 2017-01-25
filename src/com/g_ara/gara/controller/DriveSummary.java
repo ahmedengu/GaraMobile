@@ -3,6 +3,8 @@ package com.g_ara.gara.controller;
 import com.codename1.components.ToastBar;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
+import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.util.Resources;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseGeoPoint;
@@ -13,6 +15,8 @@ import userclasses.StateMachine;
 import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static userclasses.StateMachine.data;
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
 
 /**
  * Created by ahmedengu.
@@ -34,32 +38,37 @@ public class DriveSummary {
             trip.put("toll", data.get("toll"));
             trip.put("seats", data.get("seats"));
             trip.put("notes", data.get("notes"));
-
+            showBlocking();
             trip.save();
             current.put("trip", trip);
             current.remove("tripRequest");
             UserController.currentParseUserSave();
 
             data.put("active", trip);
+            hideBlocking();
             stateMachine.showForm("Home", null);
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
         }
     }
 
     public static void beforeDriveSummaryForm(Container summary, Resources resources, Form f, Button cancel, Button confirm) {
-        Coord locationCoord = MapController.getLocationCoord();
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
         FontImage.setMaterialIcon(confirm, FontImage.MATERIAL_DONE);
 
-        Coord destCoord = MapController.getDestCoord();
-        summary.add(new Label("Distance: " + (int) MapController.distanceInKilometers(locationCoord, destCoord)));
-        summary.add(new Label("Cost per kilo: " + data.get("cost")));
-        summary.add(new Label("Tolls cost: " + data.get("toll")));
-        summary.add(new Label("available seats: " + data.get("seats")));
-        summary.add(new Label("Car: " + ((ParseObject) data.get("car")).getString("name")));
+        summary.add(GridLayout.encloseIn(2, new Label("Car: " + ((ParseObject) data.get("car")).getString("name")), new Label("seats: " + data.get("seats"))));
 
+        summary.add(GridLayout.encloseIn(2, new Label("Cost per kilo: " + data.get("cost")), new Label("Tolls cost: " + data.get("toll"))));
+    }
+
+    public static void postDriveSummaryForm(Container summary, Form f) {
+        showBlocking();
+        Coord locationCoord = MapController.getLocationCoord();
+        Coord destCoord = MapController.getDestCoord();
+        summary.add(FlowLayout.encloseCenter(new Label("Distance: " + (int) MapController.distanceInKilometers(locationCoord, destCoord))));
         draw2MarkerMap(locationCoord, destCoord, f);
+        hideBlocking();
     }
 }

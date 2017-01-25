@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
+import static com.codename1.ui.Display.SOUND_TYPE_INFO;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
 import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
@@ -38,6 +39,7 @@ import static userclasses.StateMachine.*;
  */
 public class HomeController {
     public static boolean initLiveQuery = true;
+    static ParseLiveQuery tripLiveQuery;
 
     public static void beforeHomeForm(Form f, Resources resources, StateMachine stateMachine) {
         UserController.addUserSideMenu(f);
@@ -77,16 +79,16 @@ public class HomeController {
             initLiveQuery = false;
             chatLiveQuery();
             if (ParseUser.getCurrent().get("trip") != null)
-                requestsLiveQuery();
+                requestsLiveQuery(stateMachine);
         }
     }
 
-    public static void requestsLiveQuery() {
+    public static void requestsLiveQuery(StateMachine stateMachine) {
         ParseQuery<ParseObject> tripRequestQuery = ParseQuery.getQuery("TripRequest");
         tripRequestQuery.include("user");
         tripRequestQuery.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
         try {
-            new ParseLiveQuery(tripRequestQuery) {
+            tripLiveQuery = new ParseLiveQuery(tripRequestQuery) {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
@@ -103,8 +105,20 @@ public class HomeController {
                             );
                         } else {
                             String title = Display.getInstance().getCurrent().getTitle();
-                            if (!(title.equals("Requests")))
-                                Display.getInstance().callSerially(() -> ToastBar.showErrorMessage("New Trip Request"));
+                            if (title.equals("Requests")) {
+                                Display.getInstance().callSerially(() -> {
+                                    try {
+                                        RequestsController.refreshRequests(stateMachine);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            } else {
+                                Display.getInstance().callSerially(() -> {
+                                    ToastBar.showErrorMessage("New Trip Request");
+                                    Display.getInstance().playBuiltinSound(SOUND_TYPE_INFO);
+                                });
+                            }
                         }
                     }
                 }
@@ -137,11 +151,13 @@ public class HomeController {
                                     LocalNotification.REPEAT_NONE
                             );
 
-                            Display.getInstance().notifyStatusBar("chat", "test", "test", true, true);
                         } else {
                             String title = Display.getInstance().getCurrent().getTitle();
                             if (!(title.equals("Chat") || title.equals("Conversion")))
-                                Display.getInstance().callSerially(() -> ToastBar.showErrorMessage("New message"));
+                                Display.getInstance().callSerially(() -> {
+                                    ToastBar.showErrorMessage("New message");
+                                    Display.getInstance().playBuiltinSound(SOUND_TYPE_INFO);
+                                });
                         }
                     }
                 }
@@ -373,12 +389,22 @@ public class HomeController {
         user.remove("trip");
         user.remove("tripRequest");
         try {
+            showBlocking();
             object.save();
             currentParseUserSave();
             data.remove("active");
+            if (tripLiveQuery != null) {
+                tripLiveQuery.unsubscribe();
+                tripLiveQuery = null;
+            }
+            hideBlocking();
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
+        } catch (JSONException e) {
+            hideBlocking();
+            e.printStackTrace();
         }
     }
 
@@ -391,11 +417,13 @@ public class HomeController {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
-//        List groupUser = getUserVerifiedGroups();
-//        if (groupUser.size() == 0) {
-//            ToastBar.showErrorMessage("You don't have any active groups");
-//            return;
-//        }
+        showBlocking();
+        List groupUser = getUserVerifiedGroups();
+        if (groupUser.size() == 0) {
+            hideBlocking();
+            showDelayedToastBar("You don't have any active groups");
+            return;
+        }
         try {
             ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
             query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), WITHIN_KILOMETERS);
@@ -407,8 +435,10 @@ public class HomeController {
 
             List<ParseObject> results = tripQuery.find();
             if (results.size() == 0) {
-                ToastBar.showErrorMessage("There is no rides available");
+                hideBlocking();
+                showDelayedToastBar("There is no rides available");
             } else {
+                hideBlocking();
                 data.put("rides", results);
                 stateMachine.showForm("RideMap", null);
             }
@@ -450,9 +480,16 @@ public class HomeController {
             return;
         }
         try {
+            showBlocking();
             HashMap<String, Object>[] carsArr = getCarsArr();
             if (carsArr.length == 0) {
-                ToastBar.showErrorMessage("You dont have any cars");
+                hideBlocking();
+                showDelayedToastBar("You dont have any cars");
+                return;
+            }
+            if (getUserVerifiedGroups().size() == 0) {
+                hideBlocking();
+                showDelayedToastBar("You don't have any active groups");
                 return;
             }
             combo = new ComboBox<>(carsArr);
@@ -464,7 +501,6 @@ public class HomeController {
         Dialog dialog = new Dialog("Drive Settings");
         dialog.setLayout(new BorderLayout());
         dialog.setUIID("Form");
-        Container center = new Container(new BoxLayout(BoxLayout.Y_AXIS));
         TextField cost = new TextField("");
         TextField toll = new TextField("");
         TextField seats = new TextField("");
@@ -499,6 +535,7 @@ public class HomeController {
 
         dialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, confirm));
         dialog.add(BorderLayout.CENTER, BoxLayout.encloseY(combo, GridLayout.encloseIn(3, cost, toll, seats), notes));
+        hideBlocking();
         dialog.show();
     }
 

@@ -1,6 +1,7 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.components.FloatingActionButton;
+import com.codename1.components.ToastBar;
 import com.codename1.ui.Button;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
@@ -56,13 +57,13 @@ public class GroupsController {
 
     public static void newGroup(TextField eMail, StateMachine stateMachine) {
         try {
+            showBlocking();
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Group");
             String email = eMail.getText();
             String domain = email.substring(email.lastIndexOf("@") + 1);
             query.whereEqualTo("domain", domain);
             List<ParseObject> results = query.find();
             ParseObject group;
-
             if (results.size() > 0) {
                 group = results.get(0);
             } else {
@@ -78,9 +79,12 @@ public class GroupsController {
             groupUser.put("email", email);
 
             groupUser.save();
-            stateMachine.back();
+            hideBlocking();
+            showForm("Groups");
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
+            ToastBar.showErrorMessage(e.getMessage());
         }
     }
 

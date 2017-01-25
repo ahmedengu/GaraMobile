@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.g_ara.gara.controller.ChatController.getUserChat;
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
 
 /**
  * Created by ahmedengu.
@@ -24,6 +26,7 @@ public class UserSearch {
 
     public static void searchAction(TextArea searchField, MultiList users, Resources resources) {
         try {
+            showBlocking();
             ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
             query.whereStartsWith("username", searchField.getText());
 //            query.whereStartsWith("name", findSearchField().getText());
@@ -44,6 +47,7 @@ public class UserSearch {
                 entry.put("object", results.get(i));
                 data.add(entry);
             }
+            hideBlocking();
             if (data.size() == 0) {
                 ToastBar.showErrorMessage("No user found!");
             }
@@ -51,6 +55,7 @@ public class UserSearch {
 //            }
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
         }
     }

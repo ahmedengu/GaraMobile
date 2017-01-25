@@ -115,6 +115,7 @@ public class CarsController {
             ToastBar.showErrorMessage(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            hideBlocking();
         }
     }
 

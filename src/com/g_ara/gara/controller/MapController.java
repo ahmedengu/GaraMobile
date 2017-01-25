@@ -304,7 +304,7 @@ public class MapController {
             locationCoord = new Coord(location.getLatitude(), location.getLongitude());
             //TODO: for mobile :
 //            if (!map.isNativeMaps())
-                map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
+            map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
             lastLocationUpdate = System.currentTimeMillis();
         }
         if (destCoord != null) {

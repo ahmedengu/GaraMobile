@@ -30,6 +30,7 @@ import static com.g_ara.gara.controller.ChatController.*;
 import static com.g_ara.gara.controller.CountdownController.beforeCountdownForm;
 import static com.g_ara.gara.controller.DriveSummary.beforeDriveSummaryForm;
 import static com.g_ara.gara.controller.DriveSummary.confirmAction;
+import static com.g_ara.gara.controller.DriveSummary.postDriveSummaryForm;
 import static com.g_ara.gara.controller.GroupsController.*;
 import static com.g_ara.gara.controller.HomeController.*;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
@@ -406,7 +407,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onTripFeedback_CancelAction(Component c, ActionEvent event) {
-        cancelAction(this);
+        cancelAction();
     }
 
     public static void showDelayedToastBar(String msg) {
@@ -560,5 +561,10 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void postHome(Form f) {
         postHomeForm(f, fetchResourceFile(), this);
+    }
+
+    @Override
+    protected void postDriveSummary(Form f) {
+        postDriveSummaryForm(findSummary(f),f);
     }
 }

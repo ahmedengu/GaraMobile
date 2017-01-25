@@ -1,9 +1,9 @@
 package com.g_ara.gara.controller;
 
+import ca.weblite.codename1.json.JSONException;
 import com.codename1.capture.Capture;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
-import com.codename1.io.Storage;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.GridLayout;
@@ -110,6 +110,7 @@ public class UserController {
 
     public static void saveUser(TextField username, TextField password, TextField mobile, Button pic, StateMachine stateMachine) {
         try {
+            showBlocking();
             ParseUser user = ParseUser.getCurrent();
             user.setUsername(username.getText());
             if (password.getText().length() > 1)
@@ -125,20 +126,21 @@ public class UserController {
             file.save();
             user.put("pic", file);
             user.save();
-            ToastBar.showErrorMessage("Success");
-
-            stateMachine.back();
+            hideBlocking();
+            showForm("Home");
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
         } catch (IOException e) {
+            hideBlocking();
             e.printStackTrace();
         }
     }
 
     public static void beforeProfileForm(TextField name, TextField username, TextField password, TextField mobile, Button pic, TextField email, Form f, StateMachine stateMachine, Button save) {
         UserController.addUserSideMenu(f);
-        FontImage.setMaterialIcon(save,FontImage.MATERIAL_SAVE);
+        FontImage.setMaterialIcon(save, FontImage.MATERIAL_SAVE);
 
         ParseUser user = ParseUser.getCurrent();
         name.setText(user.getString("name"));
@@ -177,17 +179,19 @@ public class UserController {
 
 
     public static void logout() {
+        showBlocking();
         Preferences.clearAll();
         try {
-            ParseUser user = ParseUser.getCurrent();
-            Storage.getInstance().deleteStorageFile("currentUser");
-            Preferences.delete("sessionToken");
-            user.logout();
+            ParseLiveQuery.close();
             MapController.stopLocationListener();
+            ParseUser.getCurrent().logout();
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        hideBlocking();
         showForm("Login");
     }
 

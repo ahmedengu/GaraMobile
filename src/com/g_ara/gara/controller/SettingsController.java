@@ -13,6 +13,9 @@ import com.parse4cn1.ParseObject;
 import com.parse4cn1.ParseUser;
 import userclasses.StateMachine;
 
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
+
 /**
  * Created by ahmedengu.
  */
@@ -58,13 +61,16 @@ public class SettingsController {
         FontImage.setMaterialIcon(reportIt, FontImage.MATERIAL_REPORT);
         reportIt.addActionListener(evt1 -> {
             try {
+                showBlocking();
                 ParseObject reportObject = ParseObject.create("Reports");
                 reportObject.put("info", infoText.getText());
                 reportObject.put("user", ParseUser.getCurrent());
                 reportObject.save();
+                hideBlocking();
                 reportDialog.dispose();
             } catch (ParseException e) {
                 e.printStackTrace();
+                hideBlocking();
                 ToastBar.showErrorMessage(e.getMessage());
             }
         });

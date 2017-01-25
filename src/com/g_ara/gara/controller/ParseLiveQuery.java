@@ -164,11 +164,17 @@ public abstract class ParseLiveQuery {
 
     //liveQuery unsubscribe message
     public void unsubscribe() throws JSONException {
-        lQuerys.remove(requestId);
+        unsubscribe(true);
+    }
+
+    public void unsubscribe(boolean remove) throws JSONException {
+        if (remove)
+            lQuerys.remove(requestId);
         JSONObject output = new JSONObject();
         output.put(OP, "unsubscribe");
         output.put("requestId", requestId);
-        webSocket.send(output.toString());
+        if (remove || webSocket.getReadyState() == WebSocketState.OPEN)
+            webSocket.send(output.toString());
     }
 
     //subscribe action .. gonna be called in the constructor , but it's public in case there was a disconnection and you want to resubscribe
@@ -186,7 +192,7 @@ public abstract class ParseLiveQuery {
     //unsubscribe from all then close the websocket
     public static void close() throws JSONException {
         for (Map.Entry<Integer, ParseLiveQuery> entry : lQuerys.entrySet())
-            entry.getValue().unsubscribe();
+            entry.getValue().unsubscribe(false);
         lQuerys.clear();
         requestIds = 0;
         webSocket.close();
