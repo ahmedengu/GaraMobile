@@ -104,8 +104,6 @@ public class ChatController {
 
     public static void beforeChatForm(MultiList chat,Form f) {
         UserController.addUserSideMenu(f);
-        refreshChatForm(chat);
-
         chat.addPullToRefresh(() -> refreshChatForm(chat));
     }
 

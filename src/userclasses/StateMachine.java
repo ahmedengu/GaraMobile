@@ -33,6 +33,7 @@ import static com.g_ara.gara.controller.DriveSummary.confirmAction;
 import static com.g_ara.gara.controller.GroupsController.*;
 import static com.g_ara.gara.controller.HomeController.*;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
+import static com.g_ara.gara.controller.RequestsController.postRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
 import static com.g_ara.gara.controller.SettingsController.*;
 import static com.g_ara.gara.controller.TripFeedbackController.*;
@@ -85,7 +86,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeHome(Form f) {
-        beforeHomeForm(f, fetchResourceFile(), findDrive(f), findRide(f), this);
+        beforeHomeForm(f, fetchResourceFile(), this);
     }
 
     @Override
@@ -95,28 +96,8 @@ public class StateMachine extends StateMachineBase {
 
 
     @Override
-    protected void onGroups_GroupsAction(Component c, ActionEvent event) {
-//        showForm("Group", null);
-    }
-
-    @Override
-    protected void onHome_RideAction(Component c, ActionEvent event) {
-        rideAction(this);
-    }
-
-
-    @Override
-    protected void onHome_DriveAction(Component c, ActionEvent event) {
-        driveAction(this);
-
-    }
-
-
-    @Override
     protected boolean allowBackTo(String formName) {
-        if (formName.indexOf("Login") != -1 || formName.indexOf("Register") != -1)
-            return false;
-        return super.allowBackTo(formName);
+        return false;
     }
 
     @Override
@@ -565,5 +546,19 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void postChat(Form f) {
         postChatForm((MultiList) findChat(f));
+    }
+
+    @Override
+    protected void postRequests(Form f) {
+        postRequestsForm(this);
+    }
+
+    @Override
+    protected void onCreateHome() {
+    }
+
+    @Override
+    protected void postHome(Form f) {
+        postHomeForm(f, fetchResourceFile(), this);
     }
 }

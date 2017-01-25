@@ -294,18 +294,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Button findDrive(Component root) {
-        return (com.codename1.ui.Button)findByName("Drive", root);
-    }
-
-    public com.codename1.ui.Button findDrive() {
-        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Drive", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Button)findByName("Drive", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Button findReset(Component root) {
         return (com.codename1.ui.Button)findByName("Reset", root);
     }
@@ -386,18 +374,6 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Save", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Button)findByName("Save", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
-    public com.codename1.ui.Button findRide(Component root) {
-        return (com.codename1.ui.Button)findByName("Ride", root);
-    }
-
-    public com.codename1.ui.Button findRide() {
-        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Ride", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Button)findByName("Ride", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -2332,16 +2308,6 @@ public abstract class StateMachineBase extends UIBuilder {
                 return;
             }
         }
-        if(rootContainerName.equals("Home")) {
-            if("Ride".equals(c.getName())) {
-                onHome_RideAction(c, event);
-                return;
-            }
-            if("Drive".equals(c.getName())) {
-                onHome_DriveAction(c, event);
-                return;
-            }
-        }
         if(rootContainerName.equals("Settings")) {
             if("Analytics".equals(c.getName())) {
                 onSettings_AnalyticsAction(c, event);
@@ -2540,12 +2506,6 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onNewGroup_NewAction(Component c, ActionEvent event) {
-      }
-
-      protected void onHome_RideAction(Component c, ActionEvent event) {
-      }
-
-      protected void onHome_DriveAction(Component c, ActionEvent event) {
       }
 
       protected void onSettings_AnalyticsAction(Component c, ActionEvent event) {

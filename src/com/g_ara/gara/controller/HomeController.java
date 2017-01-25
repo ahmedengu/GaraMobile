@@ -31,8 +31,7 @@ import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
 import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.model.Constants.*;
-import static userclasses.StateMachine.data;
-import static userclasses.StateMachine.showDelayedToastBar;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -40,23 +39,39 @@ import static userclasses.StateMachine.showDelayedToastBar;
 public class HomeController {
     public static boolean initLiveQuery = true;
 
-    public static void beforeHomeForm(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
+    public static void beforeHomeForm(Form f, Resources resources, StateMachine stateMachine) {
         UserController.addUserSideMenu(f);
-        FontImage.setMaterialIcon(drive, FontImage.MATERIAL_DRIVE_ETA);
-        FontImage.setMaterialIcon(ride, FontImage.MATERIAL_THUMB_UP);
+        new MapController(resources, f).initMap();
+    }
 
-        f.setBackCommand(null);
+    public static void postHomeForm(Form f, Resources resources, StateMachine stateMachine) {
+        Button ride = new Button("Get Ride");
+        FontImage.setMaterialIcon(ride, FontImage.MATERIAL_THUMB_UP);
+        ride.addActionListener(evt -> rideAction(stateMachine));
+        ride.setHidden(true);
+        ride.setUIID("ToggleButtonFirst");
+
+        Button drive = new Button("Drive");
+        FontImage.setMaterialIcon(drive, FontImage.MATERIAL_DRIVE_ETA);
+        drive.addActionListener(evt -> driveAction(stateMachine));
+        drive.setHidden(true);
+        drive.setUIID("ToggleButtonLast");
+
         ParseObject fetch = null;
         if (ParseUser.getCurrent().get("trip") != null) {
-
+            showBlocking();
             tripHome(f, resources, drive, ride);
-
+            hideBlocking();
         } else if (ParseUser.getCurrent().get("tripRequest") != null) {
-
+            showBlocking();
             tripRequestHome(f, resources, drive, ride, stateMachine);
+            hideBlocking();
+        } else {
+            ride.setHidden(false);
+            drive.setHidden(false);
 
-        } else
-            new MapController(resources, f).initMap();
+        }
+        f.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, ride, drive));
 
         if (initLiveQuery) {
             initLiveQuery = false;

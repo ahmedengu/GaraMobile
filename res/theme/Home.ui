@@ -3,9 +3,5 @@
 <component type="Form" name="Home" cloudDestinationProperty="Home" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Home" >
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="FlowLayout" flowLayoutFillRows="true" flowLayoutAlign="1" flowLayoutValign="0" >
     <layoutConstraint value="South" />
-    <component type="Button" name="Ride" cloudDestinationProperty="Ride" uiid="ToggleButtonFirst" text="Get A Ride" >
-    </component>
-    <component type="Button" name="Drive" cloudDestinationProperty="Drive" uiid="ToggleButtonLast" text="Drive" >
-    </component>
   </component>
 </component>

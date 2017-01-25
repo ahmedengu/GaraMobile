@@ -9,89 +9,96 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.util.Resources;
 import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import userclasses.StateMachine;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
 import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
 import static userclasses.StateMachine.data;
-import static userclasses.StateMachine.showDelayedToastBar;
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
 
 /**
  * Created by ahmedengu.
  */
 public class RequestsController {
+    public static MapContainer map;
+
     public static void beforeRequestsForm(Form f, Resources resources, StateMachine stateMachine) {
         UserController.addUserSideMenu(f);
+
+        if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
+            if (((ParseObject) data.get("active")).getList("tripRequests") == null || ((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
+                map = new MapController(resources, f).map;
+
+                f.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, evt -> {
+                    try {
+                        refreshRequests(stateMachine);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        ToastBar.showErrorMessage(e.getMessage());
+                    }
+                });
+            } else {
+                f.add(BorderLayout.CENTER, FlowLayout.encloseCenterMiddle(new Label("You have no remaining seats!")));
+
+            }
+        } else {
+            f.add(BorderLayout.CENTER, FlowLayout.encloseCenterMiddle(new Label("You don't have an active trip!")));
+        }
+    }
+
+    public static void postRequestsForm(StateMachine stateMachine) {
         try {
-            List<ParseObject> results = new ArrayList<ParseObject>();
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
                 if (((ParseObject) data.get("active")).getList("tripRequests") == null || ((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
-                    ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
-                    q.include("user");
-                    q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
-                    results = q.find();
-
-
-                } else {
-                    showDelayedToastBar("You have no remaining seats!");
+                    refreshRequests(stateMachine);
                 }
-            } else {
-                showDelayedToastBar("You don't have an active trip!");
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
+        }
+    }
 
-            MapContainer map = new MapController(resources, f).map;
-            for (int i = 0; i < results.size(); i++) {
-                final ParseObject object = results.get(i);
-                ParseObject user = object.getParseObject("user");
-                ParseGeoPoint location = user.getParseGeoPoint("location");
-                String url = user.getParseFile("pic").getUrl();
-                URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-                URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+    public static void refreshRequests(final StateMachine stateMachine) throws ParseException {
+        showBlocking();
+        List<ParseObject> results;
+        map.clearMapLayers();
+        ParseQuery<ParseObject> q = ParseQuery.getQuery("TripRequest");
+        q.include("user");
+        q.whereEqualTo("trip", ((ParseObject) data.get("active"))).whereEqualTo("accept", -1).whereEqualTo("active", true);
+        results = q.find();
+        for (int i = 0; i < results.size(); i++) {
+            final ParseObject object = results.get(i);
+            ParseObject user = object.getParseObject("user");
+            ParseGeoPoint location = user.getParseGeoPoint("location");
+            String url = user.getParseFile("pic").getUrl();
+            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
 
-                map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
+            map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
 
-                        Dialog dialog = getRequestUserDialog(object, user, "Request");
+                    Dialog dialog = getRequestUserDialog(object, user, "Request");
 
-                        Container south = new Container(new GridLayout(2));
-                        Button cancel = new Button("Reject");
-                        cancel.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent evt1) {
-                                object.put("accept", 0);
-                                try {
-                                    object.save();
-                                    data.put("active", object);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                    ToastBar.showErrorMessage(e.getMessage());
-                                }
-                                dialog.dispose();
-                                stateMachine.showForm("Home", null);
-                            }
-                        });
-                        south.add(cancel);
-                        Button confirm = new Button("Accept");
-                        confirm.addActionListener(evt1 -> {
-                            object.put("accept", 1);
-
-                            ParseObject trip = object.getParseObject("trip");
+                    Container south = new Container(new GridLayout(2));
+                    Button cancel = new Button("Reject");
+                    cancel.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent evt1) {
+                            object.put("accept", 0);
                             try {
-                                trip.addUniqueToArrayField("tripRequests", object);
-                                ParseBatch batch = ParseBatch.create();
-                                batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
-                                batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
-                                batch.execute();
+                                object.save();
                                 data.put("active", object);
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -99,20 +106,37 @@ public class RequestsController {
                             }
                             dialog.dispose();
                             stateMachine.showForm("Home", null);
-                        });
-                        south.add(confirm);
-                        dialog.add(BorderLayout.SOUTH, south);
-                        dialog.show();
+                        }
+                    });
+                    south.add(cancel);
+                    Button confirm = new Button("Accept");
+                    confirm.addActionListener(evt1 -> {
+                        object.put("accept", 1);
 
-                    }
-                });
-            }
+                        ParseObject trip = object.getParseObject("trip");
+                        try {
+                            trip.addUniqueToArrayField("tripRequests", object);
+                            ParseBatch batch = ParseBatch.create();
+                            batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
+                            batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
+                            batch.execute();
+                            data.put("active", object);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            ToastBar.showErrorMessage(e.getMessage());
+                        }
+                        dialog.dispose();
+                        stateMachine.showForm("Home", null);
+                    });
+                    south.add(confirm);
+                    dialog.add(BorderLayout.SOUTH, south);
+                    dialog.show();
 
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
+                }
+            });
         }
+        map.revalidate();
+        hideBlocking();
     }
 
     public static Dialog getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser, String title) {
