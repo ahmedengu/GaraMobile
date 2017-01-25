@@ -4,7 +4,4 @@
   <component type="MultiList" name="Chat" cloudDestinationProperty="Chat" >
     <layoutConstraint value="Center" />
   </component>
-  <component type="Button" name="UserSearch" cloudDestinationProperty="UserSearch" commandName="Find User" commandId="20" commandAction="UserSearch" commandBack="false" uiid="ToggleButtonOnly" text="Find User" >
-    <layoutConstraint value="South" />
-  </component>
 </component>

@@ -146,7 +146,43 @@ public class RequestsController {
             }
         });
 
-        north.add(GridLayout.encloseIn(2, dial, chat));
+        Button report = new Button("Report");
+        FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);
+        report.addActionListener(evt -> {
+            dialog.dispose();
+            Dialog reportDialog = new Dialog("Report");
+            reportDialog.setLayout(new BorderLayout());
+
+            TextArea info = new TextArea();
+            info.setHint("More Information");
+            info.setUIID("ElementGroupOnly");
+            reportDialog.add(BorderLayout.CENTER, info);
+
+            Button cancel = new Button("Cancel");
+            FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
+            cancel.addActionListener(evt1 -> reportDialog.dispose());
+
+
+            Button reportIt = new Button("Report");
+            FontImage.setMaterialIcon(reportIt, FontImage.MATERIAL_REPORT);
+            reportIt.addActionListener(evt1 -> {
+                try {
+                    ParseObject reportObject = ParseObject.create("Reports");
+                    reportObject.put("info", info.getText());
+                    reportObject.put("user", ParseUser.getCurrent());
+                    reportObject.put("to", (ParseUser) TrUser);
+                    reportObject.save();
+                    reportDialog.dispose();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    ToastBar.showErrorMessage(e.getMessage());
+                }
+            });
+
+            reportDialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, reportIt));
+            reportDialog.show();
+        });
+        north.add(GridLayout.encloseIn(3, dial, chat, report));
 
         north.setScrollableY(true);
         dialog.add(BorderLayout.NORTH, north);

@@ -17,9 +17,7 @@ import userclasses.StateMachine;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static userclasses.StateMachine.hideBlocking;
-import static userclasses.StateMachine.showBlocking;
-import static userclasses.StateMachine.showForm;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -138,8 +136,10 @@ public class UserController {
         }
     }
 
-    public static void beforeProfileForm(TextField name, TextField username, TextField password, TextField mobile, Button pic, TextField email, Form f, StateMachine stateMachine) {
+    public static void beforeProfileForm(TextField name, TextField username, TextField password, TextField mobile, Button pic, TextField email, Form f, StateMachine stateMachine, Button save) {
         UserController.addUserSideMenu(f, stateMachine);
+        FontImage.setMaterialIcon(save,FontImage.MATERIAL_SAVE);
+
         ParseUser user = ParseUser.getCurrent();
         name.setText(user.getString("name"));
         username.setText(user.getUsername());
@@ -276,7 +276,7 @@ public class UserController {
 
         tb.addComponentToSideMenu(sidemenuTop);
 
-
+        tb.addMaterialCommandToRightBar("", FontImage.MATERIAL_SEARCH, e -> showForm("UserSearch"));
         tb.addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> showForm("Home"));
         tb.addMaterialCommandToSideMenu("Requests", FontImage.MATERIAL_NOTIFICATIONS, e -> showForm("Requests"));
         tb.addMaterialCommandToSideMenu("Chat", FontImage.MATERIAL_CHAT, e -> showForm("Chat"));

@@ -1,6 +1,7 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.capture.Capture;
+import com.codename1.components.FloatingActionButton;
 import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
 import com.codename1.ui.list.DefaultListModel;
@@ -11,12 +12,14 @@ import userclasses.StateMachine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.FILE_PATH;
 import static userclasses.StateMachine.hideBlocking;
 import static userclasses.StateMachine.showBlocking;
+import static userclasses.StateMachine.showForm;
 
 /**
  * Created by ahmedengu.
@@ -124,5 +127,9 @@ public class CarsController {
                 refreshCars(cars);
             }
         });
+
+        FloatingActionButton floatingActionButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
+        floatingActionButton.addActionListener(evt -> showForm("Car"));
+        floatingActionButton.bindFabToContainer(f.getContentPane());
     }
 }

@@ -31,8 +31,10 @@ public class ChatController {
     static ParseLiveQuery conversationLive;
     static ParseUser toUser;
 
-    public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine) {
+    public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine, Button send) {
         UserController.addUserSideMenu(f, stateMachine);
+        FontImage.setMaterialIcon(send, FontImage.MATERIAL_ADD);
+
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
             query.include("from");
@@ -189,6 +191,7 @@ public class ChatController {
     }
 
     public static void postConversionForm(Container messages) {
-        messages.scrollComponentToVisible(messages.getComponentAt(messages.getComponentCount()-1));
+        if (messages.getComponentCount() > 0)
+            messages.scrollComponentToVisible(messages.getComponentAt(messages.getComponentCount() - 1));
     }
 }

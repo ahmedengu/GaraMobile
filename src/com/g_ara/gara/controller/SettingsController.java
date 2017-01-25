@@ -34,11 +34,17 @@ public class SettingsController {
         Display.getInstance().sendMessage(new String[]{Constants.EMAIL}, "[" + Display.getInstance().getPlatformName() + "] Feedback ", m);
     }
 
-    public static void beforeSettingsForm(Form f, Component rate, Button feedback, Button website, MultiButton analytics, StateMachine stateMachine) {
+    public static void reportAction() {
+        Message m = new Message("Body of message");
+        Display.getInstance().sendMessage(new String[]{Constants.EMAIL}, "[" + Display.getInstance().getPlatformName() + "] Report ", m);
+    }
+
+    public static void beforeSettingsForm(Form f, Component rate, Button feedback, Button website, MultiButton analytics, StateMachine stateMachine, Button report) {
         UserController.addUserSideMenu(f, stateMachine);
         FontImage.setMaterialIcon((Button) rate, FontImage.MATERIAL_STAR);
         FontImage.setMaterialIcon(feedback, FontImage.MATERIAL_FEEDBACK);
         FontImage.setMaterialIcon(website, FontImage.MATERIAL_LINK);
+        FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);
 
         analyticsState(Preferences.get("Analytics", true), analytics);
     }

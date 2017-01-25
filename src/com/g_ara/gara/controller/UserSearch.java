@@ -64,8 +64,9 @@ public class UserSearch {
         }
     }
 
-    public static void beforeUserSearchForm(Form f, StateMachine stateMachine) {
+    public static void beforeUserSearchForm(Form f, StateMachine stateMachine, Button search) {
         UserController.addUserSideMenu(f, stateMachine);
+        FontImage.setMaterialIcon(search, FontImage.MATERIAL_SEARCH);
     }
 
 }

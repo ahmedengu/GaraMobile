@@ -27,12 +27,10 @@ import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
-import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
 import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
-import static com.g_ara.gara.model.Constants.CODE_ICON;
-import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
+import static com.g_ara.gara.model.Constants.*;
 import static userclasses.StateMachine.data;
 import static userclasses.StateMachine.showDelayedToastBar;
 
@@ -44,6 +42,9 @@ public class HomeController {
 
     public static void beforeHomeForm(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
         UserController.addUserSideMenu(f, stateMachine);
+        FontImage.setMaterialIcon(drive, FontImage.MATERIAL_DRIVE_ETA);
+        FontImage.setMaterialIcon(ride, FontImage.MATERIAL_THUMB_UP);
+
         f.setBackCommand(null);
         ParseObject fetch = null;
         if (ParseUser.getCurrent().get("trip") != null) {
@@ -120,6 +121,8 @@ public class HomeController {
                                     System.currentTimeMillis() + 10,
                                     LocalNotification.REPEAT_NONE
                             );
+
+                            Display.getInstance().notifyStatusBar("chat", "test", "test", true, true);
                         } else {
                             String title = Display.getInstance().getCurrent().getTitle();
                             if (!(title.equals("Chat") || title.equals("Conversion")))
@@ -161,6 +164,8 @@ public class HomeController {
                 return;
             }
             Button active = new Button("cancel: " + fetch.getClassName());
+            FontImage.setMaterialIcon(active, FontImage.MATERIAL_CANCEL);
+
             final ParseObject object = fetch;
             active.addActionListener(new ActionListener() {
                 @Override
@@ -175,6 +180,8 @@ public class HomeController {
             north.add(active);
 
             Button checkIn = new Button("CheckIn");
+            FontImage.setMaterialIcon(checkIn, FontImage.MATERIAL_CAMERA);
+
             checkIn.addActionListener(evt -> {
 
                 if (CodeScanner.isSupported())
@@ -226,7 +233,7 @@ public class HomeController {
 
             map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
                 Dialog dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
-                getCancelChatSouth(driver, dialog);
+                getCancelSouth(driver, dialog);
                 dialog.show();
             });
 
@@ -275,6 +282,7 @@ public class HomeController {
             fetch = query.find().get(0);
 
             Button active = new Button("cancel: " + fetch.getClassName());
+            FontImage.setMaterialIcon(active, FontImage.MATERIAL_CANCEL);
             active.setUIID("ToggleButtonFirst");
             final ParseObject object = fetch;
             active.addActionListener(evt -> {
@@ -287,6 +295,7 @@ public class HomeController {
             north.add(active);
 
             Button checkin = new Button("Check In/Out");
+            FontImage.setMaterialIcon(checkin, FontImage.MATERIAL_CAMERA);
             checkin.setUIID("ToggleButtonLast");
             checkin.addActionListener(evt -> {
                 String objectId = ParseUser.getCurrent().getObjectId();
@@ -315,7 +324,7 @@ public class HomeController {
 
                         map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
                             Dialog dialog = getRequestUserDialog(tripR, tripUser, "Info");
-                            getCancelChatSouth(tripUser, dialog);
+                            getCancelSouth(tripUser, dialog);
                             dialog.show();
                         });
                     }
@@ -326,22 +335,12 @@ public class HomeController {
         }
     }
 
-    public static void getCancelChatSouth(ParseUser user, Dialog dialog) {
+    public static void getCancelSouth(ParseUser user, Dialog dialog) {
         Button cancel = new Button("cancel");
-        cancel.addActionListener(evt1 -> dialog.dispose());
-        Button chat = new Button("chat");
-        chat.addActionListener(evt1 -> {
-            try {
-                getUserChat(user);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        });
+        FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
 
-        Container south = new Container(new GridLayout(2));
-        south.add(cancel);
-        south.add(chat);
-        dialog.add(BorderLayout.SOUTH, south);
+        cancel.addActionListener(evt1 -> dialog.dispose());
+        dialog.add(BorderLayout.SOUTH, cancel);
     }
 
     public static void CancelActive(Form f, Resources resources, Button drive, Button ride, Button active, ParseObject object) {
@@ -384,11 +383,11 @@ public class HomeController {
 //        }
         try {
             ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
-            query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), 5000000);
+            query.whereWithinKilometers("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()), WITHIN_KILOMETERS);
             ParseQuery<ParseObject> tripQuery = ParseQuery.getQuery("Trip");
             tripQuery.include("driver");
             tripQuery.include("car");
-            tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), 5000000);
+            tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), WITHIN_KILOMETERS);
 //            tripQuery.whereContainedIn("groups", groupUser);
 
             List<ParseObject> results = tripQuery.find();

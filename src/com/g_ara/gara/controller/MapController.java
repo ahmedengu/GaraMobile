@@ -170,8 +170,45 @@ public class MapController {
         });
 
 
+        Button report = new Button("Report");
+        FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);
+        report.addActionListener(evt -> {
+            dialog.dispose();
+            Dialog reportDialog = new Dialog("Report");
+            reportDialog.setLayout(new BorderLayout());
+
+            TextArea infoText = new TextArea();
+            infoText.setHint("More Information");
+            infoText.setUIID("ElementGroupOnly");
+            reportDialog.add(BorderLayout.CENTER, infoText);
+
+            Button cancel = new Button("Cancel");
+            FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
+            cancel.addActionListener(evt1 -> reportDialog.dispose());
+
+
+            Button reportIt = new Button("Report");
+            FontImage.setMaterialIcon(reportIt, FontImage.MATERIAL_REPORT);
+            reportIt.addActionListener(evt1 -> {
+                try {
+                    ParseObject reportObject = ParseObject.create("Reports");
+                    reportObject.put("info", infoText.getText());
+                    reportObject.put("user", ParseUser.getCurrent());
+                    reportObject.put("to", (ParseUser) driver);
+                    reportObject.save();
+                    reportDialog.dispose();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    ToastBar.showErrorMessage(e.getMessage());
+                }
+            });
+
+            reportDialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, reportIt));
+            reportDialog.show();
+        });
+
         info.add(GridLayout.encloseIn(2, new Label("Car: " + car.getString("name")), new Label("Car Year: " + car.getString("year"))));
-        info.add(GridLayout.encloseIn(2, dial, chat));
+        info.add(GridLayout.encloseIn(2, dial, chat,report));
 
 
         info.setScrollableY(true);
@@ -370,22 +407,25 @@ public class MapController {
     }
 
     public void getRoutesCoordsAsync() {
-        ConnectionRequest request = new ConnectionRequest("https://maps.googleapis.com/maps/api/directions/json", false) {
-            @Override
-            protected void readResponse(InputStream input) throws IOException {
-                Map<String, Object> response = new JSONParser().parseJSON(new InputStreamReader(input, "UTF-8"));
-                if (response.get("routes") != null) {
-                    ArrayList routes = (ArrayList) response.get("routes");
-                    if (routes.size() > 0)
-                        coordsPath = decode(((LinkedHashMap) ((LinkedHashMap) routes.get(0)).get("overview_polyline")).get("points").toString());
+        if (locationCoord != null && destCoord != null) {
+            ConnectionRequest request = new ConnectionRequest("https://maps.googleapis.com/maps/api/directions/json", false) {
+                @Override
+                protected void readResponse(InputStream input) throws IOException {
+                    Map<String, Object> response = new JSONParser().parseJSON(new InputStreamReader(input, "UTF-8"));
+                    if (response.get("routes") != null) {
+                        ArrayList routes = (ArrayList) response.get("routes");
+                        if (routes.size() > 0)
+                            coordsPath = decode(((LinkedHashMap) ((LinkedHashMap) routes.get(0)).get("overview_polyline")).get("points").toString());
+                    }
                 }
-            }
-        };
-        request.addArgument("key", MAPS_KEY);
-        request.addArgument("origin", locationCoord.getLatitude() + "," + locationCoord.getLongitude());
-        request.addArgument("destination", destCoord.getLatitude() + "," + destCoord.getLongitude());
+            };
+            request.addArgument("key", MAPS_KEY);
 
-        NetworkManager.getInstance().addToQueue(request);
+            request.addArgument("origin", locationCoord.getLatitude() + "," + locationCoord.getLongitude());
+            request.addArgument("destination", destCoord.getLatitude() + "," + destCoord.getLongitude());
+
+            NetworkManager.getInstance().addToQueue(request);
+        }
     }
 
     public static void stopLocationListener() {

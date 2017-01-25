@@ -2,9 +2,7 @@ package com.g_ara.gara.controller;
 
 import com.codename1.components.ToastBar;
 import com.codename1.maps.Coord;
-import com.codename1.ui.Container;
-import com.codename1.ui.Form;
-import com.codename1.ui.Label;
+import com.codename1.ui.*;
 import com.codename1.ui.util.Resources;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseGeoPoint;
@@ -50,8 +48,11 @@ public class DriveSummary {
         }
     }
 
-    public static void beforeDriveSummaryForm(Container summary, Resources resources, Form f) {
+    public static void beforeDriveSummaryForm(Container summary, Resources resources, Form f, Button cancel, Button confirm) {
         Coord locationCoord = MapController.getLocationCoord();
+        FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
+        FontImage.setMaterialIcon(confirm, FontImage.MATERIAL_DONE);
+
         Coord destCoord = MapController.getDestCoord();
         summary.add(new Label("Distance: " + (int) MapController.distanceInKilometers(locationCoord, destCoord)));
         summary.add(new Label("Cost per kilo: " + data.get("cost")));

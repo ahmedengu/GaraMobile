@@ -1,5 +1,8 @@
 package com.g_ara.gara.controller;
 
+import com.codename1.components.FloatingActionButton;
+import com.codename1.ui.Button;
+import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
 import com.codename1.ui.TextField;
 import com.codename1.ui.list.DefaultListModel;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
+import static userclasses.StateMachine.showForm;
 
 /**
  * Created by ahmedengu.
@@ -84,9 +88,15 @@ public class GroupsController {
                 refreshGroups(groups);
             }
         });
+
+        FloatingActionButton floatingActionButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
+        floatingActionButton.addActionListener(evt -> showForm("newGroup"));
+        floatingActionButton.bindFabToContainer(f.getContentPane());
     }
 
-    public static void beforeNewGroupForm(Form f, StateMachine stateMachine) {
+    public static void beforeNewGroupForm(Form f, StateMachine stateMachine, Button aNew) {
         UserController.addUserSideMenu(f, stateMachine);
+        FontImage.setMaterialIcon(aNew,FontImage.MATERIAL_ADD);
+
     }
 }

@@ -7,7 +7,6 @@
 
 package userclasses;
 
-import ca.weblite.codename1.json.JSONException;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
 import com.codename1.io.NetworkManager;
@@ -19,7 +18,6 @@ import com.codename1.ui.list.MultiList;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
-import com.g_ara.gara.controller.ParseLiveQuery;
 import com.parse4cn1.Parse;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseUser;
@@ -167,7 +165,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeSettings(Form f) {
-        beforeSettingsForm(f, findRate(), findFeedback(), findWebsite(), findAnalytics(), this);
+        beforeSettingsForm(f, findRate(), findFeedback(), findWebsite(), findAnalytics(), this, findReport());
     }
 
     @Override
@@ -198,7 +196,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeProfile(Form f) {
-        beforeProfileForm(findName(), findUsername(), findPassword(), findMobile(), findPic(), findEmail(), f, this);
+        beforeProfileForm(findName(), findUsername(), findPassword(), findMobile(), findPic(), findEmail(), f, this, findSave());
     }
 
     @Override
@@ -219,7 +217,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeConversion(Form f) {
-        beforeConversionForm(findMessages(), f, this);
+        beforeConversionForm(findMessages(), f, this, findSend());
 
     }
 
@@ -262,13 +260,13 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        beforeDriveSummaryForm(findSummary(), fetchResourceFile(), f);
+        beforeDriveSummaryForm(findSummary(), fetchResourceFile(), f, findCancel(), findConfirm());
     }
 
 
     @Override
     protected void beforeRideMap(Form f) {
-        beforeRideMapForm(f, fetchResourceFile(), this);
+        beforeRideMapForm(f, fetchResourceFile(), this, findCancel());
     }
 
 
@@ -414,7 +412,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeTripFeedback(Form f) {
-        beforeTripFeedbackForm((Slider) findRate(f));
+        beforeTripFeedbackForm((Slider) findRate(f), findCancel(), findOk());
 
     }
 
@@ -443,34 +441,37 @@ public class StateMachine extends StateMachineBase {
         s.showDelayed(delay);
     }
 
-    @Override
-    protected void exitRequests(Form f) {
-        try {
-            ParseLiveQuery.close();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    protected void exitRequests(Form f) {
+//        try {
+//            ParseLiveQuery.close();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     protected void beforeRegister(Form f) {
         FontImage.setMaterialIcon(findPic(), FontImage.MATERIAL_ADD_A_PHOTO);
+        FontImage.setMaterialIcon((Button) findLogin(f), FontImage.MATERIAL_ARROW_BACK);
     }
 
     @Override
     protected void beforeCar(Form f) {
+        addUserSideMenu(f, this);
         FontImage.setMaterialIcon(findAdd(), FontImage.MATERIAL_ADD);
+        FontImage.setMaterialIcon(findSave(), FontImage.MATERIAL_SAVE);
     }
 
     @Override
     protected void beforeNewGroup(Form f) {
-        beforeNewGroupForm(f, this);
+        beforeNewGroupForm(f, this, findNew());
     }
 
 
     @Override
     protected void beforeUserSearch(Form f) {
-        beforeUserSearchForm(f, this);
+        beforeUserSearchForm(f, this, findSearch());
     }
 
     static Dialog dialogBlocking;
@@ -490,7 +491,7 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void postSplash(Form f) {
         boolean b = !am_i_online();
-        boolean b1 = LocationManager.getLocationManager().getStatus() != 0;
+        boolean b1 = LocationManager.getLocationManager().getStatus() == 3;
         if (b && b1) {
             ToastBar.showErrorMessage("Gara require internet connection & GPS");
             findLoadingCnt(f).remove();
@@ -538,5 +539,15 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void postConversion(Form f) {
         postConversionForm(findMessages(f));
+    }
+
+    @Override
+    protected void beforeLogin(Form f) {
+        FontImage.setMaterialIcon((Button) findRegister(f), FontImage.MATERIAL_ARROW_BACK);
+    }
+
+    @Override
+    protected void onSettings_ReportAction(Component c, ActionEvent event) {
+        reportAction();
     }
 }

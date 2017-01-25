@@ -378,18 +378,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public com.codename1.ui.Component findUserSearch(Component root) {
-        return (com.codename1.ui.Component)findByName("UserSearch", root);
-    }
-
-    public com.codename1.ui.Component findUserSearch() {
-        com.codename1.ui.Component cmp = (com.codename1.ui.Component)findByName("UserSearch", Display.getInstance().getCurrent());
-        if(cmp == null && aboutToShowThisContainer != null) {
-            cmp = (com.codename1.ui.Component)findByName("UserSearch", aboutToShowThisContainer);
-        }
-        return cmp;
-    }
-
     public com.codename1.ui.Button findSave(Component root) {
         return (com.codename1.ui.Button)findByName("Save", root);
     }
@@ -530,6 +518,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.TextArea cmp = (com.codename1.ui.TextArea)findByName("Comment", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.TextArea)findByName("Comment", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.Button findReport(Component root) {
+        return (com.codename1.ui.Button)findByName("Report", root);
+    }
+
+    public com.codename1.ui.Button findReport() {
+        com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Report", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.Button)findByName("Report", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -678,24 +678,13 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
-    public static final int COMMAND_ChatFindUser = 20;
-    public static final int COMMAND_CarsNew = 19;
     public static final int COMMAND_LoginRegister = 2;
     public static final int COMMAND_CarSave = 10;
     public static final int COMMAND_DriveSummaryCancel = 21;
     public static final int COMMAND_ProfileSave = 3;
-    public static final int COMMAND_GroupsNew = 18;
     public static final int COMMAND_LoginLogin = 1;
     public static final int COMMAND_RideMapCancel = 22;
     public static final int COMMAND_RegisterRegister = 4;
-
-    protected boolean onChatFindUser() {
-        return false;
-    }
-
-    protected boolean onCarsNew() {
-        return false;
-    }
 
     protected boolean onLoginRegister() {
         return false;
@@ -713,10 +702,6 @@ public abstract class StateMachineBase extends UIBuilder {
         return false;
     }
 
-    protected boolean onGroupsNew() {
-        return false;
-    }
-
     protected boolean onLoginLogin() {
         return false;
     }
@@ -731,20 +716,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void processCommand(ActionEvent ev, Command cmd) {
         switch(cmd.getId()) {
-            case COMMAND_ChatFindUser:
-                if(onChatFindUser()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_CarsNew:
-                if(onCarsNew()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
             case COMMAND_LoginRegister:
                 if(onLoginRegister()) {
                     ev.consume();
@@ -768,13 +739,6 @@ public abstract class StateMachineBase extends UIBuilder {
 
             case COMMAND_ProfileSave:
                 if(onProfileSave()) {
-                    ev.consume();
-                    return;
-                }
-                break;
-
-            case COMMAND_GroupsNew:
-                if(onGroupsNew()) {
                     ev.consume();
                     return;
                 }
@@ -2319,10 +2283,6 @@ public abstract class StateMachineBase extends UIBuilder {
             }
         }
         if(rootContainerName.equals("Groups")) {
-            if("New".equals(c.getName())) {
-                onGroups_NewAction(c, event);
-                return;
-            }
             if("Groups".equals(c.getName())) {
                 onGroups_GroupsAction(c, event);
                 return;
@@ -2403,14 +2363,14 @@ public abstract class StateMachineBase extends UIBuilder {
                 onSettings_FeedbackAction(c, event);
                 return;
             }
+            if("Report".equals(c.getName())) {
+                onSettings_ReportAction(c, event);
+                return;
+            }
         }
         if(rootContainerName.equals("Cars")) {
             if("Cars".equals(c.getName())) {
                 onCars_CarsAction(c, event);
-                return;
-            }
-            if("New".equals(c.getName())) {
-                onCars_NewAction(c, event);
                 return;
             }
         }
@@ -2473,10 +2433,6 @@ public abstract class StateMachineBase extends UIBuilder {
         if(rootContainerName.equals("Chat")) {
             if("Chat".equals(c.getName())) {
                 onChat_ChatAction(c, event);
-                return;
-            }
-            if("UserSearch".equals(c.getName())) {
-                onChat_UserSearchAction(c, event);
                 return;
             }
         }
@@ -2553,9 +2509,6 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onTripFeedback_CommentAction(Component c, ActionEvent event) {
       }
 
-      protected void onGroups_NewAction(Component c, ActionEvent event) {
-      }
-
       protected void onGroups_GroupsAction(Component c, ActionEvent event) {
       }
 
@@ -2610,10 +2563,10 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onSettings_FeedbackAction(Component c, ActionEvent event) {
       }
 
-      protected void onCars_CarsAction(Component c, ActionEvent event) {
+      protected void onSettings_ReportAction(Component c, ActionEvent event) {
       }
 
-      protected void onCars_NewAction(Component c, ActionEvent event) {
+      protected void onCars_CarsAction(Component c, ActionEvent event) {
       }
 
       protected void onLogin_LogoAction(Component c, ActionEvent event) {
@@ -2656,9 +2609,6 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onChat_ChatAction(Component c, ActionEvent event) {
-      }
-
-      protected void onChat_UserSearchAction(Component c, ActionEvent event) {
       }
 
       protected void onConversion_MessageAction(Component c, ActionEvent event) {

@@ -18,4 +18,6 @@
   </component>
   <component type="Button" name="Feedback" cloudDestinationProperty="Feedback" uiid="ButtonGroupLast" text="Feedback" >
   </component>
+  <component type="Button" name="Report" cloudDestinationProperty="Report" uiid="ButtonGroupOnly" text="Report" >
+  </component>
 </component>

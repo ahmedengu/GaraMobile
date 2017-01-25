@@ -12,12 +12,13 @@ import static com.codename1.ui.FontImage.createMaterial;
  */
 public class Constants {
     public static final String MAPS_KEY = "AIzaSyAxlzXskkl3KKdjZUuFrV-j8oFjWOjtTIQ";
-    public static String WEBSITE = "http://www.g-ara.com";
-    public static String EMAIL = "feedback@g-ara.com";
-    public static String Play_STORE = "http://www.g-ara.com";
-    public static String APPLE_STORE = "http://www.g-ara.com";
-    public static String PAYMENT = "http://www.g-ara.com";
-    public static String FILE_PATH = "https://parsefiles.back4app.com/GBTIGT2xXUlBHF8ctBXoyEO7nIL18jvwQNyl3gkD/";
+    public static final String WEBSITE = "http://www.g-ara.com";
+    public static final String EMAIL = "feedback@g-ara.com";
+    public static final String Play_STORE = "http://www.g-ara.com";
+    public static final String APPLE_STORE = "http://www.g-ara.com";
+    public static final String PAYMENT = "http://www.g-ara.com";
+    public static final String FILE_PATH = "https://parsefiles.back4app.com/GBTIGT2xXUlBHF8ctBXoyEO7nIL18jvwQNyl3gkD/";
+    public static final int WITHIN_KILOMETERS = 50000;
 
 //    public static String GPLUS_CLIENT = "478278768173-p03m0mn78pdp79op1c83rak5rg5auc11.apps.googleusercontent.com";
 //    public static String GPLUS_SECRET = "kGTosZIkwVA0OQPyex0ktWpS";
