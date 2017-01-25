@@ -33,7 +33,7 @@ public class ChatController {
 
     public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine, Button send) {
         UserController.addUserSideMenu(f, stateMachine);
-        FontImage.setMaterialIcon(send, FontImage.MATERIAL_ADD);
+        FontImage.setMaterialIcon(send, FontImage.MATERIAL_SEND);
 
         try {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");

@@ -155,7 +155,7 @@ public class RequestsController {
 
             TextArea info = new TextArea();
             info.setHint("More Information");
-            info.setUIID("ElementGroupOnly");
+            info.setUIID("GroupElementOnly");
             reportDialog.add(BorderLayout.CENTER, info);
 
             Button cancel = new Button("Cancel");

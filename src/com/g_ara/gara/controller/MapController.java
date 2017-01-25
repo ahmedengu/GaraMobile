@@ -179,7 +179,7 @@ public class MapController {
 
             TextArea infoText = new TextArea();
             infoText.setHint("More Information");
-            infoText.setUIID("ElementGroupOnly");
+            infoText.setUIID("GroupElementOnly");
             reportDialog.add(BorderLayout.CENTER, infoText);
 
             Button cancel = new Button("Cancel");
@@ -208,7 +208,7 @@ public class MapController {
         });
 
         info.add(GridLayout.encloseIn(2, new Label("Car: " + car.getString("name")), new Label("Car Year: " + car.getString("year"))));
-        info.add(GridLayout.encloseIn(2, dial, chat,report));
+        info.add(GridLayout.encloseIn(2, dial, chat, report));
 
 
         info.setScrollableY(true);
@@ -302,7 +302,8 @@ public class MapController {
         map.clearMapLayers();
         if (location != null) {
             locationCoord = new Coord(location.getLatitude(), location.getLongitude());
-            if (!map.isNativeMaps())
+            //TODO: for mobile :
+//            if (!map.isNativeMaps())
                 map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
             lastLocationUpdate = System.currentTimeMillis();
         }

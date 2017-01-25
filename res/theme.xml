@@ -379,10 +379,13 @@
         <val key="GroupElementOnly.padding" value="1,1,3,3" />
         <val key="GroupElementOnly.press#align" value="1" />
         <val key="GroupElementOnly.press#derive" value="GroupElementOnly.sel" />
+        <val key="GroupElementOnly.press#fgColor" value="ffffff" />
+        <val key="GroupElementOnly.press#transparency" value="255" />
         <val key="GroupElementOnly.sel#align" value="1" />
         <border key="GroupElementOnly.sel#border" type="image" i1="GroupElementOnly.sel#borderTop:1" i2="GroupElementOnly.sel#borderBottom:1" i3="GroupElementOnly.sel#borderLeft:1" i4="GroupElementOnly.sel#borderRight:1" i5="GroupElementOnly.sel#borderTopL:1" i6="GroupElementOnly.sel#borderTopR:1" i7="GroupElementOnly.sel#borderBottomL:1" i8="GroupElementOnly.sel#borderBottomR:1" i9="GroupElementOnly.sel#borderCenter:1" />
         <val key="GroupElementOnly.sel#derive" value="GroupElementOnly" />
         <val key="GroupElementOnly.sel#fgColor" value="ffffff" />
+        <val key="GroupElementOnly.sel#transparency" value="255" />
         <val key="InfiniteProgress.transparency" value="0" />
         <val key="Label.fgColor" value="a3a3a3" />
         <val key="List.bgColor" value="e6e6e6" />
@@ -684,8 +687,8 @@
             <entry key="Calendar.Thursday" value="Thu" />
             <entry key="ok" value="OK" />
             <entry key="Calendar.Saturday" value="Sat" />
-            <entry key="select" value="Select" />
             <entry key="Calendar.Friday" value="Fri" />
+            <entry key="select" value="Select" />
             <entry key="edit" value="Edit" />
             <entry key="Calendar.Monday" value="Mon" />
             <entry key="cancel" value="Cancel" />
@@ -700,8 +703,8 @@
             <entry key="Calendar.Thursday" value="Thu" />
             <entry key="ok" value="OK" />
             <entry key="Calendar.Saturday" value="Sat" />
-            <entry key="Calendar.Friday" value="Fri" />
             <entry key="select" value="Select" />
+            <entry key="Calendar.Friday" value="Fri" />
             <entry key="edit" value="Edit" />
             <entry key="Calendar.Monday" value="Mon" />
             <entry key="cancel" value="Cancel" />
