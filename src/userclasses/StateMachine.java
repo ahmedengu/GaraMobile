@@ -28,11 +28,10 @@ import java.util.HashMap;
 import static com.g_ara.gara.controller.CarsController.*;
 import static com.g_ara.gara.controller.ChatController.*;
 import static com.g_ara.gara.controller.CountdownController.beforeCountdownForm;
-import static com.g_ara.gara.controller.DriveSummary.beforeDriveSummaryForm;
-import static com.g_ara.gara.controller.DriveSummary.confirmAction;
-import static com.g_ara.gara.controller.DriveSummary.postDriveSummaryForm;
+import static com.g_ara.gara.controller.DriveSummary.*;
 import static com.g_ara.gara.controller.GroupsController.*;
-import static com.g_ara.gara.controller.HomeController.*;
+import static com.g_ara.gara.controller.HomeController.beforeHomeForm;
+import static com.g_ara.gara.controller.HomeController.postHomeForm;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RequestsController.postRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
@@ -473,8 +472,8 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void postSplash(Form f) {
-        boolean b = !am_i_online();
-        boolean b1 = LocationManager.getLocationManager().getStatus() == 3;
+        boolean b = NetworkManager.getInstance().isAPSupported() && !am_i_online();
+        boolean b1 = (LocationManager.getLocationManager().isGPSDetectionSupported() && !LocationManager.getLocationManager().isGPSEnabled()) || LocationManager.getLocationManager().getStatus() != 0;
         if (b && b1) {
             ToastBar.showErrorMessage("Gara require internet connection & GPS");
             findLoadingCnt(f).remove();
@@ -511,7 +510,7 @@ public class StateMachine extends StateMachineBase {
         } else {
             online = true;
         }
-        return true;
+        return online;
     }
 
     @Override
@@ -565,6 +564,6 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void postDriveSummary(Form f) {
-        postDriveSummaryForm(findSummary(f),f);
+        postDriveSummaryForm(findSummary(f), f);
     }
 }
