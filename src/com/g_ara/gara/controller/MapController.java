@@ -34,6 +34,8 @@ import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.*;
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
 
 /**
  * Created by ahmedengu.
@@ -195,10 +197,13 @@ public class MapController {
                     reportObject.put("info", infoText.getText());
                     reportObject.put("user", ParseUser.getCurrent());
                     reportObject.put("to", (ParseUser) driver);
+                    showBlocking();
                     reportObject.save();
+                    hideBlocking();
                     reportDialog.dispose();
                 } catch (ParseException e) {
                     e.printStackTrace();
+                    hideBlocking();
                     ToastBar.showErrorMessage(e.getMessage());
                 }
             });

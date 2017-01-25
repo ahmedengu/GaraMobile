@@ -5,10 +5,10 @@
     <layoutConstraint value="Center" />
   </component>
   <component type="Container" name="Container1" cloudDestinationProperty="Container1" layout="GridLayout" gridLayoutRows="1" gridLayoutColumns="2" >
-    <layoutConstraint value="South" />
+    <layoutConstraint value="North" />
     <component type="TextArea" name="Message" cloudBoundProperty="text" cloudDestinationProperty="Message" nextFocusDown="Send" nextFocusRight="Send" uiid="ToggleButtonFirstText" scrollVisible="true" text="" growByContent="false" hint="Message" columns="3" >
     </component>
-    <component type="Button" name="Send" cloudDestinationProperty="Button" nextFocusUp="Message" nextFocusLeft="Message" uiid="ToggleButtonLast" text="Send" >
+    <component type="Button" name="Send" cloudDestinationProperty="Button" nextFocusUp="Message" nextFocusLeft="Message" uiid="ToggleButtonLast" rtl="true" text="Send" >
     </component>
   </component>
 </component>

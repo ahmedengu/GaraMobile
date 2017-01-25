@@ -195,9 +195,12 @@ public class RequestsController {
                     reportObject.put("info", info.getText());
                     reportObject.put("user", ParseUser.getCurrent());
                     reportObject.put("to", (ParseUser) TrUser);
+                    showBlocking();
                     reportObject.save();
+                    hideBlocking();
                     reportDialog.dispose();
                 } catch (ParseException e) {
+                    hideBlocking();
                     e.printStackTrace();
                     ToastBar.showErrorMessage(e.getMessage());
                 }

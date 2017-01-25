@@ -32,19 +32,24 @@ public class ChatController {
     public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine, Button send) {
         UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon(send, FontImage.MATERIAL_SEND);
+        messages.addPullToRefresh(() -> refreshConversation(messages));
+    }
 
-        try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
-            query.include("from");
-            ParseObject chat = (ParseObject) data.get("chat");
-            query.whereEqualTo("chat", chat);
-            List<ParseUser> members = chat.getList("members");
-            for (int i = 0; i < members.size(); i++) {
-                if (!members.get(i).getObjectId().equals(ParseUser.getCurrent().getObjectId())) {
-                    toUser = members.get(i);
-                    break;
-                }
+    public static void postConversionForm(Container messages) {
+        showBlocking();
+        refreshConversation(messages);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+        query.include("from");
+        ParseObject chat = (ParseObject) data.get("chat");
+        query.whereEqualTo("chat", chat);
+        List<ParseUser> members = chat.getList("members");
+        for (int i = 0; i < members.size(); i++) {
+            if (!members.get(i).getObjectId().equals(ParseUser.getCurrent().getObjectId())) {
+                toUser = members.get(i);
+                break;
             }
+        }
+        try {
             conversationLive = new ParseLiveQuery(query) {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
@@ -55,14 +60,27 @@ public class ChatController {
                     }
                 }
             };
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        hideBlocking();
+    }
+
+    public static void refreshConversation(final Container messages) {
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+            query.include("from");
+            query.whereEqualTo("chat", (ParseObject) data.get("chat"));
+            query.setLimit(1000);
 
             List<ParseObject> results = query.find();
+            messages.removeAll();
             for (int i = 0; i < results.size(); i++) {
                 addMessage(results.get(i), messages);
             }
         } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -91,7 +109,7 @@ public class ChatController {
                 Display.getInstance().playBuiltinSound(SOUND_TYPE_INFO);
             }
         }
-        messages.add(t);
+        messages.addComponent(0, t);
         t.setY(messages.getHeight());
         t.setWidth(messages.getWidth());
         t.setHeight(40);
@@ -102,7 +120,7 @@ public class ChatController {
         }
     }
 
-    public static void beforeChatForm(MultiList chat,Form f) {
+    public static void beforeChatForm(MultiList chat, Form f) {
         UserController.addUserSideMenu(f);
         chat.addPullToRefresh(() -> refreshChatForm(chat));
     }
@@ -198,8 +216,4 @@ public class ChatController {
             }
     }
 
-    public static void postConversionForm(Container messages) {
-        if (messages.getComponentCount() > 0)
-            messages.scrollComponentToVisible(messages.getComponentAt(messages.getComponentCount() - 1));
-    }
 }
