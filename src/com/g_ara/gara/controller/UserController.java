@@ -163,6 +163,11 @@ public class UserController {
         cancel.addActionListener(evt -> dialog.dispose());
         Button reset = new Button("Reset");
         reset.addActionListener(evt -> {
+            if (email.getText().length() == 0) {
+                dialog.dispose();
+                ToastBar.showErrorMessage("Email is required");
+                return;
+            }
             try {
                 ParseUser.requestPasswordReset(email.getText());
                 dialog.dispose();
