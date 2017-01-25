@@ -61,12 +61,7 @@ public class UserSearch {
     }
 
     public static void usersAction(StateMachine stateMachine, MultiList users) {
-        try {
             getUserChat((ParseUser) ((Map<String, Object>) users.getSelectedItem()).get("object"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            ToastBar.showErrorMessage(e.getMessage());
-        }
     }
 
     public static void beforeUserSearchForm(Form f, StateMachine stateMachine, Button search) {

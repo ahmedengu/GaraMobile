@@ -162,14 +162,7 @@ public class MapController {
 
         Button chat = new Button("Chat");
         FontImage.setMaterialIcon(chat, FontImage.MATERIAL_CHAT);
-        chat.addActionListener(evt -> {
-            try {
-                getUserChat((ParseUser) driver);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                ToastBar.showErrorMessage(e.getMessage());
-            }
-        });
+        chat.addActionListener(evt -> getUserChat((ParseUser) driver));
 
 
         Button report = new Button("Report");

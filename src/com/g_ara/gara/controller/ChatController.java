@@ -184,27 +184,34 @@ public class ChatController {
         }
     }
 
-    public static void getUserChat(ParseUser object) throws ParseException {
+    public static void getUserChat(ParseUser object) {
+        try {
+            showBlocking();
+            List<ParseObject> parseUsers = new ArrayList<>();
+            parseUsers.add(getUserEmptyObject());
+            parseUsers.add(object);
 
-        List<ParseObject> parseUsers = new ArrayList<>();
-        parseUsers.add(getUserEmptyObject());
-        parseUsers.add(object);
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
+            query.whereContainsAll("members", parseUsers);
+            List<ParseObject> results = query.find();
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
-        query.whereContainsAll("members", parseUsers);
-        List<ParseObject> results = query.find();
+            ParseObject chat;
+            if (results.size() > 0) {
+                chat = results.get(0);
+            } else {
+                chat = ParseObject.create("Chat");
+                chat.put("members", parseUsers);
+                chat.save();
+            }
 
-        ParseObject chat;
-        if (results.size() > 0) {
-            chat = results.get(0);
-        } else {
-            chat = ParseObject.create("Chat");
-            chat.put("members", parseUsers);
-            chat.save();
+            data.put("chat", chat);
+            hideBlocking();
+            showForm("Conversion");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            hideBlocking();
+            ToastBar.showErrorMessage(e.getMessage());
         }
-
-        data.put("chat", chat);
-        showForm("Conversion");
     }
 
     public static void onConversationExit() {

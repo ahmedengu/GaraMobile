@@ -37,7 +37,6 @@ public class RequestsController {
         if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
             if (((ParseObject) data.get("active")).getList("tripRequests") == null || ((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
                 map = new MapController(resources, f).map;
-
                 f.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, evt -> {
                     try {
                         refreshRequests(stateMachine);
@@ -161,14 +160,7 @@ public class RequestsController {
 
         Button chat = new Button("Chat");
         FontImage.setMaterialIcon(chat, FontImage.MATERIAL_CHAT);
-        chat.addActionListener(evt -> {
-            try {
-                getUserChat((ParseUser) TrUser);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                ToastBar.showErrorMessage(e.getMessage());
-            }
-        });
+        chat.addActionListener(evt -> getUserChat((ParseUser) TrUser));
 
         Button report = new Button("Report");
         FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);

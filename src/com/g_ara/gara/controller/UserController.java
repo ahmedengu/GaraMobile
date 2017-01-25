@@ -280,7 +280,9 @@ public class UserController {
 
         tb.addComponentToSideMenu(sidemenuTop);
 
-        tb.addMaterialCommandToRightBar("", FontImage.MATERIAL_SEARCH, e -> showForm("UserSearch"));
+        if (!f.getName().equals("UserSearch"))
+            tb.addMaterialCommandToRightBar("", FontImage.MATERIAL_SEARCH, e -> showForm("UserSearch"));
+
         tb.addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> showForm("Home"));
         tb.addMaterialCommandToSideMenu("Requests", FontImage.MATERIAL_NOTIFICATIONS, e -> showForm("Requests"));
         tb.addMaterialCommandToSideMenu("Chat", FontImage.MATERIAL_CHAT, e -> showForm("Chat"));
