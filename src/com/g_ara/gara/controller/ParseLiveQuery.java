@@ -191,12 +191,14 @@ public abstract class ParseLiveQuery {
 
     //unsubscribe from all then close the websocket
     public static void close() throws JSONException {
-        for (Map.Entry<Integer, ParseLiveQuery> entry : lQuerys.entrySet())
-            entry.getValue().unsubscribe(false);
-        lQuerys.clear();
-        requestIds = 0;
-        webSocket.close();
-        webSocket = null;
+        if (webSocket != null) {
+            for (Map.Entry<Integer, ParseLiveQuery> entry : lQuerys.entrySet())
+                entry.getValue().unsubscribe(false);
+            lQuerys.clear();
+            requestIds = 0;
+            webSocket.close();
+            webSocket = null;
+        }
     }
 
     // LiveQuery server URL from the parse server URL

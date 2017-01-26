@@ -54,6 +54,7 @@ public class MapController {
     public MapController(Container f) {
         f.addComponent(BorderLayout.CENTER, map);
         map.setRotateGestureEnabled(true);
+        map.setShowMyLocation(true);
     }
 
     public MapController(Resources theme, Container f) {
@@ -233,8 +234,6 @@ public class MapController {
         if (currentLocation != null) {
             locationCoord = new Coord(currentLocation.getLatitude(), currentLocation.getLongitude());
             map.zoom(locationCoord, 5);
-            if (map.isNativeMaps())
-                map.setShowMyLocation(true);
         }
         locationListener(map);
     }
@@ -261,7 +260,7 @@ public class MapController {
 
 
             public void providerStateChanged(int newState) {
-                if (newState != 0)
+                if (newState == LocationManager.OUT_OF_SERVICE)
                     Display.getInstance().callSerially(() -> ToastBar.showErrorMessage("Please enable GPS"));
             }
         });

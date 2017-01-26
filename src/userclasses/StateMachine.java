@@ -9,9 +9,6 @@ package userclasses;
 
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
-import com.codename1.io.NetworkManager;
-import com.codename1.io.Preferences;
-import com.codename1.location.LocationManager;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.list.MultiList;
@@ -19,8 +16,6 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.parse4cn1.Parse;
-import com.parse4cn1.ParseException;
-import com.parse4cn1.ParseUser;
 import generated.StateMachineBase;
 
 import java.util.HashMap;
@@ -36,6 +31,7 @@ import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RequestsController.postRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
 import static com.g_ara.gara.controller.SettingsController.*;
+import static com.g_ara.gara.controller.SplashController.refreshSplash;
 import static com.g_ara.gara.controller.TripFeedbackController.*;
 import static com.g_ara.gara.controller.UserController.*;
 import static com.g_ara.gara.controller.UserSearch.*;
@@ -472,45 +468,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void postSplash(Form f) {
-        boolean b = NetworkManager.getInstance().isAPSupported() && !am_i_online();
-        boolean b1 = (LocationManager.getLocationManager().isGPSDetectionSupported() && !LocationManager.getLocationManager().isGPSEnabled()) || LocationManager.getLocationManager().getStatus() != 0;
-        if (b && b1) {
-            ToastBar.showErrorMessage("Gara require internet connection & GPS");
-            findLoadingCnt(f).remove();
-            f.revalidate();
-        } else if (b) {
-            ToastBar.showErrorMessage("Gara require internet connection");
-            findLoadingCnt(f).remove();
-            f.revalidate();
-        } else if (b1) {
-            ToastBar.showErrorMessage("Gara require GPS");
-            findLoadingCnt(f).remove();
-            f.revalidate();
-        } else if (Preferences.get("sessionToken", "").length() > 0) {
-            try {
-                ParseUser user = ParseUser.fetchBySession(Preferences.get("sessionToken", ""));
-                if (user.isAuthenticated()) {
-                    showForm("Home", null);
-                } else {
-                    showForm("Login", null);
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        } else {
-            showForm("Login", null);
-        }
-    }
-
-    public static boolean am_i_online() {
-        boolean online = false;
-        String net = NetworkManager.getInstance().getCurrentAccessPoint();
-        if (net == null || net == "" || net.equals(null)) {
-            online = false;
-        } else {
-            online = true;
-        }
-        return online;
+        refreshSplash(f, findLoadingCnt(f));
     }
 
     @Override
