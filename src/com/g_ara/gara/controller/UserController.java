@@ -1,6 +1,5 @@
 package com.g_ara.gara.controller;
 
-import ca.weblite.codename1.json.JSONException;
 import com.codename1.capture.Capture;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
@@ -187,13 +186,13 @@ public class UserController {
         showBlocking();
         Preferences.clearAll();
         try {
-            ParseLiveQuery.close();
             MapController.stopLocationListener();
             ParseUser.getCurrent().logout();
+            ParseLiveQuery.close();
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         hideBlocking();

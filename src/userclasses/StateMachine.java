@@ -69,6 +69,7 @@ public class StateMachine extends StateMachineBase {
      * the constructor/class scope to avoid race conditions
      */
     protected void initVars(Resources res) {
+        stateMachine = this;
         Parse.initialize("https://gara-app.back4app.io", "GBTIGT2xXUlBHF8ctBXoyEO7nIL18jvwQNyl3gkD", "H3Z3wBo73IOZRvNegnOIvFaxbhyOLnqX3XMA855l");
     }
 

@@ -1,6 +1,7 @@
 package com.g_ara.gara.controller;
 
 import ca.weblite.codename1.json.JSONException;
+import com.codename1.components.FloatingActionButton;
 import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
@@ -123,6 +124,9 @@ public class ChatController {
     public static void beforeChatForm(MultiList chat, Form f) {
         UserController.addUserSideMenu(f);
         chat.addPullToRefresh(() -> refreshChatForm(chat));
+        FloatingActionButton floatingActionButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
+        floatingActionButton.addActionListener(evt -> showForm("UserSearch"));
+        floatingActionButton.bindFabToContainer(f.getContentPane());
     }
 
     public static void postChatForm(MultiList chat) {
@@ -219,6 +223,8 @@ public class ChatController {
             try {
                 conversationLive.unsubscribe();
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
     }

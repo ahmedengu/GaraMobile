@@ -20,10 +20,8 @@ import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import userclasses.StateMachine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
 import static com.codename1.ui.Display.SOUND_TYPE_INFO;
@@ -403,6 +401,9 @@ public class HomeController {
         } catch (JSONException e) {
             hideBlocking();
             e.printStackTrace();
+        } catch (Exception e) {
+            hideBlocking();
+            e.printStackTrace();
         }
     }
 
@@ -429,10 +430,19 @@ public class HomeController {
             tripQuery.include("driver");
             tripQuery.include("car");
             tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), WITHIN_KILOMETERS);
-            tripQuery.whereContainedIn("groups", groupUser);
-            tripQuery.whereMatchesKeyInQuery("driver", "objectId", query);
+
+            tripQuery.whereMatchesKeyInQuery("groups", "group", verifiedGroupUserQuery());
+            tripQuery.whereMatchesQuery("driver", query);
+            tripQuery.whereEqualTo("active", true);
 
             List<ParseObject> results = tripQuery.find();
+            Iterator<ParseObject> objectIterator = results.iterator();
+            while (objectIterator.hasNext()) {
+                ParseObject object = objectIterator.next();
+                if (object.getList("tripRequests").size() >= object.getInt("seats")) {
+                    objectIterator.remove();
+                }
+            }
             if (results.size() == 0) {
                 hideBlocking();
                 showDelayedToastBar("There is no rides available");
@@ -449,13 +459,18 @@ public class HomeController {
         }
     }
 
+    public static ParseQuery verifiedGroupUserQuery() {
+        ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
+        groupQuery.whereEqualTo("user", ParseUser.getCurrent());
+        groupQuery.whereEqualTo("verified", true);
+        return groupQuery;
+    }
+
     public static List<ParseObject> getUserVerifiedGroups() {
         List<ParseObject> groups = new ArrayList();
         try {
-            ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
+            ParseQuery groupQuery = verifiedGroupUserQuery();
             groupQuery.include("group");
-            groupQuery.whereEqualTo("user", ParseUser.getCurrent());
-            groupQuery.whereEqualTo("verified", true);
             List<ParseObject> list = groupQuery.find();
             for (int i = 0; i < list.size(); i++) {
                 groups.add(list.get(i).getParseObject("group"));

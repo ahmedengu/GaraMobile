@@ -207,7 +207,7 @@ public class MapController {
         });
 
         info.add(GridLayout.encloseIn(2, new Label("Car: " + car.getString("name")), new Label("Car Year: " + car.getString("year"))));
-        info.add(GridLayout.encloseIn(2, dial, chat, report));
+        info.add(GridLayout.encloseIn(3, dial, chat, report));
 
 
         info.setScrollableY(true);
