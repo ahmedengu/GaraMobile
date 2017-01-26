@@ -4,6 +4,7 @@ import com.codename1.capture.Capture;
 import com.codename1.components.FloatingActionButton;
 import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.ImageIO;
@@ -14,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.FILE_PATH;
@@ -41,6 +43,7 @@ public class CarsController {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Car");
 //            query.include("pics");
         query.whereEqualTo("user", ParseUser.getCurrent());
+        query.whereNotEqualTo("archived", true);
         java.util.List<ParseObject> results = query.find();
 
 //            if (results.size() > 0) {
@@ -133,4 +136,22 @@ public class CarsController {
         refreshCars(cars);
         hideBlocking();
     }
+
+    public static void archiveCarOnClick(ActionEvent event, MultiList cars) {
+        if (Dialog.show("Archive", "Do you really want to archive this car?", "Yes", "No")) {
+            ParseObject item = (ParseObject) ((Map<String, Object>) ((MultiList) event.getSource()).getSelectedItem()).get("object");
+            item.put("archived", true);
+            try {
+                showBlocking();
+                item.save();
+                hideBlocking();
+            } catch (ParseException e) {
+                e.printStackTrace();
+                hideBlocking();
+                ToastBar.showErrorMessage(e.getMessage());
+            }
+            refreshCars(cars);
+        }
+    }
+
 }

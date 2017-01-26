@@ -88,9 +88,8 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onCars_CarsAction(Component c, ActionEvent event) {
-
+        archiveCarOnClick(event, (MultiList) findCars());
     }
-
 
     @Override
     protected boolean allowBackTo(String formName) {
