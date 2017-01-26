@@ -524,4 +524,9 @@ public class StateMachine extends StateMachineBase {
     protected void postDriveSummary(Form f) {
         postDriveSummaryForm(findSummary(f), f);
     }
+
+    @Override
+    protected void onGroups_GroupsAction(Component c, ActionEvent event) {
+        archiveGroupOnClick(event, (MultiList) findGroups());
+    }
 }

@@ -2,10 +2,8 @@ package com.g_ara.gara.controller;
 
 import com.codename1.components.FloatingActionButton;
 import com.codename1.components.ToastBar;
-import com.codename1.ui.Button;
-import com.codename1.ui.FontImage;
-import com.codename1.ui.Form;
-import com.codename1.ui.TextField;
+import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.parse4cn1.ParseException;
@@ -20,9 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
-import static userclasses.StateMachine.hideBlocking;
-import static userclasses.StateMachine.showBlocking;
-import static userclasses.StateMachine.showForm;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -30,11 +26,10 @@ import static userclasses.StateMachine.showForm;
 public class GroupsController {
     public static void refreshGroups(MultiList groups) {
         try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("GroupUser");
-            query.include("group");
+            ParseQuery groupQuery = verifiedGroupUserQuery();
+            groupQuery.include("group");
+            List<ParseObject> results = groupQuery.find();
 
-            query.whereEqualTo("user", ParseUser.getCurrent());
-            List<ParseObject> results = query.find();
 //            if (results.size() > 0) {
             ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
@@ -43,6 +38,8 @@ public class GroupsController {
                 entry.put("Line1", results.get(i).getParseObject("group").getString("domain"));
                 entry.put("Line3", results.get(i).getBoolean("verified") ? "Verified" : "Check your email");
                 entry.put("Line2", results.get(i).getString("email"));
+                entry.put("object", results.get(i));
+
                 data.add(entry);
             }
 
@@ -112,4 +109,47 @@ public class GroupsController {
         FontImage.setMaterialIcon(aNew, FontImage.MATERIAL_ADD);
 
     }
+
+    public static ParseQuery verifiedGroupUserQuery() {
+        ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
+        groupQuery.whereEqualTo("user", ParseUser.getCurrent());
+        groupQuery.whereEqualTo("verified", true);
+        groupQuery.whereNotEqualTo("archived", true);
+
+        return groupQuery;
+    }
+
+    public static List<ParseObject> getUserVerifiedGroups() {
+        List<ParseObject> groups = new ArrayList();
+        try {
+            ParseQuery groupQuery = verifiedGroupUserQuery();
+            groupQuery.include("group");
+            List<ParseObject> list = groupQuery.find();
+            for (int i = 0; i < list.size(); i++) {
+                groups.add(list.get(i).getParseObject("group"));
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return groups;
+    }
+
+    public static void archiveGroupOnClick(ActionEvent event, MultiList groups) {
+        if (Dialog.show("Archive", "Do you really want to archive this group?", "Yes", "No")) {
+            ParseObject item = (ParseObject) ((Map<String, Object>) ((MultiList) event.getSource()).getSelectedItem()).get("object");
+            item.put("archived", true);
+            try {
+                showBlocking();
+                item.save();
+                hideBlocking();
+            } catch (ParseException e) {
+                e.printStackTrace();
+                hideBlocking();
+                ToastBar.showErrorMessage(e.getMessage());
+            }
+            refreshGroups(groups);
+        }
+    }
+
 }

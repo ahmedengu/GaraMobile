@@ -26,6 +26,8 @@ import java.util.List;
 import static com.codename1.io.Util.encodeUrl;
 import static com.codename1.ui.Display.SOUND_TYPE_INFO;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
+import static com.g_ara.gara.controller.GroupsController.getUserVerifiedGroups;
+import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserQuery;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
 import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
@@ -459,28 +461,6 @@ public class HomeController {
         }
     }
 
-    public static ParseQuery verifiedGroupUserQuery() {
-        ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
-        groupQuery.whereEqualTo("user", ParseUser.getCurrent());
-        groupQuery.whereEqualTo("verified", true);
-        return groupQuery;
-    }
-
-    public static List<ParseObject> getUserVerifiedGroups() {
-        List<ParseObject> groups = new ArrayList();
-        try {
-            ParseQuery groupQuery = verifiedGroupUserQuery();
-            groupQuery.include("group");
-            List<ParseObject> list = groupQuery.find();
-            for (int i = 0; i < list.size(); i++) {
-                groups.add(list.get(i).getParseObject("group"));
-            }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return groups;
-    }
 
     static ComboBox<Map<String, Object>> combo;
 
