@@ -10,18 +10,17 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseUser;
+import userclasses.StateMachine;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static userclasses.StateMachine.showForm;
 
 /**
  * Created by ahmedengu.
  */
 public class SplashController {
-    public static void refreshSplash(Form f, Container loadingCnt) {
-        boolean isNotOnline = !am_i_online();
+    public static void refreshSplash(Form f, Container loadingCnt, StateMachine stateMachine) {
+        boolean isNotOnline = am_i_online();
         boolean isNotGps = (LocationManager.getLocationManager().isGPSDetectionSupported() && !LocationManager.getLocationManager().isGPSEnabled());
         if (isNotOnline || isNotGps) {
             SpanLabel message = new SpanLabel("Gara require" + ((isNotOnline && isNotGps) ? " Internet Connection & GPS" : ((isNotOnline) ? " Internet Connection" : " GPS")));
@@ -40,7 +39,7 @@ public class SplashController {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Display.getInstance().callSerially(() -> refreshSplash(f, loadingCnt));
+                        Display.getInstance().callSerially(() -> refreshSplash(f, loadingCnt, stateMachine));
                     }
                 }, 1000);
             });
@@ -51,15 +50,15 @@ public class SplashController {
             try {
                 ParseUser user = ParseUser.fetchBySession(Preferences.get("sessionToken", ""));
                 if (user.isAuthenticated()) {
-                    showForm("Home");
+                    stateMachine.showForm("Home", null);
                 } else {
-                    showForm("Login");
+                    stateMachine.showForm("Login", null);
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         } else {
-            showForm("Login");
+            stateMachine.showForm("Login", null);
         }
     }
 

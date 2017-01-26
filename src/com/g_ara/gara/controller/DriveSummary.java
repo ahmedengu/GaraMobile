@@ -14,9 +14,7 @@ import userclasses.StateMachine;
 
 import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
-import static userclasses.StateMachine.data;
-import static userclasses.StateMachine.hideBlocking;
-import static userclasses.StateMachine.showBlocking;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -38,6 +36,8 @@ public class DriveSummary {
             trip.put("toll", data.get("toll"));
             trip.put("seats", data.get("seats"));
             trip.put("notes", data.get("notes"));
+            trip.put("groups", data.get("groups"));
+
             showBlocking();
             trip.save();
             current.put("trip", trip);

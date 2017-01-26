@@ -59,10 +59,15 @@ public class HomeController {
         drive.setHidden(true);
         drive.setUIID("ToggleButtonLast");
 
-        ParseObject fetch = null;
+        if (initLiveQuery) {
+            initLiveQuery = false;
+            chatLiveQuery();
+        }
         if (ParseUser.getCurrent().get("trip") != null) {
             showBlocking();
             tripHome(f, resources, drive, ride);
+            if (tripLiveQuery == null)
+                requestsLiveQuery(stateMachine);
             hideBlocking();
         } else if (ParseUser.getCurrent().get("tripRequest") != null) {
             showBlocking();
@@ -74,13 +79,6 @@ public class HomeController {
 
         }
         f.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, ride, drive));
-
-        if (initLiveQuery) {
-            initLiveQuery = false;
-            chatLiveQuery();
-            if (ParseUser.getCurrent().get("trip") != null)
-                requestsLiveQuery(stateMachine);
-        }
     }
 
     public static void requestsLiveQuery(StateMachine stateMachine) {
@@ -418,7 +416,7 @@ public class HomeController {
             return;
         }
         showBlocking();
-        List groupUser = getUserVerifiedGroups();
+        List<ParseObject> groupUser = getUserVerifiedGroups();
         if (groupUser.size() == 0) {
             hideBlocking();
             showDelayedToastBar("You don't have any active groups");
@@ -431,7 +429,8 @@ public class HomeController {
             tripQuery.include("driver");
             tripQuery.include("car");
             tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), WITHIN_KILOMETERS);
-//            tripQuery.whereContainedIn("groups", groupUser);
+            tripQuery.whereContainedIn("groups", groupUser);
+            tripQuery.whereMatchesKeyInQuery("driver", "objectId", query);
 
             List<ParseObject> results = tripQuery.find();
             if (results.size() == 0) {
@@ -450,8 +449,8 @@ public class HomeController {
         }
     }
 
-    public static List getUserVerifiedGroups() {
-        List groups = new ArrayList();
+    public static List<ParseObject> getUserVerifiedGroups() {
+        List<ParseObject> groups = new ArrayList();
         try {
             ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
             groupQuery.include("group");
@@ -487,56 +486,59 @@ public class HomeController {
                 showDelayedToastBar("You dont have any cars");
                 return;
             }
-            if (getUserVerifiedGroups().size() == 0) {
+            List<ParseObject> groups = getUserVerifiedGroups();
+            if (groups.size() == 0) {
                 hideBlocking();
                 showDelayedToastBar("You don't have any active groups");
                 return;
             }
             combo = new ComboBox<>(carsArr);
             combo.setRenderer(new GenericListCellRenderer<>(new MultiButton(), new MultiButton()));
+
+            Dialog dialog = new Dialog("Drive Settings");
+            dialog.setLayout(new BorderLayout());
+            dialog.setUIID("Form");
+            TextField cost = new TextField("");
+            TextField toll = new TextField("");
+            TextField seats = new TextField("");
+            TextArea notes = new TextArea("");
+            notes.setGrowByContent(false);
+
+            cost.setHint("Cost per kilo");
+            toll.setHint("Toll cost");
+            seats.setHint("Available seats");
+            notes.setHint("Notes:");
+
+            combo.setUIID("ButtonGroupFirst");
+            cost.setUIID("GroupElement1");
+            toll.setUIID("GroupElement2");
+            seats.setUIID("GroupElement3");
+            notes.setUIID("GroupElementLast");
+
+            Button cancel = new Button("Cancel");
+            cancel.addActionListener(evt -> dialog.dispose());
+            Button confirm = new Button("Confirm");
+            confirm.addActionListener(evt -> {
+                ParseObject item = (ParseObject) ((Map<String, Object>) combo.getSelectedItem()).get("object");
+                data.put("car", item);
+                data.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
+                data.put("toll", Integer.parseInt(toll.getText().length() == 0 ? "0" : toll.getText()));
+                data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
+                data.put("notes", notes.getText());
+                data.put("groups", groups);
+                stateMachine.showForm("DriveSummary", null);
+            });
+
+
+            dialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, confirm));
+            dialog.add(BorderLayout.CENTER, BoxLayout.encloseY(combo, GridLayout.encloseIn(3, cost, toll, seats), notes));
+            hideBlocking();
+            dialog.show();
         } catch (ParseException e) {
             e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
         }
 
-        Dialog dialog = new Dialog("Drive Settings");
-        dialog.setLayout(new BorderLayout());
-        dialog.setUIID("Form");
-        TextField cost = new TextField("");
-        TextField toll = new TextField("");
-        TextField seats = new TextField("");
-        TextArea notes = new TextArea("");
-        notes.setGrowByContent(false);
-
-        cost.setHint("Cost per kilo");
-        toll.setHint("Toll cost");
-        seats.setHint("Available seats");
-        notes.setHint("Notes:");
-
-        combo.setUIID("ButtonGroupFirst");
-        cost.setUIID("GroupElement1");
-        toll.setUIID("GroupElement2");
-        seats.setUIID("GroupElement3");
-        notes.setUIID("GroupElementLast");
-
-        Button cancel = new Button("Cancel");
-        cancel.addActionListener(evt -> dialog.dispose());
-        Button confirm = new Button("Confirm");
-        confirm.addActionListener(evt -> {
-            ParseObject item = (ParseObject) ((Map<String, Object>) combo.getSelectedItem()).get("object");
-            data.put("car", item);
-            data.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
-            data.put("toll", Integer.parseInt(toll.getText().length() == 0 ? "0" : toll.getText()));
-            data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
-            data.put("notes", notes.getText());
-
-            stateMachine.showForm("DriveSummary", null);
-        });
-
-
-        dialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, confirm));
-        dialog.add(BorderLayout.CENTER, BoxLayout.encloseY(combo, GridLayout.encloseIn(3, cost, toll, seats), notes));
-        hideBlocking();
-        dialog.show();
     }
 
 }

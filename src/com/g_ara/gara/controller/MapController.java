@@ -258,10 +258,7 @@ public class MapController {
                 }
             }
 
-
             public void providerStateChanged(int newState) {
-                if (newState == LocationManager.OUT_OF_SERVICE)
-                    Display.getInstance().callSerially(() -> ToastBar.showErrorMessage("Please enable GPS"));
             }
         });
     }

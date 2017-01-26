@@ -468,7 +468,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void postSplash(Form f) {
-        refreshSplash(f, findLoadingCnt(f));
+        refreshSplash(f, findLoadingCnt(f), this);
     }
 
     @Override

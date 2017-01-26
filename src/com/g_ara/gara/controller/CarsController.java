@@ -108,7 +108,7 @@ public class CarsController {
                 car.save();
             }
             hideBlocking();
-            stateMachine.back();
+            showForm("Cars");
         } catch (ParseException e) {
             e.printStackTrace();
             hideBlocking();
