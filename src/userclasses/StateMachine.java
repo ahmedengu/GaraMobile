@@ -242,7 +242,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        beforeDriveSummaryForm(findSummary(f), findCancel(f), findConfirm(f));
+        beforeDriveSummaryForm(findSummary(f), findCancel(f), findConfirm(f), f);
     }
 
 

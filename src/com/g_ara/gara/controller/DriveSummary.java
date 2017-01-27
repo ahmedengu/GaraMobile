@@ -53,7 +53,8 @@ public class DriveSummary {
         }
     }
 
-    public static void beforeDriveSummaryForm(Container summary,Button cancel, Button confirm) {
+    public static void beforeDriveSummaryForm(Container summary,Button cancel, Button confirm,Form f) {
+        UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
         FontImage.setMaterialIcon(confirm, FontImage.MATERIAL_DONE);
 

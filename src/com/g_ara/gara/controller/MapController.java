@@ -56,7 +56,8 @@ public class MapController {
         map.setRotateGestureEnabled(true);
         map.setShowMyLocation(true);
         if (locationCoord != null)
-            map.zoom(locationCoord, 5);
+            map.zoom(locationCoord, 10);
+
     }
 
     public MapController(Resources theme, Container f) {
@@ -235,7 +236,7 @@ public class MapController {
 
         if (currentLocation != null) {
             locationCoord = new Coord(currentLocation.getLatitude(), currentLocation.getLongitude());
-            map.zoom(locationCoord, 5);
+            map.zoom(locationCoord, 10);
         }
         locationListener(map);
     }
@@ -459,7 +460,7 @@ public class MapController {
         MapContainer map = new MapController(container).map;
         map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
         map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
-        map.zoom(locationCoord, 5);
+        map.zoom(locationCoord, 10);
         map.setScrollableY(false);
         Coord[] coords = MapController.decode(MapController.getRoutesEncoded(locationCoord, destCoord));
         if (coords != null && coords.length > 0)

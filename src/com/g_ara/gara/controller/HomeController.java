@@ -27,7 +27,6 @@ import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
-import static com.g_ara.gara.controller.DriveSummary.confirmAction;
 import static com.g_ara.gara.controller.GroupsController.getUserVerifiedGroups;
 import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserQuery;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
@@ -506,9 +505,9 @@ public class HomeController {
                 data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
                 data.put("notes", notes.getText());
                 data.put("groups", groups);
-//                showForm("DriveSummary");
+                showForm("DriveSummary");
 
-                confirmAction(stateMachine);
+//                confirmAction(stateMachine);
             });
 
 

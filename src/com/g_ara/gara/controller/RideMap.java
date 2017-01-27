@@ -21,8 +21,6 @@ public class RideMap {
         List<ParseObject> rides = (List<ParseObject>) data.get("rides");
         MapController mapController = new MapController((resources), f);
         mapController.initMap(rides, stateMachine);
-
-        f.revalidate();
     }
 
 }
