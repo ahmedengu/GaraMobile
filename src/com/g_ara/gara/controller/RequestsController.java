@@ -85,10 +85,11 @@ public class RequestsController {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
 
-                    Dialog dialog = getRequestUserDialog(object, user, "Request");
+                    Form dialog = getRequestUserDialog(object, user, "Request");
 
                     Container south = new Container(new GridLayout(2));
                     Button cancel = new Button("Reject");
+                    cancel.setUIID("ToggleButtonFirst");
                     cancel.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt1) {
@@ -100,12 +101,13 @@ public class RequestsController {
                                 e.printStackTrace();
                                 ToastBar.showErrorMessage(e.getMessage());
                             }
-                            dialog.dispose();
                             stateMachine.showForm("Home", null);
                         }
                     });
                     south.add(cancel);
                     Button confirm = new Button("Accept");
+                    confirm.setUIID("ToggleButtonLast");
+
                     confirm.addActionListener(evt1 -> {
                         object.put("accept", 1);
 
@@ -121,7 +123,6 @@ public class RequestsController {
                             e.printStackTrace();
                             ToastBar.showErrorMessage(e.getMessage());
                         }
-                        dialog.dispose();
                         stateMachine.showForm("Home", null);
                     });
                     south.add(confirm);
@@ -135,9 +136,9 @@ public class RequestsController {
         hideBlocking();
     }
 
-    public static Dialog getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser, String title) {
-        Dialog dialog = new Dialog(title);
-        dialog.setLayout(new BorderLayout());
+    public static Form getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser, String title) {
+        Form components = new Form(title);
+        components.setLayout(new BorderLayout());
 
         Container north = new Container(new BoxLayout(BoxLayout.Y_AXIS));
 
@@ -162,7 +163,6 @@ public class RequestsController {
         Button report = new Button("Report");
         FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);
         report.addActionListener(evt -> {
-            dialog.dispose();
             Dialog reportDialog = new Dialog("Report");
             reportDialog.setLayout(new BorderLayout());
 
@@ -198,12 +198,15 @@ public class RequestsController {
             reportDialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, reportIt));
             reportDialog.show();
         });
+        dial.setUIID("ToggleButtonFirst");
+        chat.setUIID("ToggleButton");
+        report.setUIID("ToggleButtonLast");
         north.add(GridLayout.encloseIn(3, dial, chat, report));
 
         north.setScrollableY(true);
-        dialog.add(BorderLayout.NORTH, north);
-        draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), dialog);
-        return dialog;
+        components.add(BorderLayout.NORTH, north);
+        draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), components);
+        return components;
     }
 
 }

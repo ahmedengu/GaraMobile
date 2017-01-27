@@ -173,7 +173,7 @@ public abstract class ParseLiveQuery {
         JSONObject output = new JSONObject();
         output.put(OP, "unsubscribe");
         output.put("requestId", requestId);
-        if (remove || webSocket.getReadyState() == WebSocketState.OPEN)
+        if (webSocket != null && output != null && (remove || webSocket.getReadyState() == WebSocketState.OPEN))
             webSocket.send(output.toString());
     }
 

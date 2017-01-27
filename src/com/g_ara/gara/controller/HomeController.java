@@ -236,7 +236,7 @@ public class HomeController {
             map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
-            addDriverToMarkers(fetch, map);
+            addDriverToMarkers(fetch, map, f);
             if (timer == null)
                 timer = new Timer();
             TimerTask timerTask = new TimerTask() {
@@ -244,7 +244,7 @@ public class HomeController {
                 public void run() {
                     Display.getInstance().callSerially(() -> {
                         try {
-                            addDriverToMarkers(tripRequestHomeQuery(), map);
+                            addDriverToMarkers(tripRequestHomeQuery(), map, f);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -260,7 +260,7 @@ public class HomeController {
         }
     }
 
-    public static void addDriverToMarkers(ParseObject fetch, MapController map) {
+    public static void addDriverToMarkers(ParseObject fetch, MapController map, Form cF) {
         map.clearMarkers();
         ParseObject trip = fetch.getParseObject("trip");
         ParseUser driver = (ParseUser) trip.getParseObject("driver");
@@ -271,8 +271,8 @@ public class HomeController {
 //        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
         map.addToMarkers(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
-            Dialog dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
-            getCancelSouth(driver, dialog);
+            Form dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
+            getCancelSouth(driver, dialog, cF);
             dialog.show();
         });
     }
@@ -348,7 +348,7 @@ public class HomeController {
             map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
-            addTripRequestMarkers(fetch, map);
+            addTripRequestMarkers(fetch, map, f);
             if (timer == null)
                 timer = new Timer();
             TimerTask timerTask = new TimerTask() {
@@ -356,7 +356,7 @@ public class HomeController {
                 public void run() {
                     Display.getInstance().callSerially(() -> {
                         try {
-                            addTripRequestMarkers(tripHomeQuery(), map);
+                            addTripRequestMarkers(tripHomeQuery(), map, f);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -380,7 +380,7 @@ public class HomeController {
         return fetch;
     }
 
-    public static void addTripRequestMarkers(ParseObject fetch, MapController map) {
+    public static void addTripRequestMarkers(ParseObject fetch, MapController map, Form cF) {
         List<ParseObject> tripRequests = fetch.getList("tripRequests");
         map.clearMarkers();
         if (tripRequests != null)
@@ -395,19 +395,22 @@ public class HomeController {
 //                    URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
                     map.addToMarkers(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
-                        Dialog dialog = getRequestUserDialog(tripR, tripUser, "Info");
-                        getCancelSouth(tripUser, dialog);
+                        Form dialog = getRequestUserDialog(tripR, tripUser, "Info");
+                        getCancelSouth(tripUser, dialog, cF);
                         dialog.show();
                     });
                 }
             }
     }
 
-    public static void getCancelSouth(ParseUser user, Dialog dialog) {
+    public static void getCancelSouth(ParseUser user, Form dialog, Form cForm) {
         Button cancel = new Button("cancel");
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
 
-        cancel.addActionListener(evt1 -> dialog.dispose());
+        cancel.addActionListener(evt1 -> {
+            cForm.show();
+        });
+        cancel.setUIID("ToggleButtonOnly");
         dialog.add(BorderLayout.SOUTH, cancel);
     }
 

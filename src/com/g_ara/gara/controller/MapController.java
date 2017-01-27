@@ -64,7 +64,7 @@ public class MapController {
         this.theme = theme;
     }
 
-    public void initMap(List<ParseObject> parseObjects, StateMachine stateMachine) {
+    public void initMap(List<ParseObject> parseObjects, StateMachine stateMachine, Form cForm) {
         map.clearMapLayers();
         for (int i = 0; i < parseObjects.size(); i++) {
             final ParseObject trip = parseObjects.get(i);
@@ -81,7 +81,7 @@ public class MapController {
                 public void actionPerformed(ActionEvent evt) {
 
 
-                    Dialog dialog = getDriveInfoDialog(trip, driver, car, "Ride Info");
+                    Form form = getDriveInfoDialog(trip, driver, car, "Ride Info");
 
 
                     Container south = new Container(new GridLayout(2));
@@ -89,11 +89,13 @@ public class MapController {
                     cancel.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt1) {
-                            dialog.dispose();
+                            cForm.show();
                         }
                     });
+                    cancel.setUIID("ToggleButtonFirst");
                     south.add(cancel);
                     Button confirm = new Button("Confirm");
+                    confirm.setUIID("ToggleButtonLast");
                     confirm.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt1) {
@@ -123,8 +125,8 @@ public class MapController {
                         }
                     });
                     south.add(confirm);
-                    dialog.add(BorderLayout.SOUTH, south);
-                    dialog.show();
+                    form.add(BorderLayout.SOUTH, south);
+                    form.show();
                 }
             });
 
@@ -132,9 +134,9 @@ public class MapController {
 
     }
 
-    public static Dialog getDriveInfoDialog(ParseObject trip, ParseObject driver, ParseObject car, String title) {
-        Dialog dialog = new Dialog(title);
-        dialog.setLayout(new BorderLayout());
+    public static Form getDriveInfoDialog(ParseObject trip, ParseObject driver, ParseObject car, String title) {
+        Form components = new Form(title);
+        components.setLayout(new BorderLayout());
 
 
         Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
@@ -172,7 +174,7 @@ public class MapController {
         Button report = new Button("Report");
         FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);
         report.addActionListener(evt -> {
-            dialog.dispose();
+//            components.dispose();
             Dialog reportDialog = new Dialog("Report");
             reportDialog.setLayout(new BorderLayout());
 
@@ -210,13 +212,16 @@ public class MapController {
         });
 
         info.add(GridLayout.encloseIn(2, new Label("Car: " + car.getString("name")), new Label("Car Year: " + car.getString("year"))));
+        dial.setUIID("ToggleButtonFirst");
+        chat.setUIID("ToggleButton");
+        report.setUIID("ToggleButtonLast");
         info.add(GridLayout.encloseIn(3, dial, chat, report));
 
 
         info.setScrollableY(true);
-        dialog.add(BorderLayout.NORTH, info);
-        draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), dialog);
-        return dialog;
+        components.add(BorderLayout.NORTH, info);
+        draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), components);
+        return components;
     }
 
     public void initMap() {
@@ -245,7 +250,7 @@ public class MapController {
             public void actionPerformed(ActionEvent evt) {
                 destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
                 coordsPath = null;
-                updateMarkers(map);
+                Display.getInstance().callSerially(() -> updateMarkers(map));
             }
         });
     }
@@ -255,7 +260,7 @@ public class MapController {
 
             public void locationUpdated(Location location) {
                 if (System.currentTimeMillis() - lastLocationUpdate >= locationUpdateThreshold) {
-                    updateMarkers(map, location);
+                    Display.getInstance().callSerially(() -> updateMarkers(map, location));
                     sendLocation(location);
                 }
             }
