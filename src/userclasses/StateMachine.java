@@ -26,6 +26,7 @@ import static com.g_ara.gara.controller.CountdownController.beforeCountdownForm;
 import static com.g_ara.gara.controller.DriveSummary.*;
 import static com.g_ara.gara.controller.GroupsController.*;
 import static com.g_ara.gara.controller.HomeController.beforeHomeForm;
+import static com.g_ara.gara.controller.HomeController.exitHomeForm;
 import static com.g_ara.gara.controller.HomeController.postHomeForm;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RequestsController.postRequestsForm;
@@ -531,4 +532,11 @@ public class StateMachine extends StateMachineBase {
     protected void postRideMap(Form f) {
         postRideMapForm(f);
     }
+
+    @Override
+    protected void exitHome(Form f) {
+        exitHomeForm();
+    }
+
+
 }

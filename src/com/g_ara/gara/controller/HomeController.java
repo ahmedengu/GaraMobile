@@ -20,10 +20,8 @@ import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import userclasses.StateMachine;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
@@ -42,6 +40,7 @@ import static userclasses.StateMachine.*;
 public class HomeController {
     public static boolean initLiveQuery = true;
     static ParseLiveQuery tripLiveQuery;
+    static Timer timer;
 
     public static void beforeHomeForm(Form f, Resources resources, StateMachine stateMachine) {
         UserController.addUserSideMenu(f);
@@ -49,6 +48,10 @@ public class HomeController {
     }
 
     public static void postHomeForm(Form f, Resources resources, StateMachine stateMachine) {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         Button ride = new Button("Get Ride");
         FontImage.setMaterialIcon(ride, FontImage.MATERIAL_THUMB_UP);
         ride.addActionListener(evt -> rideAction(stateMachine));
@@ -156,12 +159,7 @@ public class HomeController {
     public static void tripRequestHome(Form f, Resources resources, Button drive, Button ride, StateMachine stateMachine) {
         ParseObject fetch;
         try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("TripRequest");
-            query.include("trip");
-            query.include("trip.driver");
-            query.include("trip.car");
-            query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("tripRequest").getObjectId());
-            fetch = query.find().get(0);
+            fetch = tripRequestHomeQuery();
 
             if (fetch.getInt("accept") != 1) {
                 CancelActiveRequest(fetch);
@@ -238,26 +236,56 @@ public class HomeController {
             map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
-            ParseObject trip = fetch.getParseObject("trip");
-            ParseUser driver = (ParseUser) trip.getParseObject("driver");
-            ParseGeoPoint location = driver.getParseGeoPoint("location");
-            String url = driver.getParseFile("pic").getUrl();
-
-            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
-
-            map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
-                Dialog dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
-                getCancelSouth(driver, dialog);
-                dialog.show();
-            });
-
+            addDriverToMarkers(fetch, map);
+            if (timer == null)
+                timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Display.getInstance().callSerially(() -> {
+                        try {
+                            addDriverToMarkers(tripRequestHomeQuery(), map);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            };
+            timer.scheduleAtFixedRate(timerTask, TASK_DELAY, TASK_DELAY);
 
             data.put("active", fetch);
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void addDriverToMarkers(ParseObject fetch, MapController map) {
+        map.clearMarkers();
+        ParseObject trip = fetch.getParseObject("trip");
+        ParseUser driver = (ParseUser) trip.getParseObject("driver");
+        ParseGeoPoint location = driver.getParseGeoPoint("location");
+//        String url = driver.getParseFile("pic").getUrl();
+
+//        URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+//        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+        map.addToMarkers(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+            Dialog dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
+            getCancelSouth(driver, dialog);
+            dialog.show();
+        });
+    }
+
+    public static ParseObject tripRequestHomeQuery() throws ParseException {
+        ParseObject fetch;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("TripRequest");
+        query.include("trip");
+        query.include("trip.driver");
+        query.include("trip.car");
+        query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("tripRequest").getObjectId());
+        fetch = query.find().get(0);
+        return fetch;
     }
 
     private static void checkinAction(String contents, ParseObject object, Button checkIn, Form f, Resources resources, Button drive, Button ride, Button active, StateMachine stateMachine) {
@@ -289,11 +317,7 @@ public class HomeController {
     public static void tripHome(Form f, Resources resources, Button drive, Button ride) {
         ParseObject fetch;
         try {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Trip");
-            query.include("tripRequests");
-            query.include("tripRequests.user");
-            query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("trip").getObjectId());
-            fetch = query.find().get(0);
+            fetch = tripHomeQuery();
 
             Button active = new Button("cancel: " + fetch.getClassName());
             FontImage.setMaterialIcon(active, FontImage.MATERIAL_CANCEL);
@@ -324,29 +348,59 @@ public class HomeController {
             map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
-            List<ParseObject> tripRequests = fetch.getList("tripRequests");
-            if (tripRequests != null)
-                for (int i = 0; i < tripRequests.size(); i++) {
-                    if (tripRequests.get(i).getBoolean("active")) {
-                        final ParseObject tripR = tripRequests.get(i);
-                        final ParseUser tripUser = (ParseUser) tripR.getParseObject("user");
-                        ParseGeoPoint location = tripUser.getParseGeoPoint("location");
-                        String url = tripUser.getParseFile("pic").getUrl();
-
-                        URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-                        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
-
-                        map.addToMarkers(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
-                            Dialog dialog = getRequestUserDialog(tripR, tripUser, "Info");
-                            getCancelSouth(tripUser, dialog);
-                            dialog.show();
-                        });
-                    }
+            addTripRequestMarkers(fetch, map);
+            if (timer == null)
+                timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Display.getInstance().callSerially(() -> {
+                        try {
+                            addTripRequestMarkers(tripHomeQuery(), map);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
+            };
+            timer.scheduleAtFixedRate(timerTask, TASK_DELAY, TASK_DELAY);
             data.put("active", fetch);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ParseObject tripHomeQuery() throws ParseException {
+        ParseObject fetch;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Trip");
+        query.include("tripRequests");
+        query.include("tripRequests.user");
+        query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("trip").getObjectId());
+        fetch = query.find().get(0);
+        return fetch;
+    }
+
+    public static void addTripRequestMarkers(ParseObject fetch, MapController map) {
+        List<ParseObject> tripRequests = fetch.getList("tripRequests");
+        map.clearMarkers();
+        if (tripRequests != null)
+            for (int i = 0; i < tripRequests.size(); i++) {
+                if (tripRequests.get(i).getBoolean("active")) {
+                    final ParseObject tripR = tripRequests.get(i);
+                    final ParseUser tripUser = (ParseUser) tripR.getParseObject("user");
+                    ParseGeoPoint location = tripUser.getParseGeoPoint("location");
+//                    String url = tripUser.getParseFile("pic").getUrl();
+
+//                    URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+//                    URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+
+                    map.addToMarkers(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+                        Dialog dialog = getRequestUserDialog(tripR, tripUser, "Info");
+                        getCancelSouth(tripUser, dialog);
+                        dialog.show();
+                    });
+                }
+            }
     }
 
     public static void getCancelSouth(ParseUser user, Dialog dialog) {
@@ -367,6 +421,7 @@ public class HomeController {
     }
 
     public static void CancelActiveRequest(ParseObject object) {
+        exitHomeForm();
         object.put("active", false);
         ParseUser user = ParseUser.getCurrent();
         user.remove("trip");
@@ -523,6 +578,13 @@ public class HomeController {
             ToastBar.showErrorMessage(e.getMessage());
         }
 
+    }
+
+    public static void exitHomeForm() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
 }

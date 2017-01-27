@@ -20,10 +20,7 @@ import java.util.List;
 
 import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
-import static com.g_ara.gara.model.Constants.MASK_LOCATION_ICON;
-import static userclasses.StateMachine.data;
-import static userclasses.StateMachine.hideBlocking;
-import static userclasses.StateMachine.showBlocking;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -79,12 +76,12 @@ public class RequestsController {
             final ParseObject object = results.get(i);
             ParseObject user = object.getParseObject("user");
             ParseGeoPoint location = user.getParseGeoPoint("location");
-            String url = user.getParseFile("pic").getUrl();
-            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+//            String url = user.getParseFile("pic").getUrl();
+//            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+//            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
 
-            map.addMarker(image, new Coord(location.getLatitude(), location.getLongitude()), "", "", new ActionListener() {
+            map.addMarker(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
 

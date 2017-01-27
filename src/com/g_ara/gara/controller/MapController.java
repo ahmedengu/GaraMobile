@@ -44,7 +44,6 @@ public class MapController {
 
     private static Coord destCoord, locationCoord, lastDestCoord;
     private static Long lastLocationUpdate = 0L, lastLocationSent = 0L;
-    private static int locationUpdateThreshold = 3000, locationSentThreshold = 10000;
     public final MapContainer map;
     private Resources theme;
     private List<Map<String, Object>> markers = new ArrayList<Map<String, Object>>();
@@ -72,12 +71,12 @@ public class MapController {
             final ParseObject driver = trip.getParseObject("driver");
             final ParseObject car = trip.getParseObject("car");
 
-            String url = driver.getParseFile("pic").getUrl();
+//            String url = driver.getParseFile("pic").getUrl();
 
-            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
-            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
+//            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
+//            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
-            map.addMarker(image, new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Driver", "", new ActionListener() {
+            map.addMarker(Constants.BLUE_LOCATION_ICON(), new Coord(driver.getParseGeoPoint("location").getLatitude(), driver.getParseGeoPoint("location").getLongitude()), "Driver", "", new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
 
@@ -231,7 +230,7 @@ public class MapController {
         handleCurrentLocation(map);
     }
 
-    private void handleCurrentLocation(MapContainer map) {
+    public void handleCurrentLocation(MapContainer map) {
         Location currentLocation = updateMarkers(map);
 
         if (currentLocation != null) {
@@ -273,7 +272,7 @@ public class MapController {
             ParseUser user = ParseUser.getCurrent();
             if (user != null && user.isAuthenticated()) {
                 ParseGeoPoint location1 = user.getParseGeoPoint("location");
-                if (location1 == null || location.getLatitude() != location1.getLatitude() && location.getLongitude() != location1.getLongitude()) {
+                if (location1 == null || ((location.getLatitude() != location1.getLatitude() && location.getLongitude() != location1.getLongitude()) && (ParseUser.getCurrent().get("trip") != null || ParseUser.getCurrent().get("tripRequest") != null))) {
                     user.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
                     try {
                         currentParseUserSave();
