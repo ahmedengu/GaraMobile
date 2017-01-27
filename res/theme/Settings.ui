@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Settings" cloudDestinationProperty="Settings" layout="BoxLayout" boxLayoutAxis="Y" title="Settings" >
+<component type="Form" name="Settings" cloudDestinationProperty="Settings" scrollVisible="false" layout="BoxLayout" boxLayoutAxis="Y" title="Settings" >
   <component type="MultiButton" name="Analytics" cloudDestinationProperty="MultiButton" >
     <custom name="line1" type="java.lang.String" value="Analytics" />
     <custom name="line2" type="java.lang.String" value="Send anonymous usage information to improve the app" />

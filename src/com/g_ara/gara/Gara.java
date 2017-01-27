@@ -42,6 +42,17 @@ public class Gara implements LocalNotificationCallback {
             return;
         }
         new StateMachine("/theme");
+
+//        Display.getInstance().addEdtErrorHandler(new ActionListener() {
+//            public void actionPerformed(ActionEvent evt) {
+//                evt.consume();
+//                Log.p("Exception in Gara version " + Display.getInstance().getProperty("AppVersion", "Unknown"));
+//                Log.p("OS " + Display.getInstance().getPlatformName());
+//                Log.p("Error " + evt.getSource());
+//                Log.p("Current Form " + Display.getInstance().getCurrent().getName());
+//                Log.e((Throwable) evt.getSource());
+//            }
+//        });
     }
 
     public void stop() {
@@ -63,13 +74,13 @@ public class Gara implements LocalNotificationCallback {
     @Override
     public void localNotificationReceived(String notificationId) {
         Display.getInstance().callSerially(() -> {
-            if (Preferences.get("sessionToken", "").length() > 0)
-                if (notificationId.equals("chat")) {
-                    StateMachine.showForm("chat");
-                } else if (notificationId.equals("request")) {
-                    StateMachine.showForm("Requests");
-                } else
-                    StateMachine.showForm("Login");
+            if (Preferences.get("sessionToken", "").length() > 0) {
+                if (Display.getInstance().getCurrent() == null) {
+                    Preferences.set("nId", notificationId);
+                } else {
+                    StateMachine.getStateMachine().showForm(notificationId, null);
+                }
+            }
         });
     }
 }

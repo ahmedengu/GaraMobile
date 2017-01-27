@@ -43,7 +43,7 @@ public class CarsController {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Car");
 //            query.include("pics");
         query.whereEqualTo("user", ParseUser.getCurrent());
-        query.whereNotEqualTo("archived", true);
+        query.whereEqualTo("archived", false);
         java.util.List<ParseObject> results = query.find();
 
 //            if (results.size() > 0) {
@@ -92,6 +92,8 @@ public class CarsController {
             car.put("name", name.getText());
             car.put("year", year.getText());
             car.put("user", getUserEmptyObject());
+            car.put("archived", false);
+
             showBlocking();
             car.save();
             int count = pics.getComponentCount();

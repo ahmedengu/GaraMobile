@@ -26,7 +26,9 @@ import static userclasses.StateMachine.*;
 public class GroupsController {
     public static void refreshGroups(MultiList groups) {
         try {
-            ParseQuery groupQuery = verifiedGroupUserQuery();
+            ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
+            groupQuery.whereEqualTo("user", ParseUser.getCurrent());
+            groupQuery.whereEqualTo("archived", false);
             groupQuery.include("group");
             List<ParseObject> results = groupQuery.find();
 
@@ -74,6 +76,7 @@ public class GroupsController {
             groupUser.put("user", getUserEmptyObject());
             groupUser.put("verified", false);
             groupUser.put("email", email);
+            groupUser.put("archived", false);
 
             groupUser.save();
             hideBlocking();
@@ -114,7 +117,7 @@ public class GroupsController {
         ParseQuery groupQuery = ParseQuery.getQuery("GroupUser");
         groupQuery.whereEqualTo("user", ParseUser.getCurrent());
         groupQuery.whereEqualTo("verified", true);
-        groupQuery.whereNotEqualTo("archived", true);
+        groupQuery.whereEqualTo("archived", false);
 
         return groupQuery;
     }

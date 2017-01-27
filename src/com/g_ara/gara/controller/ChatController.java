@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.codename1.ui.Display.SOUND_TYPE_INFO;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static userclasses.StateMachine.*;
 
@@ -83,6 +82,7 @@ public class ChatController {
             }
         } catch (ParseException e) {
             e.printStackTrace();
+            ToastBar.showErrorMessage(e.getMessage());
         }
     }
 
@@ -106,9 +106,6 @@ public class ChatController {
             t.setTextUIID("him");
             t.setTextBlockAlign(Component.LEFT);
             t.setIconPosition(BorderLayout.WEST);
-            if (repaint) {
-                Display.getInstance().playBuiltinSound(SOUND_TYPE_INFO);
-            }
         }
         messages.addComponent(0, t);
         t.setY(messages.getHeight());
@@ -147,10 +144,15 @@ public class ChatController {
 
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
-                entry.put("Line1", ((ParseUser) results.get(i).getList("members").get(1)).getUsername());
-                EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
-                String url = ((ParseUser) results.get(i).getList("members").get(1)).getParseFile("pic").getUrl();
-                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+                List<ParseUser> members = results.get(i).getList("members");
+                for (int j = 0; j < members.size(); j++) {
+                    if (members.get(j).getObjectId().equals(ParseUser.getCurrent().getObjectId()))
+                        continue;
+                    entry.put("Line1", (members.get(j)).getUsername());
+                    EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
+                    String url = (members.get(j)).getParseFile("pic").getUrl();
+                    entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+                }
 
                 entry.put("object", results.get(i));
                 data.add(entry);
@@ -169,7 +171,7 @@ public class ChatController {
         Map<String, Object> itemAt = (Map<String, Object>) chat.getSelectedItem();
         ParseObject object = (ParseObject) itemAt.get("object");
         data.put("chat", object);
-        stateMachine.showForm("Conversion", null);
+        showForm("Conversion");
     }
 
     public static void conversionSendAction(TextArea messageField, Container messages) {

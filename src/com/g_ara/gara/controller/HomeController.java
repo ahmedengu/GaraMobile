@@ -20,11 +20,12 @@ import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
 import userclasses.StateMachine;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
-import static com.codename1.ui.Display.SOUND_TYPE_INFO;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
 import static com.g_ara.gara.controller.GroupsController.getUserVerifiedGroups;
 import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserQuery;
@@ -90,40 +91,34 @@ public class HomeController {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
-                        if (Display.getInstance().isMinimized()) {
-                            LocalNotification n = new LocalNotification();
-                            n.setId("Requests");
-                            n.setAlertBody("You got a new trip request");
-                            n.setAlertTitle("Gara | New Trip Request");
 
-                            Display.getInstance().scheduleLocalNotification(
-                                    n,
-                                    System.currentTimeMillis() + 10,
-                                    LocalNotification.REPEAT_NONE
-                            );
-                        } else {
-                            String title = Display.getInstance().getCurrent().getTitle();
-                            if (title.equals("Requests")) {
-                                Display.getInstance().callSerially(() -> {
-                                    try {
-                                        RequestsController.refreshRequests(stateMachine);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                            } else {
-                                Display.getInstance().callSerially(() -> {
-                                    ToastBar.showErrorMessage("New Trip Request");
-                                    Display.getInstance().playBuiltinSound(SOUND_TYPE_INFO);
-                                });
-                            }
+                        LocalNotification n = new LocalNotification();
+                        n.setId("Requests");
+                        n.setAlertBody("You got a new trip request");
+                        n.setAlertTitle("Gara | New Trip Request");
+
+                        Display.getInstance().scheduleLocalNotification(
+                                n,
+                                System.currentTimeMillis() + 10,
+                                LocalNotification.REPEAT_NONE
+                        );
+
+
+                        String title = Display.getInstance().getCurrent().getTitle();
+                        if (title.equals("Requests")) {
+                            Display.getInstance().callSerially(() -> {
+                                try {
+                                    RequestsController.refreshRequests(stateMachine);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            });
                         }
+
                     }
                 }
             };
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -137,9 +132,9 @@ public class HomeController {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
-                        if (Display.getInstance().isMinimized()) {
+                        if (!Display.getInstance().getCurrent().getTitle().equals("Conversion")) {
                             LocalNotification n = new LocalNotification();
-                            n.setId("chat");
+                            n.setId("Chat");
                             n.setAlertBody("You got a new message");
                             n.setAlertTitle("Gara | New Message");
 
@@ -148,21 +143,11 @@ public class HomeController {
                                     System.currentTimeMillis() + 10,
                                     LocalNotification.REPEAT_NONE
                             );
-
-                        } else {
-                            String title = Display.getInstance().getCurrent().getTitle();
-                            if (!(title.equals("Chat") || title.equals("Conversion")))
-                                Display.getInstance().callSerially(() -> {
-                                    ToastBar.showErrorMessage("New message");
-                                    Display.getInstance().playBuiltinSound(SOUND_TYPE_INFO);
-                                });
                         }
                     }
                 }
             };
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -180,14 +165,12 @@ public class HomeController {
             if (fetch.getInt("accept") != 1) {
                 CancelActiveRequest(fetch);
                 new MapController(resources, f).initMap();
-//                ToastBar.showErrorMessage("Your request got no replay from the driver or rejected, Please choose another driver!");
                 showDelayedToastBar("Your request got no replay from the driver or rejected, Please choose another driver!");
 
                 return;
             } else if (fetch.getParseObject("trip").getBoolean("active") == false) {
                 CancelActiveRequest(fetch);
                 new MapController(resources, f).initMap();
-//                ToastBar.showErrorMessage("The driver canceled the trip!");
                 showDelayedToastBar("The driver canceled the trip!");
 
                 return;
@@ -296,7 +279,6 @@ public class HomeController {
             }
         } else {
             showDelayedToastBar("Sorry couldn't identify the QR as the trip Qr!");
-//            ToastBar.showErrorMessage("Sorry couldn't identify the QR as the trip Qr!", 5000);
         }
     }
 

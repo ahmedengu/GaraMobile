@@ -457,6 +457,7 @@ public class StateMachine extends StateMachineBase {
         if (dialogBlocking != null)
             dialogBlocking.dispose();
         dialogBlocking = new InfiniteProgress().showInifiniteBlocking();
+        dialogBlocking.showModeless();
         dialogBlocking.show();
     }
 

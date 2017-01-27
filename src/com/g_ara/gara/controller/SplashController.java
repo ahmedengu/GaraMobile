@@ -15,51 +15,59 @@ import userclasses.StateMachine;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static userclasses.StateMachine.showForm;
+
 /**
  * Created by ahmedengu.
  */
 public class SplashController {
     public static void refreshSplash(Form f, Container loadingCnt, StateMachine stateMachine) {
-        boolean isNotOnline = am_i_online();
+        boolean isNotOnline = !Display.getInstance().isSimulator() && !am_i_online();
         boolean isNotGps = (LocationManager.getLocationManager().isGPSDetectionSupported() && !LocationManager.getLocationManager().isGPSEnabled());
         if (isNotOnline || isNotGps) {
-            SpanLabel message = new SpanLabel("Gara require" + ((isNotOnline && isNotGps) ? " Internet Connection & GPS" : ((isNotOnline) ? " Internet Connection" : " GPS")));
-            message.setUIID("ButtonGroupFirst");
-            Button retry = new Button("Retry");
-            retry.setUIID("ButtonGroupLast");
-            FontImage.setMaterialIcon(retry, FontImage.MATERIAL_REFRESH);
-
-            Container centerMiddle = FlowLayout.encloseCenterMiddle(BoxLayout.encloseY(message, retry));
-
-            retry.addActionListener(evt -> {
-                loadingCnt.setHidden(false);
-                centerMiddle.remove();
-                f.revalidate();
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        Display.getInstance().callSerially(() -> refreshSplash(f, loadingCnt, stateMachine));
-                    }
-                }, 1000);
-            });
-            f.add(BorderLayout.CENTER, centerMiddle);
-            loadingCnt.setHidden(true);
-            f.revalidate();
+            errorMessageReload(f, loadingCnt, stateMachine, "Gara require" + ((isNotOnline && isNotGps) ? " Internet Connection & GPS" : ((isNotOnline) ? " Internet Connection" : " GPS")));
         } else if (Preferences.get("sessionToken", "").length() > 0) {
             try {
                 ParseUser user = ParseUser.fetchBySession(Preferences.get("sessionToken", ""));
                 if (user.isAuthenticated()) {
-                    stateMachine.showForm("Home", null);
+                    showForm(Preferences.get("nId", "Home"));
+                    Preferences.delete("nId");
                 } else {
-                    stateMachine.showForm("Login", null);
+                    showForm("Login");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
+                errorMessageReload(f, loadingCnt, stateMachine, e.getMessage());
             }
         } else {
-            stateMachine.showForm("Login", null);
+            showForm("Login");
         }
+    }
+
+    public static void errorMessageReload(final Form f, final Container loadingCnt, final StateMachine stateMachine, String txt) {
+        SpanLabel message = new SpanLabel(txt);
+        message.setUIID("ButtonGroupFirst");
+        Button retry = new Button("Retry");
+        retry.setUIID("ButtonGroupLast");
+        FontImage.setMaterialIcon(retry, FontImage.MATERIAL_REFRESH);
+
+        Container centerMiddle = FlowLayout.encloseCenterMiddle(BoxLayout.encloseY(message, retry));
+
+        retry.addActionListener(evt -> {
+            loadingCnt.setHidden(false);
+            centerMiddle.remove();
+            f.revalidate();
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Display.getInstance().callSerially(() -> refreshSplash(f, loadingCnt, stateMachine));
+                }
+            }, 1000);
+        });
+        f.add(BorderLayout.CENTER, centerMiddle);
+        loadingCnt.setHidden(true);
+        f.revalidate();
     }
 
     public static boolean am_i_online() {
