@@ -18,7 +18,7 @@ public class Constants {
     public static final String APPLE_STORE = "http://www.g-ara.com";
     public static final String PAYMENT = "http://www.g-ara.com";
     public static final String FILE_PATH = "https://parsefiles.back4app.com/GBTIGT2xXUlBHF8ctBXoyEO7nIL18jvwQNyl3gkD/";
-    public static final int WITHIN_KILOMETERS = 5000;
+    public static final int WITHIN_KILOMETERS = 5;
     public static final int COUNTDOWN_TIMER = 300;
     public static final int TASK_DELAY = 10000;
     public static final int locationUpdateThreshold = 5000, locationSentThreshold = 50000;
