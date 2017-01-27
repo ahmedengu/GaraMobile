@@ -74,7 +74,6 @@ public class CountdownController {
 
     public static void handleUpdate(ParseObject object) {
         Integer accept = object.getInt("accept");
-        hideBlocking();
         if (accept != 1) {
             HomeController.CancelActiveRequest(object);
             showDelayedToastBar("Your request got no replay from the driver or rejected, Please choose another driver!");

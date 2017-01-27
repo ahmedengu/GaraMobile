@@ -27,6 +27,7 @@ import java.util.Map;
 
 import static com.codename1.io.Util.encodeUrl;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
+import static com.g_ara.gara.controller.DriveSummary.confirmAction;
 import static com.g_ara.gara.controller.GroupsController.getUserVerifiedGroups;
 import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserQuery;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
@@ -435,12 +436,13 @@ public class HomeController {
             } else {
                 hideBlocking();
                 data.put("rides", results);
-                stateMachine.showForm("RideMap", null);
+                showForm("RideMap");
             }
 
 
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
         }
     }
@@ -498,6 +500,7 @@ public class HomeController {
             cancel.addActionListener(evt -> dialog.dispose());
             Button confirm = new Button("Confirm");
             confirm.addActionListener(evt -> {
+                dialog.dispose();
                 ParseObject item = (ParseObject) combo.getSelectedItem().get("object");
                 data.put("car", item);
                 data.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
@@ -505,9 +508,9 @@ public class HomeController {
                 data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
                 data.put("notes", notes.getText());
                 data.put("groups", groups);
-                showForm("DriveSummary");
+//                showForm("DriveSummary");
 
-//                confirmAction(stateMachine);
+                confirmAction(stateMachine);
             });
 
 

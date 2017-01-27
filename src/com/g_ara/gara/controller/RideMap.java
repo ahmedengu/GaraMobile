@@ -10,6 +10,8 @@ import userclasses.StateMachine;
 import java.util.List;
 
 import static userclasses.StateMachine.data;
+import static userclasses.StateMachine.hideBlocking;
+import static userclasses.StateMachine.showBlocking;
 
 /**
  * Created by ahmedengu.
@@ -18,9 +20,12 @@ public class RideMap {
     public static void beforeRideMapForm(Form f, Resources resources, StateMachine stateMachine, Button cancel) {
         UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
-        List<ParseObject> rides = (List<ParseObject>) data.get("rides");
-        MapController mapController = new MapController((resources), f);
-        mapController.initMap(rides, stateMachine);
+        new MapController((resources), f).initMap((List<ParseObject>) data.get("rides"), stateMachine);
     }
-
+    public static void postRideMapForm(Form f) {
+        showBlocking();
+        hideBlocking();
+        f.repaint();
+        f.revalidate();
+    }
 }

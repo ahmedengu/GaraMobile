@@ -1,7 +1,9 @@
 package com.g_ara.gara.controller;
 
-import com.codename1.ui.Image;
 import com.codename1.ui.Label;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by ahmedengu.
@@ -9,36 +11,25 @@ import com.codename1.ui.Label;
 public class Countdown extends Label {
     long lastRenderedTime = 0L;
     int remaining;
-    CallbackController callback;
 
     public Countdown(int duration) {
         super(((duration > 0) ? duration / 60 : 0) + ":" + duration % 60);
         remaining = duration;
     }
 
-    public Countdown(int duration, String UUID) {
-        super(((duration > 0) ? duration / 60 : 0) + ":" + duration % 60, UUID);
-        remaining = duration;
-    }
-
-    public Countdown(int duration, Image icon, String UUID) {
-        super(((duration > 0) ? duration / 60 : 0) + ":" + duration % 60, icon, UUID);
-        remaining = duration;
-    }
 
     public Countdown(int duration, CallbackController callback) {
         this(duration);
-        this.callback = callback;
-    }
-
-    public Countdown(int duration, String UUID, CallbackController callback) {
-        this(duration, UUID);
-        this.callback = callback;
-    }
-
-    public Countdown(int duration, Image icon, String UUID, CallbackController callback) {
-        this(duration, icon, UUID);
-        this.callback = callback;
+        if (callback != null) {
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (callback != null)
+                        callback.done();
+                }
+            }, duration * 1000);
+        }
     }
 
     @Override
@@ -58,8 +49,6 @@ public class Countdown extends Label {
         } else if (remaining == -1) {
             remaining = -2;
             this.getComponentForm().deregisterAnimated(this);
-            if (callback != null)
-                callback.done();
         }
     }
 

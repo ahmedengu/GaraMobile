@@ -183,20 +183,21 @@ public class UserController {
 
 
     public static void logout() {
-        showBlocking();
         Preferences.clearAll();
+        showForm("Login");
+        showBlocking();
         try {
             MapController.stopLocationListener();
             ParseUser.getCurrent().logout();
             ParseLiveQuery.close();
         } catch (ParseException e) {
             e.printStackTrace();
+            hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
         hideBlocking();
-        showForm("Login");
     }
 
     public static boolean onStart() {

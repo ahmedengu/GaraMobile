@@ -30,6 +30,7 @@ import static com.g_ara.gara.controller.HomeController.postHomeForm;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RequestsController.postRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
+import static com.g_ara.gara.controller.RideMap.postRideMapForm;
 import static com.g_ara.gara.controller.SettingsController.*;
 import static com.g_ara.gara.controller.SplashController.refreshSplash;
 import static com.g_ara.gara.controller.TripFeedbackController.*;
@@ -524,5 +525,10 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void exitCountdown(Form f) {
 //        exitCountdownForm();
+    }
+
+    @Override
+    protected void postRideMap(Form f) {
+        postRideMapForm(f);
     }
 }
