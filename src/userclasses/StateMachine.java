@@ -97,6 +97,11 @@ public class StateMachine extends StateMachineBase {
     }
 
     @Override
+    protected boolean shouldAddBackCommandToMenu() {
+        return false;
+    }
+
+    @Override
     protected void onLogin_LoginAction(Component c, ActionEvent event) {
         login(findUsername(), findPassword(), this);
     }
@@ -142,7 +147,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeSettings(Form f) {
-        beforeSettingsForm(f, findRate(), findFeedback(), findWebsite(), findAnalytics(), this, findReport());
+        beforeSettingsForm(f, findRate(f), findFeedback(f), findWebsite(f), findAnalytics(f), this, findReport(f));
     }
 
     @Override
@@ -173,7 +178,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeProfile(Form f) {
-        beforeProfileForm(findName(), findUsername(), findPassword(), findMobile(), findPic(), findEmail(), f, this, findSave());
+        beforeProfileForm(findName(f), findUsername(f), findPassword(f), findMobile(f), findPic(f), findEmail(f), f, this, findSave(f));
     }
 
     @Override
@@ -194,7 +199,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeConversion(Form f) {
-        beforeConversionForm(findMessages(), f, this, findSend());
+        beforeConversionForm(findMessages(f), f, this, findSend(f));
 
     }
 
@@ -237,13 +242,13 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeDriveSummary(Form f) {
-        beforeDriveSummaryForm(findSummary(), fetchResourceFile(), f, findCancel(), findConfirm());
+        beforeDriveSummaryForm(findSummary(f), findCancel(f), findConfirm(f));
     }
 
 
     @Override
     protected void beforeRideMap(Form f) {
-        beforeRideMapForm(f, fetchResourceFile(), this, findCancel());
+        beforeRideMapForm(f, fetchResourceFile(), this, findCancel(f));
     }
 
 
@@ -254,20 +259,8 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeCountdown(Form f) {
-        beforeCountdownForm(findContainer(), this);
+        beforeCountdownForm(findContainer(f), f);
     }
-
-    public void showDialog() {
-        if (progressDialog == null)
-            progressDialog = new InfiniteProgress().showInifiniteBlocking();
-        progressDialog.show();
-    }
-
-    public void hideDialog() {
-        if (progressDialog != null)
-            progressDialog.dispose();
-    }
-
 
     // No need for social loin .. unnecessary headache
 //    @Override
@@ -389,7 +382,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeTripFeedback(Form f) {
-        beforeTripFeedbackForm((Slider) findRate(f), findCancel(), findOk());
+        beforeTripFeedbackForm((Slider) findRate(f), findCancel(f), findOk(f));
 
     }
 
@@ -429,36 +422,33 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeRegister(Form f) {
-        FontImage.setMaterialIcon(findPic(), FontImage.MATERIAL_ADD_A_PHOTO);
+        FontImage.setMaterialIcon(findPic(f), FontImage.MATERIAL_ADD_A_PHOTO);
         FontImage.setMaterialIcon((Button) findLogin(f), FontImage.MATERIAL_ARROW_BACK);
     }
 
     @Override
     protected void beforeCar(Form f) {
         addUserSideMenu(f);
-        FontImage.setMaterialIcon(findAdd(), FontImage.MATERIAL_ADD);
-        FontImage.setMaterialIcon(findSave(), FontImage.MATERIAL_SAVE);
+        FontImage.setMaterialIcon(findAdd(f), FontImage.MATERIAL_ADD);
+        FontImage.setMaterialIcon(findSave(f), FontImage.MATERIAL_SAVE);
     }
 
     @Override
     protected void beforeNewGroup(Form f) {
-        beforeNewGroupForm(f, this, findNew());
+        beforeNewGroupForm(f, this, findNew(f));
     }
 
 
     @Override
     protected void beforeUserSearch(Form f) {
-        beforeUserSearchForm(f, this, findSearch());
+        beforeUserSearchForm(f, this, findSearch(f));
     }
 
     static Dialog dialogBlocking;
 
     public static void showBlocking() {
-        if (dialogBlocking != null)
-            dialogBlocking.dispose();
+        hideBlocking();
         dialogBlocking = new InfiniteProgress().showInifiniteBlocking();
-        dialogBlocking.showModeless();
-        dialogBlocking.show();
     }
 
     public static void hideBlocking() {
@@ -504,7 +494,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void postChat(Form f) {
-        postChatForm((MultiList) findChat(f));
+        postChatForm((MultiList) findChat(f), f);
     }
 
     @Override
@@ -529,5 +519,10 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void onGroups_GroupsAction(Component c, ActionEvent event) {
         archiveGroupOnClick(event, (MultiList) findGroups());
+    }
+
+    @Override
+    protected void exitCountdown(Form f) {
+//        exitCountdownForm();
     }
 }

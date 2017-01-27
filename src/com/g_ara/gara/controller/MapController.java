@@ -45,16 +45,18 @@ public class MapController {
     private static Coord destCoord, locationCoord, lastDestCoord;
     private static Long lastLocationUpdate = 0L, lastLocationSent = 0L;
     private static int locationUpdateThreshold = 3000, locationSentThreshold = 10000;
-    public final MapContainer map = new MapContainer(new GoogleMapsProvider(Constants.MAPS_KEY));
+    public final MapContainer map;
     private Resources theme;
     private List<Map<String, Object>> markers = new ArrayList<Map<String, Object>>();
     private Coord[] coordsPath;
-    private static MapController mapController;
 
     public MapController(Container f) {
+        map = new MapContainer(new GoogleMapsProvider(Constants.MAPS_KEY));
         f.addComponent(BorderLayout.CENTER, map);
         map.setRotateGestureEnabled(true);
         map.setShowMyLocation(true);
+        if (locationCoord != null)
+            map.zoom(locationCoord, 5);
     }
 
     public MapController(Resources theme, Container f) {
@@ -106,12 +108,13 @@ public class MapController {
                             tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
                             tripRequest.put("distance", distanceinkilometers);
                             try {
+                                showBlocking();
                                 tripRequest.save();
                                 user.put("tripRequest", tripRequest);
                                 currentParseUserSave();
 
                                 StateMachine.data.put("active", tripRequest);
-                                dialog.dispose();
+//                                dialog.dispose();
                                 stateMachine.showForm("Countdown", null);
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -220,7 +223,6 @@ public class MapController {
         destCoord = null;
         handleCurrentLocation(map);
         destListener(map);
-        mapController = this;
     }
 
     public void initDriveMap(ParseGeoPoint to) {

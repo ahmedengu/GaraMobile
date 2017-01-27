@@ -126,7 +126,7 @@ public class ChatController {
         floatingActionButton.bindFabToContainer(f.getContentPane());
     }
 
-    public static void postChatForm(MultiList chat) {
+    public static void postChatForm(MultiList chat,Form f) {
         showBlocking();
         refreshChatForm(chat);
         hideBlocking();

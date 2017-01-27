@@ -16,9 +16,13 @@ import static userclasses.StateMachine.data;
  */
 public class RideMap {
     public static void beforeRideMapForm(Form f, Resources resources, StateMachine stateMachine, Button cancel) {
-        FontImage.setMaterialIcon(cancel,FontImage.MATERIAL_CANCEL);
+        UserController.addUserSideMenu(f);
+        FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
         List<ParseObject> rides = (List<ParseObject>) data.get("rides");
-        new MapController((resources),f).initMap( rides, stateMachine);
+        MapController mapController = new MapController((resources), f);
+        mapController.initMap(rides, stateMachine);
+
+        f.revalidate();
     }
 
 }

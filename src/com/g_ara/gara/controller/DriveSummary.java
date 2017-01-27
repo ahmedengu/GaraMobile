@@ -5,7 +5,6 @@ import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
-import com.codename1.ui.util.Resources;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseGeoPoint;
 import com.parse4cn1.ParseObject;
@@ -54,7 +53,7 @@ public class DriveSummary {
         }
     }
 
-    public static void beforeDriveSummaryForm(Container summary, Resources resources, Form f, Button cancel, Button confirm) {
+    public static void beforeDriveSummaryForm(Container summary,Button cancel, Button confirm) {
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
         FontImage.setMaterialIcon(confirm, FontImage.MATERIAL_DONE);
 

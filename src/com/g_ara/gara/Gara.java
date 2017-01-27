@@ -77,9 +77,10 @@ public class Gara implements LocalNotificationCallback {
             if (Preferences.get("sessionToken", "").length() > 0) {
                 if (Display.getInstance().getCurrent() == null) {
                     Preferences.set("nId", notificationId);
-                } else {
-                    StateMachine.getStateMachine().showForm(notificationId, null);
                 }
+//                else {
+//                    StateMachine.getStateMachine().showForm(notificationId, null);
+//                }
             }
         });
     }
