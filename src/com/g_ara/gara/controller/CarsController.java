@@ -86,12 +86,13 @@ public class CarsController {
         }
     }
 
-    public static void addCar(TextField name, TextField year, Container pics, StateMachine stateMachine) {
+    public static void addCar(TextField name, TextField year, Container pics, StateMachine stateMachine, TextField notes) {
         try {
             ParseObject car = ParseObject.create("Car");
             car.put("name", name.getText());
             car.put("year", year.getText());
             car.put("user", getUserEmptyObject());
+            car.put("notes", notes.getText());
             car.put("archived", false);
 
             showBlocking();

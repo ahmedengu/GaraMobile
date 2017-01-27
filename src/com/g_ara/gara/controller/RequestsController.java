@@ -140,11 +140,10 @@ public class RequestsController {
         Form components = new Form(title);
         components.setLayout(new BorderLayout());
 
-        Container north = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        Container north = new Container(new BoxLayout(BoxLayout.X_AXIS));
 
         ImageViewer imageViewer = new ImageViewer();
         imageViewer.setImageList(new ImageList(new String[]{TrUser.getParseFile("pic").getUrl()}));
-        north.add(imageViewer);
         north.add(new Label("Name: " + TrUser.getString("name")));
         north.add(new Label("Username: " + TrUser.getString("username")));
         north.add(new Label("Mobile: " + TrUser.getString("mobile")));
@@ -201,10 +200,15 @@ public class RequestsController {
         dial.setUIID("ToggleButtonFirst");
         chat.setUIID("ToggleButton");
         report.setUIID("ToggleButtonLast");
-        north.add(GridLayout.encloseIn(3, dial, chat, report));
 
-        north.setScrollableY(true);
-        components.add(BorderLayout.NORTH, north);
+
+        north.setScrollableX(true);
+        Container components1 = new Container(new BorderLayout());
+        components1.add(BorderLayout.NORTH, north);
+        components1.add(BorderLayout.CENTER, imageViewer);
+        components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(3, dial, chat, report));
+        components.add(BorderLayout.NORTH, components1);
+
         draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), components);
         return components;
     }

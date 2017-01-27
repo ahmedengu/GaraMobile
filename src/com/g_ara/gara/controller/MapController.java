@@ -139,7 +139,7 @@ public class MapController {
         components.setLayout(new BorderLayout());
 
 
-        Container info = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        Container info = new Container(new BoxLayout(BoxLayout.X_AXIS));
 
         List<ParseFile> carPics = car.getList("pics");
         String[] carImages = new String[carPics.size() + 1];
@@ -150,13 +150,13 @@ public class MapController {
         ImageViewer carImageViewer = new ImageViewer();
         carImageViewer.setImageList(new ImageList(carImages));
 
-        info.add(carImageViewer);
+//        info.add(carImageViewer);
 
 
         double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
 
-        info.add(GridLayout.encloseIn(2, new Label("Cost: " + (int) (distanceInKilometers * trip.getInt("cost") + trip.getInt("toll"))), new Label("Distance: " + (int) distanceInKilometers)));
-
+        info.add(new Label("Cost: " + (int) (distanceInKilometers * trip.getInt("cost") + trip.getInt("toll"))));
+        info.add(new Label("Distance: " + (int) distanceInKilometers));
         info.add(new Label("Username: " + driver.getString("username")));
         info.add(new Label("Name: " + driver.getString("name")));
         info.add(new Label("Mobile: " + driver.getString("mobile")));
@@ -211,15 +211,24 @@ public class MapController {
             reportDialog.show();
         });
 
-        info.add(GridLayout.encloseIn(2, new Label("Car: " + car.getString("name")), new Label("Car Year: " + car.getString("year"))));
+        info.add(new Label("Car: " + car.getString("name")));
+        info.add(new Label("Car Year: " + car.getString("year")));
+        if (car.has("notes"))
+            info.add(new Label("Car Notes: " + car.getString("notes")));
+
+        info.add(new Label("Trip Notes: " + trip.getString("notes")));
+
         dial.setUIID("ToggleButtonFirst");
         chat.setUIID("ToggleButton");
         report.setUIID("ToggleButtonLast");
-        info.add(GridLayout.encloseIn(3, dial, chat, report));
 
 
-        info.setScrollableY(true);
-        components.add(BorderLayout.NORTH, info);
+        info.setScrollableX(true);
+        Container components1 = new Container(new BorderLayout());
+        components1.add(BorderLayout.NORTH, info);
+        components1.add(BorderLayout.CENTER, carImageViewer);
+        components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(3, dial, chat, report));
+        components.add(BorderLayout.NORTH, components1);
         draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), components);
         return components;
     }

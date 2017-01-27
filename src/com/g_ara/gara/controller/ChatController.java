@@ -126,7 +126,7 @@ public class ChatController {
         floatingActionButton.bindFabToContainer(f.getContentPane());
     }
 
-    public static void postChatForm(MultiList chat,Form f) {
+    public static void postChatForm(MultiList chat, Form f) {
         showBlocking();
         refreshChatForm(chat);
         hideBlocking();
@@ -175,6 +175,8 @@ public class ChatController {
     }
 
     public static void conversionSendAction(TextArea messageField, Container messages) {
+        if (messageField.getText().length() == 0)
+            return;
         try {
             ParseObject message = ParseObject.create("Message");
             message.put("message", messageField.getText());
