@@ -109,6 +109,7 @@ public class MapController {
                             tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
                             tripRequest.put("distance", distanceinkilometers);
                             tripRequest.put("from", MapController.locationCoord.getLatitude() + "," + MapController.locationCoord.getLongitude());
+                            tripRequest.put("driver", (ParseUser) trip.getParseObject("driver"));
                             try {
                                 showBlocking();
                                 tripRequest.save();

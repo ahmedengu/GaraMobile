@@ -37,7 +37,11 @@ public class SplashController {
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
-                errorMessageReload(f, loadingCnt, stateMachine, e.getMessage());
+                if (e.getCode() == 209) {
+                    Preferences.delete("sessionToken");
+                    showForm("Login");
+                } else
+                    errorMessageReload(f, loadingCnt, stateMachine, e.getMessage());
             }
         } else {
             showForm("Login");
