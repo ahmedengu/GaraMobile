@@ -312,7 +312,7 @@ public class MapController {
             ParseUser user = ParseUser.getCurrent();
             if (user != null && user.isAuthenticated()) {
                 ParseGeoPoint location1 = user.getParseGeoPoint("location");
-                if (location1 == null || ((location.getLatitude() != location1.getLatitude() && location.getLongitude() != location1.getLongitude()) && (ParseUser.getCurrent().get("trip") != null || ParseUser.getCurrent().get("tripRequest") != null))) {
+                if (location1 == null || (ParseUser.getCurrent().get("trip") != null || ParseUser.getCurrent().get("tripRequest") != null)) {
                     user.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
                     try {
                         currentParseUserSave();
