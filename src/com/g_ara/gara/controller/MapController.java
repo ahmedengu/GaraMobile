@@ -82,7 +82,7 @@ public class MapController {
 
 
                     Form form = getDriveInfoDialog(trip, driver, car, "Ride Info");
-
+                    UserController.addUserSideMenu(form);
 
                     Container south = new Container(new GridLayout(2));
                     Button cancel = new Button("Cancel");
@@ -109,6 +109,7 @@ public class MapController {
                             tripRequest.put("cost", (int) (distanceinkilometers * trip.getInt("cost") + trip.getInt("toll")));
                             tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
                             tripRequest.put("distance", distanceinkilometers);
+                            tripRequest.put("from", MapController.locationCoord.getLatitude() + "," + MapController.locationCoord.getLongitude());
                             try {
                                 showBlocking();
                                 tripRequest.save();

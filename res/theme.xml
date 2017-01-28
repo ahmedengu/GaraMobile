@@ -131,6 +131,7 @@
     <image name="him.borderTop_1.png" type="multi"  />
     <image name="him.borderTopL_1.png" type="multi"  />
     <image name="him.borderTopR_1.png" type="multi"  />
+    <ui name="History" />
     <ui name="Home" />
     <image name="images-logo (3).png" type="multi"  />
     <theme name="iOS7">

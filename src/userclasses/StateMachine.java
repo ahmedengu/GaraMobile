@@ -25,6 +25,9 @@ import static com.g_ara.gara.controller.ChatController.*;
 import static com.g_ara.gara.controller.CountdownController.beforeCountdownForm;
 import static com.g_ara.gara.controller.DriveSummary.*;
 import static com.g_ara.gara.controller.GroupsController.*;
+import static com.g_ara.gara.controller.HistoryController.beforeHistoryForm;
+import static com.g_ara.gara.controller.HistoryController.postHistoryForm;
+import static com.g_ara.gara.controller.HistoryController.showHistoryTripOnClick;
 import static com.g_ara.gara.controller.HomeController.beforeHomeForm;
 import static com.g_ara.gara.controller.HomeController.exitHomeForm;
 import static com.g_ara.gara.controller.HomeController.postHomeForm;
@@ -384,7 +387,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeTripFeedback(Form f) {
-        beforeTripFeedbackForm((Slider) findRate(f), findCancel(f), findOk(f));
+        beforeTripFeedbackForm((Slider) findRate(f), findCancel(f), findOk(f),f);
 
     }
 
@@ -539,4 +542,20 @@ public class StateMachine extends StateMachineBase {
     }
 
 
+
+    @Override
+    protected void beforeHistory(Form f) {
+        beforeHistoryForm(f, findHistoryList(f));
+    }
+
+    @Override
+    protected void onHistory_HistoryListAction(Component c, ActionEvent event) {
+        showHistoryTripOnClick(event);
+    
+    }
+
+    @Override
+    protected void postHistory(Form f) {
+        postHistoryForm(findHistoryList(f));
+    }
 }

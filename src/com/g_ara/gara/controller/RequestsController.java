@@ -138,6 +138,7 @@ public class RequestsController {
 
     public static Form getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser, String title) {
         Form components = new Form(title);
+        UserController.addUserSideMenu(components);
         components.setLayout(new BorderLayout());
 
         Container north = new Container(new BoxLayout(BoxLayout.X_AXIS));

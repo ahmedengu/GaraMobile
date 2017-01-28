@@ -177,6 +177,7 @@ public class HomeController {
                 return;
             }
             Button active = new Button("cancel: " + fetch.getClassName());
+            active.setUIID("ToggleButtonFirst");
             FontImage.setMaterialIcon(active, FontImage.MATERIAL_CANCEL);
 
             final ParseObject object = fetch;
@@ -193,6 +194,7 @@ public class HomeController {
             north.add(active);
 
             Button checkIn = new Button("CheckIn");
+            checkIn.setUIID("ToggleButtonLast");
             FontImage.setMaterialIcon(checkIn, FontImage.MATERIAL_CAMERA);
 
             checkIn.addActionListener(evt -> {

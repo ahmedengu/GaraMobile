@@ -1,10 +1,7 @@
 package com.g_ara.gara.controller;
 
 import com.codename1.components.ToastBar;
-import com.codename1.ui.Button;
-import com.codename1.ui.FontImage;
-import com.codename1.ui.Slider;
-import com.codename1.ui.TextArea;
+import com.codename1.ui.*;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseObject;
 import userclasses.StateMachine;
@@ -15,7 +12,8 @@ import static userclasses.StateMachine.*;
  * Created by ahmedengu.
  */
 public class TripFeedbackController {
-    public static void beforeTripFeedbackForm(Slider rate, Button cancel, Button ok) {
+    public static void beforeTripFeedbackForm(Slider rate, Button cancel, Button ok, Form f) {
+        UserController.addUserSideMenu(f);
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
         FontImage.setMaterialIcon(ok, FontImage.MATERIAL_DONE);
         RatingWidget.createStarRankSlider(rate);

@@ -426,6 +426,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.list.MultiList findHistoryList(Component root) {
+        return (com.codename1.ui.list.MultiList)findByName("HistoryList", root);
+    }
+
+    public com.codename1.ui.list.MultiList findHistoryList() {
+        com.codename1.ui.list.MultiList cmp = (com.codename1.ui.list.MultiList)findByName("HistoryList", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.list.MultiList)findByName("HistoryList", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.Button findFeedback(Component root) {
         return (com.codename1.ui.Button)findByName("Feedback", root);
     }
@@ -748,6 +760,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void exitForm(Form f) {
+        if("History".equals(f.getName())) {
+            exitHistory(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Countdown".equals(f.getName())) {
             exitCountdown(f);
             aboutToShowThisContainer = null;
@@ -860,6 +878,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void exitHistory(Form f) {
+    }
+
+
     protected void exitCountdown(Form f) {
     }
 
@@ -933,6 +955,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void beforeShow(Form f) {
     aboutToShowThisContainer = f;
+        if("History".equals(f.getName())) {
+            beforeHistory(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Countdown".equals(f.getName())) {
             beforeCountdown(f);
             aboutToShowThisContainer = null;
@@ -1045,6 +1073,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeHistory(Form f) {
+    }
+
+
     protected void beforeCountdown(Form f) {
     }
 
@@ -1118,6 +1150,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void beforeShowContainer(Container c) {
         aboutToShowThisContainer = c;
+        if("History".equals(c.getName())) {
+            beforeContainerHistory(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Countdown".equals(c.getName())) {
             beforeContainerCountdown(c);
             aboutToShowThisContainer = null;
@@ -1230,6 +1268,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeContainerHistory(Container c) {
+    }
+
+
     protected void beforeContainerCountdown(Container c) {
     }
 
@@ -1302,6 +1344,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void postShow(Form f) {
+        if("History".equals(f.getName())) {
+            postHistory(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Countdown".equals(f.getName())) {
             postCountdown(f);
             aboutToShowThisContainer = null;
@@ -1414,6 +1462,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postHistory(Form f) {
+    }
+
+
     protected void postCountdown(Form f) {
     }
 
@@ -1486,6 +1538,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void postShowContainer(Container c) {
+        if("History".equals(c.getName())) {
+            postContainerHistory(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Countdown".equals(c.getName())) {
             postContainerCountdown(c);
             aboutToShowThisContainer = null;
@@ -1598,6 +1656,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postContainerHistory(Container c) {
+    }
+
+
     protected void postContainerCountdown(Container c) {
     }
 
@@ -1670,6 +1732,12 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
     protected void onCreateRoot(String rootName) {
+        if("History".equals(rootName)) {
+            onCreateHistory();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Countdown".equals(rootName)) {
             onCreateCountdown();
             aboutToShowThisContainer = null;
@@ -1782,6 +1850,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void onCreateHistory() {
+    }
+
+
     protected void onCreateCountdown() {
     }
 
@@ -1855,6 +1927,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected Hashtable getFormState(Form f) {
         Hashtable h = super.getFormState(f);
+        if("History".equals(f.getName())) {
+            getStateHistory(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
         if("Countdown".equals(f.getName())) {
             getStateCountdown(f, h);
             aboutToShowThisContainer = null;
@@ -1967,6 +2045,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void getStateHistory(Form f, Hashtable h) {
+    }
+
+
     protected void getStateCountdown(Form f, Hashtable h) {
     }
 
@@ -2040,6 +2122,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
     protected void setFormState(Form f, Hashtable state) {
         super.setFormState(f, state);
+        if("History".equals(f.getName())) {
+            setStateHistory(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("Countdown".equals(f.getName())) {
             setStateCountdown(f, state);
             aboutToShowThisContainer = null;
@@ -2152,6 +2240,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void setStateHistory(Form f, Hashtable state) {
+    }
+
+
     protected void setStateCountdown(Form f, Hashtable state) {
     }
 
@@ -2228,10 +2320,17 @@ public abstract class StateMachineBase extends UIBuilder {
         if("Users".equals(listName)) {
             return initListModelUsers(cmp);
         }
+        if("HistoryList".equals(listName)) {
+            return initListModelHistoryList(cmp);
+        }
         return super.setListModel(cmp);
     }
 
     protected boolean initListModelUsers(List cmp) {
+        return false;
+    }
+
+    protected boolean initListModelHistoryList(List cmp) {
         return false;
     }
 
@@ -2244,6 +2343,12 @@ public abstract class StateMachineBase extends UIBuilder {
             c = c.getParent().getLeadParent();
         }
         if(rootContainerName == null) return;
+        if(rootContainerName.equals("History")) {
+            if("HistoryList".equals(c.getName())) {
+                onHistory_HistoryListAction(c, event);
+                return;
+            }
+        }
         if(rootContainerName.equals("TripFeedback")) {
             if("Cancel".equals(c.getName())) {
                 onTripFeedback_CancelAction(c, event);
@@ -2465,6 +2570,9 @@ public abstract class StateMachineBase extends UIBuilder {
             }
         }
     }
+
+      protected void onHistory_HistoryListAction(Component c, ActionEvent event) {
+      }
 
       protected void onTripFeedback_CancelAction(Component c, ActionEvent event) {
       }
