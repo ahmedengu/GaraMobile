@@ -214,12 +214,13 @@ public class ChatController {
 
             data.put("chat", chat);
             hideBlocking();
-            showForm("Conversion");
         } catch (ParseException e) {
             e.printStackTrace();
             hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
         }
+        Display.getInstance().callSerially(() -> showForm("Conversion"));
+
     }
 
     public static void onConversationExit() {

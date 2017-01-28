@@ -1,9 +1,10 @@
 package com.g_ara.gara.controller;
 
-import com.codename1.capture.Capture;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.util.ImageIO;
@@ -64,16 +65,21 @@ public class UserController {
     }
 
     public static void addPic(Button pic) {
-        String filePath = Capture.capturePhoto();
-        if (filePath != null) {
-            try {
-                Image img = Image.createImage(filePath);
-                pic.setIcon(img.scaledHeight(pic.getHeight()));
-            } catch (IOException e) {
-                e.printStackTrace();
+        Display.getInstance().openGallery(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                String filePath = (String) ev.getSource();
+                if (filePath != null) {
+                    Display.getInstance().callSerially(() -> {
+                        try {
+                            Image img = Image.createImage(filePath);
+                            pic.setIcon(img.scaledHeight(pic.getHeight()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
             }
-
-        }
+        }, Display.GALLERY_IMAGE);
     }
 
 

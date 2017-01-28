@@ -1,10 +1,10 @@
 package com.g_ara.gara.controller;
 
-import com.codename1.capture.Capture;
 import com.codename1.components.FloatingActionButton;
 import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.util.ImageIO;
@@ -19,9 +19,7 @@ import java.util.Map;
 
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.FILE_PATH;
-import static userclasses.StateMachine.hideBlocking;
-import static userclasses.StateMachine.showBlocking;
-import static userclasses.StateMachine.showForm;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -67,23 +65,28 @@ public class CarsController {
     }
 
     public static void addCarPic(Container pics) {
-        String filePath = Capture.capturePhoto();
-        if (filePath != null) {
-            try {
-                Image img = Image.createImage(filePath);
-                Button button = new Button();
-                button.setIcon(img.scaledWidth(50));
-                button.addActionListener(evt -> {
-                    button.remove();
-                    pics.revalidate();
-                });
-                pics.add(button);
-                pics.revalidate();
-            } catch (IOException e) {
-                e.printStackTrace();
+        Display.getInstance().openGallery(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                String filePath = (String) ev.getSource();
+                if (filePath != null) {
+                    Display.getInstance().callSerially(() -> {
+                        try {
+                            Image img = Image.createImage(filePath);
+                            Button button = new Button();
+                            button.setIcon(img.scaledWidth(50));
+                            button.addActionListener(evt -> {
+                                button.remove();
+                                pics.revalidate();
+                            });
+                            pics.add(button);
+                            pics.revalidate();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
             }
-
-        }
+        }, Display.GALLERY_IMAGE);
     }
 
     public static void addCar(TextField name, TextField year, Container pics, StateMachine stateMachine, TextField notes) {

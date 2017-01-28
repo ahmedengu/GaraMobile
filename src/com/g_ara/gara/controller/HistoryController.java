@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.codename1.io.Util.split;
 import static com.g_ara.gara.controller.MapController.draw2MarkerMap;
 import static userclasses.StateMachine.hideBlocking;
 import static userclasses.StateMachine.showBlocking;
@@ -34,7 +35,7 @@ public class HistoryController {
 
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
-                entry.put("Line1", results.get(i).getCreatedAt().toLocaleString());
+                entry.put("Line1", results.get(i).getCreatedAt().toString());
                 entry.put("Line3", results.get(i).getInt("accept") == 1 ? "Accepted" : "Not Accepted");
                 entry.put("object", results.get(i));
 
@@ -46,7 +47,7 @@ public class HistoryController {
             results = trip.find();
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
-                entry.put("Line1", results.get(i).getCreatedAt().toLocaleString());
+                entry.put("Line1", results.get(i).getCreatedAt().toString());
                 entry.put("Line3", "Driver");
                 entry.put("object", results.get(i));
 
@@ -88,7 +89,7 @@ public class HistoryController {
         cancel.setUIID("ToggleButtonOnly");
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
         form.add(BorderLayout.SOUTH, cancel);
-        String[] strings = item.getString("from").split(",");
+        String[] strings = split(item.getString("from"), ",");
 
         ParseGeoPoint to = item.getParseGeoPoint("to");
         draw2MarkerMap(new Coord(Double.parseDouble(strings[0]), Double.parseDouble(strings[1])), new Coord(to.getLatitude(), to.getLongitude()), form);
