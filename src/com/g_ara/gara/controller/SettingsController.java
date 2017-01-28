@@ -25,7 +25,7 @@ public class SettingsController {
     }
 
     public static void analyticsAciton(MultiButton analytics) {
-        boolean selected = !Preferences.get("Analytics", true);
+        boolean selected = !Preferences.get("Analytics", false);
         analyticsState(selected, analytics);
         Preferences.set("Analytics", selected);
     }
@@ -86,6 +86,6 @@ public class SettingsController {
         FontImage.setMaterialIcon(website, FontImage.MATERIAL_LINK);
         FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);
 
-        analyticsState(Preferences.get("Analytics", true), analytics);
+        analyticsState(Preferences.get("Analytics", false), analytics);
     }
 }

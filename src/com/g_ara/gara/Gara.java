@@ -33,7 +33,7 @@ public class Gara implements LocalNotificationCallback {
     }
 
     public void start() {
-        if (Preferences.get("Analytics", true)) {
+        if (Preferences.get("Analytics", false)) {
             AnalyticsService.setAppsMode(true);
             AnalyticsService.init("UA-80287405-1", "g-ara.com");
         }
