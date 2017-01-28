@@ -27,6 +27,12 @@ public class UserController {
     private static long last = 0l;
     static String filePath;
 
+    public static void beforeRegisterForm(Form f, Button pic, Button login) {
+        FontImage.setMaterialIcon(pic, FontImage.MATERIAL_ADD_A_PHOTO);
+        FontImage.setMaterialIcon(login, FontImage.MATERIAL_ARROW_BACK);
+        filePath = null;
+    }
+
     public static void register(TextField username, TextField password, TextField name, TextField email, TextField mobile, Button pic, StateMachine stateMachine) {
         if (name.getText().length() == 0 || email.getText().length() == 0 || mobile.getText().length() == 0 || username.getText().length() == 0 || password.getText().length() == 0) {
             ToastBar.showErrorMessage("Please fill all the fields");
@@ -137,7 +143,7 @@ public class UserController {
         }
     }
 
-    public static void saveUser(TextField username, TextField password, TextField mobile, Button pic, StateMachine stateMachine) {
+    public static void saveUser(TextField username, TextField password, TextField mobile, Button pic, StateMachine stateMachine, TextField name) {
         try {
             showBlocking();
             ParseUser user = ParseUser.getCurrent();
@@ -145,17 +151,19 @@ public class UserController {
             if (password.getText().length() > 1)
                 user.put("password", password.getText());
             user.put("mobile", mobile.getText());
-            user.save();
+            user.put("name", name.getText());
 
-            Image img = Image.createImage(filePath);
-            ImageIO imgIO = ImageIO.getImageIO();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            imgIO.save(img, out, ImageIO.FORMAT_JPEG, 1);
-            byte[] ba = out.toByteArray();
-            ParseFile file = new ParseFile(username.getText() + ".jpg", ba, "image/jpeg");
-            file.save();
+            if (filePath != null) {
+                Image img = Image.createImage(filePath);
+                ImageIO imgIO = ImageIO.getImageIO();
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                imgIO.save(img, out, ImageIO.FORMAT_JPEG, 1);
+                byte[] ba = out.toByteArray();
+                ParseFile file = new ParseFile(username.getText() + ".jpg", ba, "image/jpeg");
+                file.save();
 
-            user.put("pic", file);
+                user.put("pic", file);
+            }
             user.save();
             hideBlocking();
             showForm("Home");
@@ -171,6 +179,7 @@ public class UserController {
 
     public static void beforeProfileForm(TextField name, TextField username, TextField password, TextField mobile, Button pic, TextField email, Form f, StateMachine stateMachine, Button save) {
         UserController.addUserSideMenu(f);
+        filePath = null;
         FontImage.setMaterialIcon(save, FontImage.MATERIAL_SAVE);
 
         ParseUser user = ParseUser.getCurrent();

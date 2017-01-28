@@ -245,8 +245,11 @@ public class HomeController {
                 public void run() {
                     Display.getInstance().callSerially(() -> {
                         try {
-                            addDriverToMarkers(tripRequestHomeQuery(), map, f);
-                        } catch (ParseException e) {
+                            if (Display.getInstance().getCurrent().getName().equals("Home")) {
+                                addDriverToMarkers(tripRequestHomeQuery(), map, f);
+                            }
+
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
@@ -361,8 +364,10 @@ public class HomeController {
                 public void run() {
                     Display.getInstance().callSerially(() -> {
                         try {
-                            addTripRequestMarkers(tripHomeQuery(), map, f);
-                        } catch (ParseException e) {
+                            if (Display.getInstance().getCurrent().getName().equals("Home")) {
+                                addTripRequestMarkers(tripHomeQuery(), map, f);
+                            }
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });

@@ -178,7 +178,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onProfile_SaveAction(Component c, ActionEvent event) {
-        saveUser(findUsername(), findPassword(), findMobile(), findPic(), this);
+        saveUser(findUsername(), findPassword(), findMobile(), findPic(), this,findName());
 
     }
 
@@ -428,9 +428,10 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeRegister(Form f) {
-        FontImage.setMaterialIcon(findPic(f), FontImage.MATERIAL_ADD_A_PHOTO);
-        FontImage.setMaterialIcon((Button) findLogin(f), FontImage.MATERIAL_ARROW_BACK);
+        beforeRegisterForm(f,findPic(f),(Button) findLogin(f));
     }
+
+
 
     @Override
     protected void beforeCar(Form f) {

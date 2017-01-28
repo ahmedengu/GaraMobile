@@ -57,7 +57,7 @@ public class CarsController {
             if (pics != null && pics.size() > 0) {
                 EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
                 String url = pics.get(0).getUrl();
-                entry.put("icon", URLImage.createToStorage(placeholder, "Cars_"+url.substring(url.lastIndexOf("/") + 1), url));
+                entry.put("icon", URLImage.createToStorage(placeholder, "Cars_" + url.substring(url.lastIndexOf("/") + 1), url));
             }
 
             entry.put("object", (ParseObject) results.get(i));
@@ -167,7 +167,7 @@ public class CarsController {
     public static void beforeCarsForm(Form f, MultiList cars) {
         UserController.addUserSideMenu(f);
         cars.addPullToRefresh(() -> refreshCars(cars));
-
+        picList.clear();
         FloatingActionButton floatingActionButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
         floatingActionButton.addActionListener(evt -> showForm("Car"));
         floatingActionButton.bindFabToContainer(f.getContentPane());
