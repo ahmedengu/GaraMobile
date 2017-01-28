@@ -32,6 +32,10 @@ public class UserController {
             ToastBar.showErrorMessage("Please fill all the fields");
             return;
         }
+        if (filePath == null) {
+            ToastBar.showErrorMessage("Please add a profile picture");
+            return;
+        }
         try {
             ParseUser user = ParseUser.create(username.getText(), password.getText());
             user.put("name", name.getText());

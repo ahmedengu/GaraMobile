@@ -121,6 +121,10 @@ public class CarsController {
     }
 
     public static void addCar(TextField name, TextField year, Container pics, StateMachine stateMachine, TextField notes) {
+        if (pics.getComponentCount() == 1) {
+            ToastBar.showErrorMessage("Please add pictures of the car");
+            return;
+        }
         try {
             ParseObject car = ParseObject.create("Car");
             car.put("name", name.getText());

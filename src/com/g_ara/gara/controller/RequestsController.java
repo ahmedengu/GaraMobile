@@ -32,7 +32,15 @@ public class RequestsController {
         UserController.addUserSideMenu(f);
 
         if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
-            if (((ParseObject) data.get("active")).getList("tripRequests") == null || ((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
+            int count = 0;
+            List<ParseObject> parseObjects = ((ParseObject) data.get("active")).getList("tripRequests");
+            if (parseObjects != null) {
+                for (int i = 0; i < parseObjects.size(); i++) {
+                    if (parseObjects.get(i).getBoolean("active"))
+                        count++;
+                }
+            }
+            if (count < ((ParseObject) data.get("active")).getInt("seats")) {
                 map = new MapController(resources, f).map;
                 f.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, evt -> {
                     try {
@@ -54,7 +62,15 @@ public class RequestsController {
     public static void postRequestsForm(StateMachine stateMachine) {
         try {
             if (data.get("active") != null && ((ParseObject) data.get("active")).getClassName().equals("Trip")) {
-                if (((ParseObject) data.get("active")).getList("tripRequests") == null || ((ParseObject) data.get("active")).getList("tripRequests").size() < ((ParseObject) data.get("active")).getInt("seats")) {
+                int count = 0;
+                List<ParseObject> parseObjects = ((ParseObject) data.get("active")).getList("tripRequests");
+                if (parseObjects != null) {
+                    for (int i = 0; i < parseObjects.size(); i++) {
+                        if (parseObjects.get(i).getBoolean("active"))
+                            count++;
+                    }
+                }
+                if (count < ((ParseObject) data.get("active")).getInt("seats")) {
                     refreshRequests(stateMachine);
                 }
             }

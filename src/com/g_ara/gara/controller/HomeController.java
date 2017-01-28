@@ -480,6 +480,7 @@ public class HomeController {
             ParseQuery<ParseObject> tripQuery = ParseQuery.getQuery("Trip");
             tripQuery.include("driver");
             tripQuery.include("car");
+            tripQuery.include("tripRequests");
             tripQuery.whereWithinKilometers("to", new ParseGeoPoint(MapController.getDestCoord().getLatitude(), MapController.getDestCoord().getLongitude()), WITHIN_KILOMETERS);
 
             tripQuery.whereMatchesKeyInQuery("groups", "group", verifiedGroupUserQuery());
@@ -490,8 +491,15 @@ public class HomeController {
             Iterator<ParseObject> objectIterator = results.iterator();
             while (objectIterator.hasNext()) {
                 ParseObject object = objectIterator.next();
-                if (object.has("tripRequests") && object.getList("tripRequests").size() >= object.getInt("seats")) {
-                    objectIterator.remove();
+                if (object.has("tripRequests")) {
+                    List<ParseObject> tripRequests = object.getList("tripRequests");
+                    int count = 0;
+                    for (int i = 0; i < tripRequests.size(); i++) {
+                        if (tripRequests.get(i).getBoolean("active"))
+                            count++;
+                    }
+                    if (count >= object.getInt("seats"))
+                        objectIterator.remove();
                 }
             }
             if (results.size() == 0) {
@@ -559,6 +567,12 @@ public class HomeController {
             toll.setUIID("GroupElement2");
             seats.setUIID("GroupElement3");
             notes.setUIID("GroupElementLast");
+
+
+            cost.setConstraint(TextField.NUMERIC);
+            toll.setConstraint(TextField.NUMERIC);
+            seats.setConstraint(TextField.NUMERIC);
+
 
             Button cancel = new Button("Cancel");
             cancel.addActionListener(evt -> dialog.dispose());
