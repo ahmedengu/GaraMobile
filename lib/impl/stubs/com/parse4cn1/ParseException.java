@@ -24,6 +24,8 @@ public class ParseException extends Exception {
 
 	public static final int PARSE4CN1_PUSH_REGISTRATION_FAILED_INSTALLATION_UPDATE_ERROR = -106;
 
+	public static final int PARSE4CN1_PUSH_SENDING_FAILED = -107;
+
 	public static final int INTERNAL_SERVER_ERROR = 1;
 
 	public static final int CONNECTION_FAILED = 100;

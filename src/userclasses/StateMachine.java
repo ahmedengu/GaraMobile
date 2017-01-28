@@ -11,6 +11,7 @@ import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ToastBar;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.list.MultiList;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
@@ -557,5 +558,13 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void postHistory(Form f) {
         postHistoryForm(findHistoryList(f));
+    }
+
+
+    public static Form infiniteProgressForm() {
+        Form form = new Form("", new FlowLayout(Component.CENTER, Component.CENTER));
+        form.setScrollableY(false);
+        form.add(new InfiniteProgress());
+        return form;
     }
 }

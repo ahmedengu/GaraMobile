@@ -123,7 +123,9 @@ public class RequestsController {
                             e.printStackTrace();
                             ToastBar.showErrorMessage(e.getMessage());
                         }
-                        stateMachine.showForm("Home", null);
+                        infiniteProgressForm().show();
+
+                        showForm("Home");
                     });
                     south.add(confirm);
                     dialog.add(BorderLayout.SOUTH, south);
@@ -158,8 +160,10 @@ public class RequestsController {
 
         Button chat = new Button("Chat");
         FontImage.setMaterialIcon(chat, FontImage.MATERIAL_CHAT);
-        chat.addActionListener(evt -> getUserChat((ParseUser) TrUser));
-
+        chat.addActionListener(evt -> Display.getInstance().callSerially(() -> {
+            infiniteProgressForm().show();
+            getUserChat((ParseUser) TrUser);
+        }));
         Button report = new Button("Report");
         FontImage.setMaterialIcon(report, FontImage.MATERIAL_REPORT);
         report.addActionListener(evt -> {
@@ -206,8 +210,30 @@ public class RequestsController {
         north.setScrollableX(true);
         Container components1 = new Container(new BorderLayout());
         components1.add(BorderLayout.NORTH, north);
-        components1.add(BorderLayout.CENTER, imageViewer);
-        components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(3, dial, chat, report));
+        Button images = new Button("Images");
+        FontImage.setMaterialIcon(images, FontImage.MATERIAL_IMAGE);
+        images.setUIID("ButtonGroupOnly");
+        images.addActionListener(evt -> {
+            Form dialog = new Form("Images");
+            dialog.setLayout(new BorderLayout());
+            dialog.add(BorderLayout.CENTER, imageViewer);
+            Button cancel = new Button("Cancel");
+            FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
+            cancel.setUIID("ToggleButtonOnly");
+            cancel.addActionListener(evt1 -> {
+                imageViewer.remove();
+                components.show();
+            });
+            dialog.add(BorderLayout.SOUTH, cancel);
+            dialog.show();
+        });
+        components1.add(BorderLayout.CENTER, images);
+
+        if (TrUser.getString("mobile").equals("-")) {
+            components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, chat, report));
+        } else {
+            components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(3, dial, chat, report));
+        }
         components.add(BorderLayout.NORTH, components1);
 
         draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), components);

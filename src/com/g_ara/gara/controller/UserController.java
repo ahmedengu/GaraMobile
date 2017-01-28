@@ -1,5 +1,6 @@
 package com.g_ara.gara.controller;
 
+import com.codename1.capture.Capture;
 import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
 import com.codename1.ui.*;
@@ -24,6 +25,7 @@ import static userclasses.StateMachine.*;
  */
 public class UserController {
     private static long last = 0l;
+    static String filePath;
 
     public static void register(TextField username, TextField password, TextField name, TextField email, TextField mobile, Button pic, StateMachine stateMachine) {
         if (name.getText().length() == 0 || email.getText().length() == 0 || mobile.getText().length() == 0 || username.getText().length() == 0 || password.getText().length() == 0) {
@@ -38,12 +40,14 @@ public class UserController {
             showBlocking();
             user.signUp();
             if (user.isAuthenticated()) {
+                Image img = Image.createImage(filePath);
                 ImageIO imgIO = ImageIO.getImageIO();
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                imgIO.save(pic.getIcon(), out, ImageIO.FORMAT_JPEG, 1);
+                imgIO.save(img, out, ImageIO.FORMAT_JPEG, 1);
                 byte[] ba = out.toByteArray();
                 ParseFile file = new ParseFile(username.getText() + ".jpg", ba, "image/jpeg");
                 file.save();
+
                 user.put("pic", file);
                 user.save();
                 currentParseUserSave();
@@ -64,22 +68,38 @@ public class UserController {
         }
     }
 
+
     public static void addPic(Button pic) {
-        Display.getInstance().openGallery(new ActionListener() {
-            public void actionPerformed(ActionEvent ev) {
-                String filePath = (String) ev.getSource();
-                if (filePath != null) {
-                    Display.getInstance().callSerially(() -> {
-                        try {
-                            Image img = Image.createImage(filePath);
-                            pic.setIcon(img.scaledHeight(pic.getHeight()));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+        if (Dialog.show("Add Image", "Choose the image location", "Camera", "Gallery")) {
+            filePath = Capture.capturePhoto();
+            if (filePath != null) {
+                try {
+                    Image img = Image.createImage(filePath);
+                    pic.setIcon(img.scaledHeight(pic.getHeight()));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        }, Display.GALLERY_IMAGE);
+        } else {
+            Display.getInstance().openGallery(new ActionListener() {
+                public void actionPerformed(ActionEvent ev) {
+                    if (ev != null && ev.getSource() != null) {
+                        filePath = (String) ev.getSource();
+                        if (filePath != null) {
+                            Display.getInstance().callSerially(() -> {
+                                try {
+                                    Image img = Image.createImage(filePath);
+                                    pic.setIcon(img.scaledHeight(pic.getHeight()));
+                                    pic.repaint();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                    }
+                }
+            }, Display.GALLERY_IMAGE);
+        }
     }
 
 
@@ -123,12 +143,14 @@ public class UserController {
             user.put("mobile", mobile.getText());
             user.save();
 
+            Image img = Image.createImage(filePath);
             ImageIO imgIO = ImageIO.getImageIO();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            imgIO.save(pic.getIcon(), out, ImageIO.FORMAT_JPEG, 1);
+            imgIO.save(img, out, ImageIO.FORMAT_JPEG, 1);
             byte[] ba = out.toByteArray();
             ParseFile file = new ParseFile(username.getText() + ".jpg", ba, "image/jpeg");
             file.save();
+
             user.put("pic", file);
             user.save();
             hideBlocking();

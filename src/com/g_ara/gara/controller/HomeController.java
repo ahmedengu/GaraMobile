@@ -25,7 +25,6 @@ import java.util.List;
 
 import static com.codename1.io.Util.encodeUrl;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
-import static com.g_ara.gara.controller.DriveSummary.confirmAction;
 import static com.g_ara.gara.controller.GroupsController.getUserVerifiedGroups;
 import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserQuery;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
@@ -264,19 +263,23 @@ public class HomeController {
 
     public static void addDriverToMarkers(ParseObject fetch, MapController map, Form cF) {
         map.clearMarkers();
-        ParseObject trip = fetch.getParseObject("trip");
-        ParseUser driver = (ParseUser) trip.getParseObject("driver");
-        ParseGeoPoint location = driver.getParseGeoPoint("location");
+        if (fetch.has("checkin")) {
+            exitHomeForm();
+        } else {
+            ParseObject trip = fetch.getParseObject("trip");
+            ParseUser driver = (ParseUser) trip.getParseObject("driver");
+            ParseGeoPoint location = driver.getParseGeoPoint("location");
 //        String url = driver.getParseFile("pic").getUrl();
 
 //        URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
 //        URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
-        map.addToMarkers(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
-            Form dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
-            getCancelSouth(driver, dialog, cF);
-            dialog.show();
-        });
+            map.addToMarkers(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", evt -> {
+                Form dialog = getDriveInfoDialog(trip, driver, trip.getParseObject("car"), "info");
+                getCancelSouth(driver, dialog, cF);
+                dialog.show();
+            });
+        }
     }
 
     public static ParseObject tripRequestHomeQuery() throws ParseException {
@@ -384,10 +387,11 @@ public class HomeController {
 
     public static void addTripRequestMarkers(ParseObject fetch, MapController map, Form cF) {
         List<ParseObject> tripRequests = fetch.getList("tripRequests");
+
         map.clearMarkers();
         if (tripRequests != null)
             for (int i = 0; i < tripRequests.size(); i++) {
-                if (tripRequests.get(i).getBoolean("active")) {
+                if (tripRequests.get(i).getBoolean("active") && !tripRequests.get(i).has("checkin")) {
                     final ParseObject tripR = tripRequests.get(i);
                     final ParseUser tripUser = (ParseUser) tripR.getParseObject("user");
                     ParseGeoPoint location = tripUser.getParseGeoPoint("location");
@@ -568,9 +572,10 @@ public class HomeController {
                 data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
                 data.put("notes", notes.getText());
                 data.put("groups", groups);
-//                showForm("DriveSummary");
 
-                confirmAction(stateMachine);
+                infiniteProgressForm().show();
+
+                showForm("DriveSummary");
             });
 
 

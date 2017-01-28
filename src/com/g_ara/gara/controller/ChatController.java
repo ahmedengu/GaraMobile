@@ -219,8 +219,7 @@ public class ChatController {
             hideBlocking();
             ToastBar.showErrorMessage(e.getMessage());
         }
-        Display.getInstance().callSerially(() -> showForm("Conversion"));
-
+        showForm("Conversion");
     }
 
     public static void onConversationExit() {

@@ -34,8 +34,7 @@ import static com.g_ara.gara.controller.ChatController.getUserChat;
 import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.*;
-import static userclasses.StateMachine.hideBlocking;
-import static userclasses.StateMachine.showBlocking;
+import static userclasses.StateMachine.*;
 
 /**
  * Created by ahmedengu.
@@ -117,7 +116,8 @@ public class MapController {
                                 currentParseUserSave();
 
                                 StateMachine.data.put("active", tripRequest);
-//                                dialog.dispose();
+                                hideBlocking();
+                                infiniteProgressForm().show();
                                 stateMachine.showForm("Countdown", null);
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -145,12 +145,11 @@ public class MapController {
         List<ParseFile> carPics = car.getList("pics");
         String[] carImages = new String[carPics.size() + 1];
         for (int j = 0; j < carPics.size(); j++) {
-            carImages[j] = FILE_PATH + carPics.get(j).getName();
+            carImages[j] = carPics.get(j).getUrl();
         }
         carImages[carPics.size()] = driver.getParseFile("pic").getUrl();
         ImageViewer carImageViewer = new ImageViewer();
         carImageViewer.setImageList(new ImageList(carImages));
-
 //        info.add(carImageViewer);
 
 
@@ -169,7 +168,10 @@ public class MapController {
 
         Button chat = new Button("Chat");
         FontImage.setMaterialIcon(chat, FontImage.MATERIAL_CHAT);
-        chat.addActionListener(evt -> getUserChat((ParseUser) driver));
+        chat.addActionListener(evt -> Display.getInstance().callSerially(() -> {
+            infiniteProgressForm().show();
+            getUserChat((ParseUser) driver);
+        }));
 
 
         Button report = new Button("Report");
@@ -214,8 +216,7 @@ public class MapController {
 
         info.add(new Label("Car: " + car.getString("name")));
         info.add(new Label("Car Year: " + car.getString("year")));
-        if (car.has("notes"))
-            info.add(new Label("Car Notes: " + car.getString("notes")));
+        info.add(new Label("Car Notes: " + car.getString("notes")));
 
         info.add(new Label("Trip Notes: " + trip.getString("notes")));
 
@@ -227,12 +228,35 @@ public class MapController {
         info.setScrollableX(true);
         Container components1 = new Container(new BorderLayout());
         components1.add(BorderLayout.NORTH, info);
-        components1.add(BorderLayout.CENTER, carImageViewer);
-        components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(3, dial, chat, report));
+        Button images = new Button("Images");
+        FontImage.setMaterialIcon(images, FontImage.MATERIAL_IMAGE);
+        images.setUIID("ButtonGroupOnly");
+
+        images.addActionListener(evt -> {
+            Form dialog = new Form("Images");
+            dialog.setLayout(new BorderLayout());
+            dialog.add(BorderLayout.CENTER, carImageViewer);
+            Button cancel = new Button("Cancel");
+            FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
+            cancel.setUIID("ToggleButtonOnly");
+            cancel.addActionListener(evt1 -> {
+                carImageViewer.remove();
+                components.show();
+            });
+            dialog.add(BorderLayout.SOUTH, cancel);
+            dialog.show();
+        });
+        components1.add(BorderLayout.CENTER, images);
+        if (driver.getString("mobile").equals("-")) {
+            components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, chat, report));
+        } else {
+            components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(3, dial, chat, report));
+        }
         components.add(BorderLayout.NORTH, components1);
         draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), components);
         return components;
     }
+
 
     public void initMap() {
         destCoord = null;

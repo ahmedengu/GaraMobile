@@ -63,7 +63,7 @@ public class ParsePush {
 	 *  native Push, the actual semantics are dependent on the native implementation 
 	 *  which may vary from app to app.
 	 *  <p>
-	 *  <b>Note that the result returned by this method is
+	 *  <b>Note that the response returned by this method is
 	 *  guaranteed to be correct <u>if and only if</u> the app is correctly managing the data,
 	 *  i.e., checking every time the app is opened (typically in the start() method 
 	 *  of the app's main class) and resetting the data after processing.</b>
@@ -391,6 +391,16 @@ public class ParsePush {
 	/**
 	 *  Sends this push notification while blocking this thread until the
 	 *  push notification has successfully reached the Parse servers.
+	 *  <p>Note that the messages are sent via cloud code since sending of
+	 *  of push messages requires the Master key which is not exposed via parse4cn1.
+	 *  As such a 'sendPushViaRestApi' cloud code function must be defined in the 
+	 *  Parse backend taking the following parameters:<br />
+	 *  <pre>
+	 *  - server: The Parse server URL without trailing backslash.
+	 *  - payload: The HTTP POST request payload conforming the the REST API for sending Parse push notifications.
+	 *  </pre>
+	 *  Such a function is already present in the same cloud code delivered along 
+	 *  with parse4cn1 (see https://github.com/sidiabale/parse4cn1/tree/master/cloud)
 	 *  
 	 *  @throws ParseException if anything goes wrong.
 	 */

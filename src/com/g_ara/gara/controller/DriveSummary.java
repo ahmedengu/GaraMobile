@@ -3,8 +3,6 @@ package com.g_ara.gara.controller;
 import com.codename1.components.ToastBar;
 import com.codename1.maps.Coord;
 import com.codename1.ui.*;
-import com.codename1.ui.layouts.FlowLayout;
-import com.codename1.ui.layouts.GridLayout;
 import com.parse4cn1.ParseException;
 import com.parse4cn1.ParseGeoPoint;
 import com.parse4cn1.ParseObject;
@@ -58,17 +56,22 @@ public class DriveSummary {
         FontImage.setMaterialIcon(cancel, FontImage.MATERIAL_CANCEL);
         FontImage.setMaterialIcon(confirm, FontImage.MATERIAL_DONE);
 
-        summary.add(GridLayout.encloseIn(2, new Label("Car: " + ((ParseObject) data.get("car")).getString("name")), new Label("seats: " + data.get("seats"))));
-
-        summary.add(GridLayout.encloseIn(2, new Label("Cost per kilo: " + data.get("cost")), new Label("Tolls cost: " + data.get("toll"))));
+        summary.add(new Label("Car: " + ((ParseObject) data.get("car")).getString("name")));
+        summary.add(new Label("seats: " + data.get("seats")));
+        summary.add(new Label("Tolls cost: " + data.get("toll")));
+        summary.add(new Label("Cost per kilo: " + data.get("cost")));
     }
 
     public static void postDriveSummaryForm(Container summary, Form f) {
         showBlocking();
         Coord locationCoord = MapController.getLocationCoord();
         Coord destCoord = MapController.getDestCoord();
-        summary.add(FlowLayout.encloseCenter(new Label("Distance: " + (int) MapController.distanceInKilometers(locationCoord, destCoord))));
+        summary.add(new Label("Distance: " + (int) MapController.distanceInKilometers(locationCoord, destCoord)));
         draw2MarkerMap(locationCoord, destCoord, f);
         hideBlocking();
+        f.repaint();
+        f.revalidate();
+
+        f.getContentPane().revalidate();
     }
 }
