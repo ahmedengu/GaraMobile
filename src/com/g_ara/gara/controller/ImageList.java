@@ -32,7 +32,7 @@ class ImageList implements ListModel<Image> {
     public Image getItemAt(final int index) {
         if (images[index] == null) {
             images[index] = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayWidth() / 2, Display.getInstance().getDisplayHeight() / 2, 0xffffff), false);
-            URLImage.createToStorage(images[index], imageIds[index].substring(imageIds[index].lastIndexOf("/") + 1), imageIds[index]);
+            URLImage.createToStorage(images[index], "list_" + index + "_" + imageIds[index].substring(imageIds[index].lastIndexOf("/") + 1), imageIds[index]);
 
             Util.downloadUrlToStorageInBackground(imageIds[index], imageIds[index].substring(imageIds[index].lastIndexOf("/") + 1), new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {

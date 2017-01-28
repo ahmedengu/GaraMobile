@@ -105,7 +105,7 @@ public class MapController {
                             tripRequest.put("accept", -1);
                             tripRequest.put("active", true);
                             double distanceinkilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
-                            tripRequest.put("cost", (int) (distanceinkilometers * trip.getInt("cost") + trip.getInt("toll")));
+                            tripRequest.put("cost", Math.round(distanceinkilometers * trip.getDouble("cost") + trip.getDouble("toll")));
                             tripRequest.put("to", new ParseGeoPoint(destCoord.getLatitude(), destCoord.getLongitude()));
                             tripRequest.put("distance", distanceinkilometers);
                             tripRequest.put("from", MapController.locationCoord.getLatitude() + "," + MapController.locationCoord.getLongitude());
@@ -156,7 +156,7 @@ public class MapController {
 
         double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
 
-        info.add(new Label("Cost: " + (int) (distanceInKilometers * trip.getInt("cost") + trip.getInt("toll"))));
+        info.add(new Label("Cost: " + Math.round(distanceInKilometers * trip.getDouble("cost") + trip.getDouble("toll"))));
         info.add(new Label("Distance: " + (int) distanceInKilometers));
         info.add(new Label("Username: " + driver.getString("username")));
         info.add(new Label("Name: " + driver.getString("name")));

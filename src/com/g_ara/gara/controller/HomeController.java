@@ -344,7 +344,7 @@ public class HomeController {
                 String objectId = ParseUser.getCurrent().getObjectId();
                 String url = Constants.GOOGLE_QR + encodeUrl(objectId);
 
-                Dialog.show("Token: " + objectId, new ImageViewer(URLImage.createToStorage(CODE_ICON().scaledEncoded(150, -1), objectId + ".png", url)), new Command("Back"));
+                Dialog.show("Token: " + objectId, new ImageViewer(URLImage.createToStorage(CODE_ICON().scaledEncoded(150, -1), "qr_" + objectId + ".png", url)), new Command("Back"));
             });
 
             north.add(checkin);
@@ -581,8 +581,8 @@ public class HomeController {
                 dialog.dispose();
                 ParseObject item = (ParseObject) combo.getSelectedItem().get("object");
                 data.put("car", item);
-                data.put("cost", Integer.parseInt(cost.getText().length() == 0 ? "0" : cost.getText()));
-                data.put("toll", Integer.parseInt(toll.getText().length() == 0 ? "0" : toll.getText()));
+                data.put("cost", Double.parseDouble(cost.getText().length() == 0 ? "0" : cost.getText()));
+                data.put("toll", Double.parseDouble(toll.getText().length() == 0 ? "0" : toll.getText()));
                 data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
                 data.put("notes", notes.getText());
                 data.put("groups", groups);

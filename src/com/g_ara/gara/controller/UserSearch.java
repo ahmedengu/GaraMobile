@@ -43,7 +43,7 @@ public class UserSearch {
                 entry.put("Line2", results.get(i).getString("name"));
                 EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
                 String url = results.get(i).getParseFile("pic").getUrl();
-                entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+                entry.put("icon", URLImage.createToStorage(placeholder,"Search_"+ url.substring(url.lastIndexOf("/") + 1), url));
                 entry.put("object", results.get(i));
                 data.add(entry);
             }

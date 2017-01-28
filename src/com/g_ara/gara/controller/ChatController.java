@@ -151,7 +151,7 @@ public class ChatController {
                     entry.put("Line1", (members.get(j)).getUsername());
                     EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayHeight() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
                     String url = (members.get(j)).getParseFile("pic").getUrl();
-                    entry.put("icon", URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+                    entry.put("icon", URLImage.createToStorage(placeholder, "chat_" + url.substring(url.lastIndexOf("/") + 1), url));
                 }
 
                 entry.put("object", results.get(i));

@@ -181,7 +181,7 @@ public class UserController {
 
         EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayWidth() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
         String url = (user.getParseFile("pic") != null) ? user.getParseFile("pic").getUrl() : "https://static.xx.fbcdn.net/rsrc.php/v1/yi/r/odA9sNLrE86.jpg";
-        pic.setIcon(URLImage.createToStorage(placeholder, url.substring(url.lastIndexOf("/") + 1), url));
+        pic.setIcon(URLImage.createToStorage(placeholder, "profile_" + url.substring(url.lastIndexOf("/") + 1), url));
     }
 
     public static void resetPassword() {
