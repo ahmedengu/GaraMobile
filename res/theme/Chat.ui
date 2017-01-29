@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Chat" cloudDestinationProperty="Chat" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Chat" >
+<component type="Form" name="Chat" cloudDestinationProperty="Chat" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Chat" cyclicFocus="false" >
   <component type="MultiList" name="Chat" cloudDestinationProperty="Chat" >
     <layoutConstraint value="Center" />
   </component>

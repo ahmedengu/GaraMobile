@@ -13,6 +13,7 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.list.GenericListCellRenderer;
 import com.codename1.ui.util.Resources;
@@ -43,7 +44,7 @@ public class HomeController {
 
     public static void beforeHomeForm(Form f, Resources resources, StateMachine stateMachine) {
         UserController.addUserSideMenu(f);
-        new MapController(resources, f).initMap();
+        new MapController(resources, f, f.getName()).initMap();
     }
 
     public static void postHomeForm(Form f, Resources resources, StateMachine stateMachine) {
@@ -59,7 +60,7 @@ public class HomeController {
 
         Button drive = new Button("Drive");
         FontImage.setMaterialIcon(drive, FontImage.MATERIAL_DRIVE_ETA);
-        drive.addActionListener(evt -> driveAction(stateMachine));
+        drive.addActionListener(evt -> driveAction(stateMachine, f));
         drive.setHidden(true);
         drive.setUIID("ToggleButtonLast");
 
@@ -233,7 +234,7 @@ public class HomeController {
             north.add(checkIn);
 
             f.add(BorderLayout.NORTH, north);
-            MapController map = new MapController(resources, f);
+            MapController map = new MapController(resources, f, f.getName());
             map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
@@ -352,7 +353,7 @@ public class HomeController {
 
             north.add(checkin);
             f.add(BorderLayout.NORTH, north);
-            MapController map = new MapController(resources, f);
+            MapController map = new MapController(resources, f, f.getName());
             map.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
@@ -427,7 +428,7 @@ public class HomeController {
 
     public static void CancelActive(Form f, Resources resources, Button drive, Button ride, Button active, ParseObject object) {
         CancelActiveRequest(object);
-        new MapController(resources, f).initMap();
+        new MapController(resources, f, f.getName()).initMap();
         drive.setHidden(false);
         ride.setHidden(false);
         active.getParent().remove();
@@ -512,6 +513,7 @@ public class HomeController {
                 showDelayedToastBar("There is no rides available");
             } else {
                 hideBlocking();
+                infiniteProgressForm().show();
                 data.put("rides", results);
                 showForm("RideMap");
             }
@@ -527,7 +529,7 @@ public class HomeController {
 
     static ComboBox<Map<String, Object>> combo;
 
-    public static void driveAction(StateMachine stateMachine) {
+    public static void driveAction(StateMachine stateMachine, Form f) {
         if (MapController.getDestCoord() == null) {
             ToastBar.showErrorMessage("You should choose a destination");
             return;
@@ -550,63 +552,69 @@ public class HomeController {
                 showDelayedToastBar("You don't have any active groups");
                 return;
             }
-            combo = new ComboBox<>(carsArr);
-            combo.setRenderer(new GenericListCellRenderer<>(new MultiButton(), new MultiButton()));
-
-            Dialog dialog = new Dialog("Drive Settings");
-            dialog.setLayout(new BorderLayout());
-            dialog.setUIID("Form");
-            TextField cost = new TextField("");
-            TextField toll = new TextField("");
-            TextField seats = new TextField("");
-            TextArea notes = new TextArea("");
-            notes.setGrowByContent(false);
-
-            cost.setHint("Cost per kilo");
-            toll.setHint("Toll cost");
-            seats.setHint("Available seats");
-            notes.setHint("Notes:");
-
-            combo.setUIID("ButtonGroupFirst");
-            cost.setUIID("GroupElement1");
-            toll.setUIID("GroupElement2");
-            seats.setUIID("GroupElement3");
-            notes.setUIID("GroupElementLast");
-
-
-            cost.setConstraint(TextField.NUMERIC);
-            toll.setConstraint(TextField.NUMERIC);
-            seats.setConstraint(TextField.NUMERIC);
-
-
-            Button cancel = new Button("Cancel");
-            cancel.addActionListener(evt -> dialog.dispose());
-            Button confirm = new Button("Confirm");
-            confirm.addActionListener(evt -> {
-                dialog.dispose();
-                ParseObject item = (ParseObject) combo.getSelectedItem().get("object");
-                data.put("car", item);
-                data.put("cost", Double.parseDouble(cost.getText().length() == 0 ? "0" : cost.getText()));
-                data.put("toll", Double.parseDouble(toll.getText().length() == 0 ? "0" : toll.getText()));
-                data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
-                data.put("notes", notes.getText());
-                data.put("groups", groups);
-
-                infiniteProgressForm().show();
-
-                showForm("DriveSummary");
-            });
-
-
-            dialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, confirm));
-            dialog.add(BorderLayout.CENTER, BoxLayout.encloseY(combo, GridLayout.encloseIn(3, cost, toll, seats), notes));
             hideBlocking();
-            dialog.show();
+            infiniteProgressForm().show();
+            data.put("carsArr", carsArr);
+            data.put("groups", groups);
+            showForm("DriveSettings");
         } catch (ParseException e) {
             e.printStackTrace();
             ToastBar.showErrorMessage(e.getMessage());
         }
 
+    }
+
+    public static void driveSettings(Form dialog) {
+        UserController.addUserSideMenu(dialog);
+        combo = new ComboBox<>((HashMap<String, Object>[]) data.get("carsArr"));
+        combo.setRenderer(new GenericListCellRenderer<>(new MultiButton(), new MultiButton()));
+
+        dialog.setLayout(new BorderLayout());
+        dialog.setUIID("Form");
+        TextField cost = new TextField("");
+        TextField toll = new TextField("");
+        TextField seats = new TextField("");
+        TextArea notes = new TextArea("");
+        notes.setGrowByContent(false);
+
+        cost.setHint("Cost per kilo");
+        toll.setHint("Toll cost");
+        seats.setHint("Available seats");
+        notes.setHint("Notes:");
+
+//            combo.setUIID("ButtonGroupFirst");
+        cost.setUIID("GroupElementFirst");
+        toll.setUIID("GroupElement");
+        seats.setUIID("GroupElement");
+        notes.setUIID("GroupElementLast");
+
+
+        cost.setConstraint(TextField.DECIMAL);
+        toll.setConstraint(TextField.DECIMAL);
+        seats.setConstraint(TextField.NUMERIC);
+
+
+        Button cancel = new Button("Cancel");
+        cancel.addActionListener(evt -> showForm("Home"));
+        cancel.setUIID("ToggleButtonFirst");
+        Button confirm = new Button("Confirm");
+        confirm.setUIID("ToggleButtonLast");
+
+        confirm.addActionListener(evt -> {
+            ParseObject item = (ParseObject) combo.getSelectedItem().get("object");
+            data.put("car", item);
+            data.put("cost", Double.parseDouble(cost.getText().length() == 0 ? "0" : cost.getText()));
+            data.put("toll", Double.parseDouble(toll.getText().length() == 0 ? "0" : toll.getText()));
+            data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
+            data.put("notes", notes.getText());
+            data.put("groups", (List<ParseObject>) data.get("groups"));
+
+            showForm("DriveSummary");
+        });
+
+
+        dialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, confirm));
+        dialog.add(BorderLayout.CENTER, FlowLayout.encloseCenterMiddle(BoxLayout.encloseY(combo, cost, toll, seats, notes)));
     }
 
     public static void exitHomeForm() {

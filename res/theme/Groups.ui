@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Groups" cloudDestinationProperty="Groups" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Groups" >
+<component type="Form" name="Groups" cloudDestinationProperty="Groups" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Groups" cyclicFocus="false" >
   <component type="MultiList" name="Groups" cloudDestinationProperty="Groups" >
     <layoutConstraint value="Center" />
   </component>

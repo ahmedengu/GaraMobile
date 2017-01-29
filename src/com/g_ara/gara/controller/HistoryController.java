@@ -36,6 +36,8 @@ public class HistoryController {
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
                 entry.put("Line1", results.get(i).getCreatedAt().toString());
+                if (results.get(i).getBoolean("active"))
+                    entry.put("Line2", "Active");
                 entry.put("Line3", results.get(i).getInt("accept") == 1 ? "Accepted" : "Not Accepted");
                 entry.put("object", results.get(i));
 
@@ -43,11 +45,13 @@ public class HistoryController {
             }
 
             ParseQuery trip = ParseQuery.getQuery("Trip");
-            tripRequest.whereEqualTo("driver", ParseUser.getCurrent());
+            trip.whereEqualTo("driver", ParseUser.getCurrent());
             results = trip.find();
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();
                 entry.put("Line1", results.get(i).getCreatedAt().toString());
+                if (results.get(i).getBoolean("active"))
+                    entry.put("Line2", "Active");
                 entry.put("Line3", "Driver");
                 entry.put("object", results.get(i));
 
@@ -82,6 +86,7 @@ public class HistoryController {
         final Form f = Display.getInstance().getCurrent();
         ParseObject item = (ParseObject) ((Map<String, Object>) ((MultiList) event.getSource()).getSelectedItem()).get("object");
         Form form = new Form("Previous trip");
+        form.setName("ptrip");
         UserController.addUserSideMenu(form);
         form.setLayout(new BorderLayout());
         Button cancel = new Button("Cancel");
@@ -92,7 +97,7 @@ public class HistoryController {
         String[] strings = split(item.getString("from"), ",");
 
         ParseGeoPoint to = item.getParseGeoPoint("to");
-        draw2MarkerMap(new Coord(Double.parseDouble(strings[0]), Double.parseDouble(strings[1])), new Coord(to.getLatitude(), to.getLongitude()), form);
+        draw2MarkerMap(new Coord(Double.parseDouble(strings[0]), Double.parseDouble(strings[1])), new Coord(to.getLatitude(), to.getLongitude()), form,form.getName());
         form.show();
     }
 

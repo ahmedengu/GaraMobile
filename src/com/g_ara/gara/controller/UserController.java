@@ -101,6 +101,7 @@ public class UserController {
                                     Image img = Image.createImage(filePath);
                                     pic.setIcon(img.scaledHeight(pic.getHeight()));
                                     pic.repaint();
+                                    pic.getParent().forceRevalidate();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

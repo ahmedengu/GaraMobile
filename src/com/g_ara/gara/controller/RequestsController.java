@@ -41,7 +41,7 @@ public class RequestsController {
                 }
             }
             if (count < ((ParseObject) data.get("active")).getInt("seats")) {
-                map = new MapController(resources, f).map;
+                map = new MapController(resources, f, f.getName()).map;
                 f.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, evt -> {
                     try {
                         refreshRequests(stateMachine);
@@ -156,6 +156,7 @@ public class RequestsController {
 
     public static Form getRequestUserDialog(ParseObject tripRequest, ParseObject TrUser, String title) {
         Form components = new Form(title);
+        components.setName("rinfo");
         UserController.addUserSideMenu(components);
         components.setLayout(new BorderLayout());
 
@@ -252,7 +253,7 @@ public class RequestsController {
         }
         components.add(BorderLayout.NORTH, components1);
 
-        draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), components);
+        draw2MarkerMap(TrUser.getParseGeoPoint("location"), tripRequest.getParseGeoPoint("to"), components, components.getName());
         return components;
     }
 

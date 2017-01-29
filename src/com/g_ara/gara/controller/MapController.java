@@ -47,23 +47,24 @@ public class MapController {
     private Resources theme;
     private List<Map<String, Object>> markers = new ArrayList<Map<String, Object>>();
     private Coord[] coordsPath;
+    private String formName;
 
-    public MapController(Container f) {
+    public MapController(Container f, String formName) {
         map = new MapContainer(new GoogleMapsProvider(Constants.MAPS_KEY));
         f.addComponent(BorderLayout.CENTER, map);
         map.setRotateGestureEnabled(true);
         map.setShowMyLocation(true);
         if (locationCoord != null)
             map.zoom(locationCoord, 10);
-
+        this.formName = formName;
     }
 
-    public MapController(Resources theme, Container f) {
-        this(f);
+    public MapController(Resources theme, Container f, String formName) {
+        this(f, formName);
         this.theme = theme;
     }
 
-    public void initMap(List<ParseObject> parseObjects, StateMachine stateMachine, Form cForm) {
+    public void initMap(List<ParseObject> parseObjects, Form cForm) {
         map.clearMapLayers();
         for (int i = 0; i < parseObjects.size(); i++) {
             final ParseObject trip = parseObjects.get(i);
@@ -88,7 +89,8 @@ public class MapController {
                     cancel.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent evt1) {
-                            cForm.show();
+                            infiniteProgressForm().show();
+                            showForm(cForm.getName());
                         }
                     });
                     cancel.setUIID("ToggleButtonFirst");
@@ -119,7 +121,7 @@ public class MapController {
                                 StateMachine.data.put("active", tripRequest);
                                 hideBlocking();
                                 infiniteProgressForm().show();
-                                stateMachine.showForm("Countdown", null);
+                                showForm("Countdown");
                             } catch (ParseException e) {
                                 e.printStackTrace();
                                 ToastBar.showErrorMessage(e.getMessage());
@@ -138,6 +140,7 @@ public class MapController {
 
     public static Form getDriveInfoDialog(ParseObject trip, ParseObject driver, ParseObject car, String title) {
         Form components = new Form(title);
+        components.setName("info");
         components.setLayout(new BorderLayout());
 
 
@@ -154,10 +157,10 @@ public class MapController {
 //        info.add(carImageViewer);
 
 
-        double distanceInKilometers = distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord());
+        long distanceInKilometers = Math.round(distanceInKilometers(MapController.getLocationCoord(), MapController.getDestCoord()));
 
         info.add(new Label("Cost: " + Math.round(distanceInKilometers * trip.getDouble("cost") + trip.getDouble("toll"))));
-        info.add(new Label("Distance: " + (int) distanceInKilometers));
+        info.add(new Label("Distance: " + distanceInKilometers));
         info.add(new Label("Username: " + driver.getString("username")));
         info.add(new Label("Name: " + driver.getString("name")));
         info.add(new Label("Mobile: " + driver.getString("mobile")));
@@ -254,7 +257,7 @@ public class MapController {
             components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(3, dial, chat, report));
         }
         components.add(BorderLayout.NORTH, components1);
-        draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), components);
+        draw2MarkerMap(driver.getParseGeoPoint("location"), trip.getParseGeoPoint("to"), components, components.getName());
         return components;
     }
 
@@ -335,29 +338,31 @@ public class MapController {
     }
 
     private Location updateMarkers(MapContainer map, Location location) {
-        map.clearMapLayers();
-        if (location != null) {
-            locationCoord = new Coord(location.getLatitude(), location.getLongitude());
-            //TODO: for mobile :
-            if (!map.isNativeMaps())
-                map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
-            lastLocationUpdate = System.currentTimeMillis();
-        }
-        if (destCoord != null) {
-            map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
-            if (coordsPath == null && !destCoord.equals(lastDestCoord)) {
-                lastDestCoord = destCoord;
-                getRoutesCoordsAsync();
+        if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals(formName)) {
+            map.clearMapLayers();
+            if (location != null) {
+                locationCoord = new Coord(location.getLatitude(), location.getLongitude());
+                //TODO: for mobile :
+                if (!map.isNativeMaps())
+                    map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
+                lastLocationUpdate = System.currentTimeMillis();
             }
-        }
-        for (int i = 0; i < markers.size(); i++) {
-            Map<String, Object> m = markers.get(i);
-            map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
+            if (destCoord != null) {
+                map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
+                if (coordsPath == null && !destCoord.equals(lastDestCoord)) {
+                    lastDestCoord = destCoord;
+                    getRoutesCoordsAsync();
+                }
+            }
+            for (int i = 0; i < markers.size(); i++) {
+                Map<String, Object> m = markers.get(i);
+                map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
 
-        }
+            }
 
-        if (coordsPath != null && coordsPath.length > 0)
-            map.addPath(coordsPath);
+            if (coordsPath != null && coordsPath.length > 0)
+                map.addPath(coordsPath);
+        }
         return location;
     }
 
@@ -491,12 +496,12 @@ public class MapController {
         MapController.destCoord = destCoord;
     }
 
-    public static void draw2MarkerMap(ParseGeoPoint location, ParseGeoPoint dest, Container container) {
-        draw2MarkerMap(new Coord(location.getLatitude(), location.getLongitude()), new Coord(dest.getLatitude(), dest.getLongitude()), container);
+    public static void draw2MarkerMap(ParseGeoPoint location, ParseGeoPoint dest, Container container, String formName) {
+        draw2MarkerMap(new Coord(location.getLatitude(), location.getLongitude()), new Coord(dest.getLatitude(), dest.getLongitude()), container, formName);
     }
 
-    public static void draw2MarkerMap(Coord locationCoord, Coord destCoord, Container container) {
-        MapContainer map = new MapController(container).map;
+    public static void draw2MarkerMap(Coord locationCoord, Coord destCoord, Container container, String formName) {
+        MapContainer map = new MapController(container, formName).map;
         map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
         map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
         map.zoom(locationCoord, 10);

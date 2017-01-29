@@ -10,8 +10,6 @@ import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
-import com.codename1.ui.events.ActionEvent;
-import com.codename1.ui.events.ActionListener;
 import com.g_ara.gara.controller.UserController;
 import com.parse4cn1.ParseException;
 import userclasses.StateMachine;
@@ -29,7 +27,7 @@ public class Gara implements LocalNotificationCallback {
         Toolbar.setGlobalToolbar(true);
 
         // Pro only feature, uncomment if you have a pro subscription
-        // Log.bindCrashProtection(true);
+        Log.bindCrashProtection(true);
     }
 
     public void start() {
@@ -45,17 +43,6 @@ public class Gara implements LocalNotificationCallback {
             return;
         }
         new StateMachine("/theme");
-
-        Display.getInstance().addEdtErrorHandler(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                evt.consume();
-                Log.p("Exception in Gara version " + Display.getInstance().getProperty("AppVersion", "Unknown"));
-                Log.p("OS " + Display.getInstance().getPlatformName());
-                Log.p("Error " + evt.getSource());
-                Log.p("Current Form " + Display.getInstance().getCurrent().getName());
-                Log.e((Throwable) evt.getSource());
-            }
-        });
     }
 
     public void stop() {

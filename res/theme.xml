@@ -46,6 +46,7 @@
     <image name="Dialog.borderTop_1.png3" type="multi"  />
     <image name="Dialog.borderTopL_1.png3" type="multi"  />
     <image name="Dialog.borderTopR_1.png3" type="multi"  />
+    <ui name="DriveSettings" />
     <ui name="DriveSummary" />
     <image name="empty.png"  />
     <image name="gray_line.jpg"  />

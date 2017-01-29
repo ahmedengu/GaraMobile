@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="History" cloudDestinationProperty="History" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="History" >
+<component type="Form" name="History" cloudDestinationProperty="History" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="History" cyclicFocus="false" >
   <component type="MultiList" name="HistoryList" cloudDestinationProperty="HistoryList" >
     <layoutConstraint value="Center" />
   </component>

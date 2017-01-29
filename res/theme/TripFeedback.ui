@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="TripFeedback" cloudDestinationProperty="TripFeedback" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Trip Feedback" >
+<component type="Form" name="TripFeedback" cloudDestinationProperty="TripFeedback" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Trip Feedback" cyclicFocus="false" >
   <component type="Container" name="Container1" cloudDestinationProperty="Container1" layout="GridLayout" gridLayoutRows="1" gridLayoutColumns="2" >
     <layoutConstraint value="South" />
     <component type="Button" name="Cancel" cloudDestinationProperty="Cancel" uiid="ToggleButtonFirst" text="Cancel" >

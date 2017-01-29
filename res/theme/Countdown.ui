@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Countdown" cloudDestinationProperty="Countdown" scrollableY="false" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="Wait for driver response" >
+<component type="Form" name="Countdown" cloudDestinationProperty="Countdown" scrollableY="false" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="Wait for driver response" cyclicFocus="false" >
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
     <component type="InfiniteProgress" name="InfiniteProgress" cloudDestinationProperty="InfiniteProgress" >
     </component>

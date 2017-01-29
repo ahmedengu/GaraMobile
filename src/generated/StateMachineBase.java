@@ -772,6 +772,12 @@ public abstract class StateMachineBase extends UIBuilder {
             return;
         }
 
+        if("DriveSettings".equals(f.getName())) {
+            exitDriveSettings(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
         if("TripFeedback".equals(f.getName())) {
             exitTripFeedback(f);
             aboutToShowThisContainer = null;
@@ -886,6 +892,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void exitDriveSettings(Form f) {
+    }
+
+
     protected void exitTripFeedback(Form f) {
     }
 
@@ -963,6 +973,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("Countdown".equals(f.getName())) {
             beforeCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("DriveSettings".equals(f.getName())) {
+            beforeDriveSettings(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1081,6 +1097,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeDriveSettings(Form f) {
+    }
+
+
     protected void beforeTripFeedback(Form f) {
     }
 
@@ -1158,6 +1178,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("Countdown".equals(c.getName())) {
             beforeContainerCountdown(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("DriveSettings".equals(c.getName())) {
+            beforeContainerDriveSettings(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1276,6 +1302,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void beforeContainerDriveSettings(Container c) {
+    }
+
+
     protected void beforeContainerTripFeedback(Container c) {
     }
 
@@ -1352,6 +1382,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("Countdown".equals(f.getName())) {
             postCountdown(f);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("DriveSettings".equals(f.getName())) {
+            postDriveSettings(f);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1470,6 +1506,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postDriveSettings(Form f) {
+    }
+
+
     protected void postTripFeedback(Form f) {
     }
 
@@ -1546,6 +1586,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("Countdown".equals(c.getName())) {
             postContainerCountdown(c);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("DriveSettings".equals(c.getName())) {
+            postContainerDriveSettings(c);
             aboutToShowThisContainer = null;
             return;
         }
@@ -1664,6 +1710,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void postContainerDriveSettings(Container c) {
+    }
+
+
     protected void postContainerTripFeedback(Container c) {
     }
 
@@ -1740,6 +1790,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("Countdown".equals(rootName)) {
             onCreateCountdown();
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("DriveSettings".equals(rootName)) {
+            onCreateDriveSettings();
             aboutToShowThisContainer = null;
             return;
         }
@@ -1858,6 +1914,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void onCreateDriveSettings() {
+    }
+
+
     protected void onCreateTripFeedback() {
     }
 
@@ -1935,6 +1995,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("Countdown".equals(f.getName())) {
             getStateCountdown(f, h);
+            aboutToShowThisContainer = null;
+            return h;
+        }
+
+        if("DriveSettings".equals(f.getName())) {
+            getStateDriveSettings(f, h);
             aboutToShowThisContainer = null;
             return h;
         }
@@ -2053,6 +2119,10 @@ public abstract class StateMachineBase extends UIBuilder {
     }
 
 
+    protected void getStateDriveSettings(Form f, Hashtable h) {
+    }
+
+
     protected void getStateTripFeedback(Form f, Hashtable h) {
     }
 
@@ -2130,6 +2200,12 @@ public abstract class StateMachineBase extends UIBuilder {
 
         if("Countdown".equals(f.getName())) {
             setStateCountdown(f, state);
+            aboutToShowThisContainer = null;
+            return;
+        }
+
+        if("DriveSettings".equals(f.getName())) {
+            setStateDriveSettings(f, state);
             aboutToShowThisContainer = null;
             return;
         }
@@ -2245,6 +2321,10 @@ public abstract class StateMachineBase extends UIBuilder {
 
 
     protected void setStateCountdown(Form f, Hashtable state) {
+    }
+
+
+    protected void setStateDriveSettings(Form f, Hashtable state) {
     }
 
 

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Requests" cloudDestinationProperty="Requests" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Requests" >
+<component type="Form" name="Requests" cloudDestinationProperty="Requests" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Requests" cyclicFocus="false" >
 </component>

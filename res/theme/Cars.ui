@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Cars" cloudDestinationProperty="Cars" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Cars" >
+<component type="Form" name="Cars" cloudDestinationProperty="Cars" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Cars" cyclicFocus="false" >
   <component type="MultiList" name="Cars" cloudDestinationProperty="Cars" >
     <layoutConstraint value="Center" />
   </component>

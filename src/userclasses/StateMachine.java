@@ -29,9 +29,7 @@ import static com.g_ara.gara.controller.GroupsController.*;
 import static com.g_ara.gara.controller.HistoryController.beforeHistoryForm;
 import static com.g_ara.gara.controller.HistoryController.postHistoryForm;
 import static com.g_ara.gara.controller.HistoryController.showHistoryTripOnClick;
-import static com.g_ara.gara.controller.HomeController.beforeHomeForm;
-import static com.g_ara.gara.controller.HomeController.exitHomeForm;
-import static com.g_ara.gara.controller.HomeController.postHomeForm;
+import static com.g_ara.gara.controller.HomeController.*;
 import static com.g_ara.gara.controller.RequestsController.beforeRequestsForm;
 import static com.g_ara.gara.controller.RequestsController.postRequestsForm;
 import static com.g_ara.gara.controller.RideMap.beforeRideMapForm;
@@ -137,7 +135,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onCar_SaveAction(Component c, ActionEvent event) {
-        addCar(findName(), findYear(), ((Container) findPics()), this,findNotes());
+        addCar(findName(), findYear(), ((Container) findPics()), this, findNotes());
     }
 
 
@@ -178,7 +176,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onProfile_SaveAction(Component c, ActionEvent event) {
-        saveUser(findUsername(), findPassword(), findMobile(), findPic(), this,findName());
+        saveUser(findUsername(), findPassword(), findMobile(), findPic(), this, findName());
 
     }
 
@@ -254,7 +252,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeRideMap(Form f) {
-        beforeRideMapForm(f, fetchResourceFile(), this, findCancel(f));
+        beforeRideMapForm(f, fetchResourceFile(), findCancel(f));
     }
 
 
@@ -388,7 +386,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeTripFeedback(Form f) {
-        beforeTripFeedbackForm((Slider) findRate(f), findCancel(f), findOk(f),f);
+        beforeTripFeedbackForm((Slider) findRate(f), findCancel(f), findOk(f), f);
 
     }
 
@@ -428,9 +426,8 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeRegister(Form f) {
-        beforeRegisterForm(f,findPic(f),(Button) findLogin(f));
+        beforeRegisterForm(f, findPic(f), (Button) findLogin(f));
     }
-
 
 
     @Override
@@ -544,7 +541,6 @@ public class StateMachine extends StateMachineBase {
     }
 
 
-
     @Override
     protected void beforeHistory(Form f) {
         beforeHistoryForm(f, findHistoryList(f));
@@ -553,7 +549,7 @@ public class StateMachine extends StateMachineBase {
     @Override
     protected void onHistory_HistoryListAction(Component c, ActionEvent event) {
         showHistoryTripOnClick(event);
-    
+
     }
 
     @Override
@@ -567,5 +563,17 @@ public class StateMachine extends StateMachineBase {
         form.setScrollableY(false);
         form.add(new InfiniteProgress());
         return form;
+    }
+
+    @Override
+    protected void beforeDriveSettings(Form f) {
+        driveSettings(f);
+    }
+
+    @Override
+    protected void onDriveSummary_CancelAction(Component c, ActionEvent event) {
+        infiniteProgressForm().show();
+        showForm("Home");
+
     }
 }

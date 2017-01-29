@@ -84,6 +84,8 @@ public class CarsController {
                     pics.repaint();
                     pics.revalidate();
                     pics.getParent().revalidate();
+                    pics.forceRevalidate();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -109,6 +111,8 @@ public class CarsController {
                                     pics.repaint();
                                     pics.revalidate();
                                     pics.getParent().revalidate();
+                                    pics.forceRevalidate();
+
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

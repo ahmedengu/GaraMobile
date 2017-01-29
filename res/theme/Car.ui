@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Car" cloudDestinationProperty="Car" layout="BoxLayout" boxLayoutAxis="Y" title="Car" >
+<component type="Form" name="Car" cloudDestinationProperty="Car" layout="BoxLayout" boxLayoutAxis="Y" title="Car" cyclicFocus="false" >
   <component type="Container" name="Pics" cloudDestinationProperty="Pics" uiid="GroupElementOnly" rtl="false" scrollVisible="true" scrollableX="true" scrollableY="false" layout="BoxLayout" boxLayoutAxis="X" >
     <component type="Button" name="Add" cloudDestinationProperty="Add" text="" >
     </component>

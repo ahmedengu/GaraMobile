@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="UserSearch" cloudDestinationProperty="UserSearch" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="User Search" >
+<component type="Form" name="UserSearch" cloudDestinationProperty="UserSearch" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="User Search" cyclicFocus="false" >
   <component type="Container" name="Container" cloudDestinationProperty="Container" rtl="false" layout="BorderLayout" borderLayoutAbsoluteCenter="false" >
     <layoutConstraint value="North" />
     <component type="TextField" name="SearchField" cloudBoundProperty="text" cloudDestinationProperty="SearchField" nextFocusDown="Search" nextFocusRight="Search" uiid="ToggleButtonFirstText" text="" hint="Username" >

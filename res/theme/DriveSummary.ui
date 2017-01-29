@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="DriveSummary" cloudDestinationProperty="DriveSummary" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Drive Summary" >
+<component type="Form" name="DriveSummary" cloudDestinationProperty="DriveSummary" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Drive Summary" cyclicFocus="false" >
   <component type="Container" name="Summary" cloudDestinationProperty="Summary" scrollableX="true" scrollableY="false" layout="BoxLayout" boxLayoutAxis="X" >
     <layoutConstraint value="North" />
   </component>
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="FlowLayout" flowLayoutFillRows="true" flowLayoutAlign="1" flowLayoutValign="0" >
     <layoutConstraint value="South" />
-    <component type="Button" name="Cancel" cloudDestinationProperty="Cancel" commandName="Cancel" commandId="21" commandAction="Home" commandBack="false" uiid="ToggleButtonFirst" text="Cancel" >
+    <component type="Button" name="Cancel" cloudDestinationProperty="Cancel" commandName="Cancel" commandId="21" commandAction="" commandBack="false" uiid="ToggleButtonFirst" text="Cancel" >
     </component>
     <component type="Button" name="Confirm" cloudDestinationProperty="Confirm" uiid="ToggleButtonLast" text="Confirm" >
     </component>

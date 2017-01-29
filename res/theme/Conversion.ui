@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="Conversion" cloudDestinationProperty="Conversion" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Conversion" >
+<component type="Form" name="Conversion" cloudDestinationProperty="Conversion" layout="BorderLayout" borderLayoutAbsoluteCenter="false" title="Conversion" cyclicFocus="false" >
   <component type="Container" name="Messages" cloudDestinationProperty="Container" scrollableX="false" scrollableY="true" layout="BoxLayout" boxLayoutAxis="Y" >
     <layoutConstraint value="Center" />
   </component>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component type="Form" name="newGroup" cloudDestinationProperty="newGroup" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="New Group" >
+<component type="Form" name="newGroup" cloudDestinationProperty="newGroup" layout="FlowLayout" flowLayoutFillRows="false" flowLayoutAlign="4" flowLayoutValign="4" title="New Group" cyclicFocus="false" >
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
     <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" nextFocusDown="New" uiid="GroupElementFirst" text="" constraint="1" hint="Email" >
     </component>

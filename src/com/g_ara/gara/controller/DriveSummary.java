@@ -67,7 +67,7 @@ public class DriveSummary {
         Coord locationCoord = MapController.getLocationCoord();
         Coord destCoord = MapController.getDestCoord();
         summary.add(new Label("Distance: " + (int) MapController.distanceInKilometers(locationCoord, destCoord)));
-        draw2MarkerMap(locationCoord, destCoord, f);
+        draw2MarkerMap(locationCoord, destCoord, f, f.getName());
         hideBlocking();
         f.repaint();
         f.revalidate();
