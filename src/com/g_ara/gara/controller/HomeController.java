@@ -107,7 +107,7 @@ public class HomeController {
                                     System.currentTimeMillis() + 10,
                                     LocalNotification.REPEAT_NONE
                             );
-                            if (Display.getInstance().getCurrent() != null && Display.getInstance().getCurrent().getTitle().equals("Requests")) {
+                            if (Display.getInstance().getCurrent() != null && Display.getInstance().getCurrent().getName().equals("Requests")) {
                                 Display.getInstance().callSerially(() -> {
                                     try {
                                         RequestsController.refreshRequests(stateMachine);
@@ -118,6 +118,11 @@ public class HomeController {
                             }
                         } else {
                             try {
+                                try {
+                                    Thread.sleep(3000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 object.put("accept", 1);
 
                                 ParseObject trip = object.getParseObject("trip").fetchIfNeeded();
@@ -126,7 +131,7 @@ public class HomeController {
                                 batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
                                 batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
                                 batch.execute();
-                                data.put("active", object);
+                                data.put("active", trip);
                                 LocalNotification n = new LocalNotification();
                                 n.setId("Home");
                                 n.setAlertBody("You got a new accepted trip request");
@@ -158,7 +163,7 @@ public class HomeController {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
-                        if (!Display.getInstance().getCurrent().getTitle().equals("Conversion") && (ParseUser.getCurrent().get("trip") == null || MapController.getVelocity() < 5)) {
+                        if (Display.getInstance().getCurrent().getName() != null && !Display.getInstance().getCurrent().getName().equals("Conversion") && (ParseUser.getCurrent().get("trip") == null || MapController.getVelocity() < 5)) {
                             LocalNotification n = new LocalNotification();
                             n.setId("Chat");
                             n.setAlertBody("You got a new message");
@@ -268,7 +273,7 @@ public class HomeController {
                 public void run() {
                     Display.getInstance().callSerially(() -> {
                         try {
-                            if (Display.getInstance().getCurrent().getName().equals("Home")) {
+                            if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals("Home")) {
                                 addDriverToMarkers(tripRequestHomeQuery(), map, f);
                             }
 
@@ -387,7 +392,7 @@ public class HomeController {
                 public void run() {
                     Display.getInstance().callSerially(() -> {
                         try {
-                            if (Display.getInstance().getCurrent().getName().equals("Home")) {
+                            if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals("Home")) {
                                 addTripRequestMarkers(tripHomeQuery(), map, f);
                             }
                         } catch (Exception e) {

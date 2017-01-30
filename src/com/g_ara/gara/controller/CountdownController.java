@@ -88,9 +88,9 @@ public class CountdownController {
         try {
             if (countdownLiveQuery != null)
                 countdownLiveQuery.unsubscribe();
-            countdownLiveQuery = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        countdownLiveQuery = null;
     }
 }
