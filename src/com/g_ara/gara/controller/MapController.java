@@ -47,6 +47,7 @@ public class MapController {
     private List<Map<String, Object>> markers = new ArrayList<Map<String, Object>>();
     private Coord[] coordsPath;
     private String formName;
+    static float velocity = 0;
 
     public MapController(Container f, String formName) {
         map = new MapContainer(new GoogleMapsProvider(Constants.MAPS_KEY));
@@ -335,6 +336,9 @@ public class MapController {
         LocationManager.getLocationManager().setLocationListener(new LocationListener() {
 
             public void locationUpdated(Location location) {
+                velocity = location.getVelocity();
+                if (location != null)
+                    locationCoord = new Coord(location.getLatitude(), location.getLongitude());
                 if (System.currentTimeMillis() - lastLocationUpdate >= locationUpdateThreshold) {
                     Display.getInstance().callSerially(() -> updateMarkers(map, location));
                     sendLocation(location);
@@ -378,7 +382,6 @@ public class MapController {
         if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals(formName)) {
             map.clearMapLayers();
             if (location != null) {
-                locationCoord = new Coord(location.getLatitude(), location.getLongitude());
                 if (!map.isNativeMaps())
                     map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
                 lastLocationUpdate = System.currentTimeMillis();
@@ -578,5 +581,9 @@ public class MapController {
 
     public static void setLocationCoord(Coord locationCoord) {
         MapController.locationCoord = locationCoord;
+    }
+
+    public static float getVelocity() {
+        return velocity;
     }
 }

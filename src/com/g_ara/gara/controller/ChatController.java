@@ -29,10 +29,14 @@ public class ChatController {
     static ParseLiveQuery conversationLive;
     static ParseUser toUser;
 
-    public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine, Button send) {
+    public static void beforeConversionForm(Container messages, Form f, StateMachine stateMachine, Button send, Container container1) {
         UserController.addUserSideMenu(f);
+        if (ParseUser.getCurrent().get("trip") != null && MapController.getVelocity() >= 5) {
+            container1.setHidden(true);
+        }
         FontImage.setMaterialIcon(send, FontImage.MATERIAL_SEND);
         messages.addPullToRefresh(() -> refreshConversation(messages));
+
     }
 
     public static void postConversionForm(Container messages) {
@@ -66,6 +70,9 @@ public class ChatController {
             e.printStackTrace();
         }
         hideBlocking();
+        if (ParseUser.getCurrent().get("trip") != null && MapController.getVelocity() >= 5) {
+            showDelayedToastBar("Chat is disabled while driving");
+        }
     }
 
     public static void refreshConversation(final Container messages) {
@@ -130,6 +137,9 @@ public class ChatController {
         showBlocking();
         refreshChatForm(chat);
         hideBlocking();
+        if (ParseUser.getCurrent().get("trip") != null && MapController.getVelocity() >= 5) {
+            showDelayedToastBar("Chat is disabled while driving");
+        }
     }
 
     public static void refreshChatForm(MultiList chat) {

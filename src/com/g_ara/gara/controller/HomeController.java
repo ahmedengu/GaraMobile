@@ -158,7 +158,7 @@ public class HomeController {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
-                        if (!Display.getInstance().getCurrent().getTitle().equals("Conversion") && ParseUser.getCurrent().get("trip") == null) {
+                        if (!Display.getInstance().getCurrent().getTitle().equals("Conversion") && (ParseUser.getCurrent().get("trip") == null || MapController.getVelocity() < 5)) {
                             LocalNotification n = new LocalNotification();
                             n.setId("Chat");
                             n.setAlertBody("You got a new message");

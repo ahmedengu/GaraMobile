@@ -203,7 +203,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void beforeConversion(Form f) {
-        beforeConversionForm(findMessages(f), f, this, findSend(f));
+        beforeConversionForm(findMessages(f), f, this, findSend(f),findContainer1(f));
 
     }
 
