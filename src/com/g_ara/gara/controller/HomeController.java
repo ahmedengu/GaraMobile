@@ -16,6 +16,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.list.GenericListCellRenderer;
+import com.codename1.ui.spinner.Picker;
 import com.codename1.ui.util.Resources;
 import com.g_ara.gara.model.Constants;
 import com.parse4cn1.*;
@@ -30,7 +31,6 @@ import static com.g_ara.gara.controller.GroupsController.getUserVerifiedGroups;
 import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserQuery;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
 import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
-import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.model.Constants.*;
 import static userclasses.StateMachine.*;
 
@@ -95,30 +95,52 @@ public class HomeController {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
+                        final Integer anInt = ((ParseObject) data.get("active")).getInt("autoAccept");
+                        if (anInt == 0 || (anInt == 2 && object.getBoolean("female")) || (anInt == 1 && !object.getBoolean("female"))) {
+                            LocalNotification n = new LocalNotification();
+                            n.setId("Requests");
+                            n.setAlertBody("You got a new trip request");
+                            n.setAlertTitle("Gara | New Trip Request");
 
-                        LocalNotification n = new LocalNotification();
-                        n.setId("Requests");
-                        n.setAlertBody("You got a new trip request");
-                        n.setAlertTitle("Gara | New Trip Request");
+                            Display.getInstance().scheduleLocalNotification(
+                                    n,
+                                    System.currentTimeMillis() + 10,
+                                    LocalNotification.REPEAT_NONE
+                            );
+                            if (Display.getInstance().getCurrent() != null && Display.getInstance().getCurrent().getTitle().equals("Requests")) {
+                                Display.getInstance().callSerially(() -> {
+                                    try {
+                                        RequestsController.refreshRequests(stateMachine);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        } else {
+                            try {
+                                object.put("accept", 1);
 
-                        Display.getInstance().scheduleLocalNotification(
-                                n,
-                                System.currentTimeMillis() + 10,
-                                LocalNotification.REPEAT_NONE
-                        );
+                                ParseObject trip = object.getParseObject("trip").fetchIfNeeded();
+                                trip.addUniqueToArrayField("tripRequests", object);
+                                ParseBatch batch = ParseBatch.create();
+                                batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
+                                batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
+                                batch.execute();
+                                data.put("active", object);
+                                LocalNotification n = new LocalNotification();
+                                n.setId("Home");
+                                n.setAlertBody("You got a new accepted trip request");
+                                n.setAlertTitle("Gara | Accepted Trip Request");
 
-
-                        String title = Display.getInstance().getCurrent().getTitle();
-                        if (title.equals("Requests")) {
-                            Display.getInstance().callSerially(() -> {
-                                try {
-                                    RequestsController.refreshRequests(stateMachine);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                            });
+                                Display.getInstance().scheduleLocalNotification(
+                                        n,
+                                        System.currentTimeMillis() + 10,
+                                        LocalNotification.REPEAT_NONE
+                                );
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
-
                     }
                 }
             };
@@ -136,7 +158,7 @@ public class HomeController {
                 @Override
                 public void event(String op, int requestId, ParseObject object) {
                     if (op.equals("create")) {
-                        if (!Display.getInstance().getCurrent().getTitle().equals("Conversion")) {
+                        if (!Display.getInstance().getCurrent().getTitle().equals("Conversion") && ParseUser.getCurrent().get("trip") == null) {
                             LocalNotification n = new LocalNotification();
                             n.setId("Chat");
                             n.setAlertBody("You got a new message");
@@ -444,7 +466,7 @@ public class HomeController {
         try {
             showBlocking();
             object.save();
-            currentParseUserSave();
+            user.save();
             data.remove("active");
             if (tripLiveQuery != null) {
                 tripLiveQuery.unsubscribe();
@@ -469,7 +491,7 @@ public class HomeController {
             ToastBar.showErrorMessage("You should choose a destination");
             return;
         }
-        if (MapController.getLocationCoord() == null) {
+        if (MapController.getLocationCoord() == null || !ParseUser.getCurrent().has("location")) {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
@@ -527,14 +549,14 @@ public class HomeController {
     }
 
 
-    static ComboBox<Map<String, Object>> combo;
+    static ComboBox<Map<String, Object>> carsCombo;
 
     public static void driveAction(StateMachine stateMachine, Form f) {
         if (MapController.getDestCoord() == null) {
             ToastBar.showErrorMessage("You should choose a destination");
             return;
         }
-        if (MapController.getLocationCoord() == null) {
+        if (MapController.getLocationCoord() == null || !ParseUser.getCurrent().has("location")) {
             ToastBar.showErrorMessage("GPS is required");
             return;
         }
@@ -566,8 +588,18 @@ public class HomeController {
 
     public static void driveSettings(Form dialog) {
         UserController.addUserSideMenu(dialog);
-        combo = new ComboBox<>((HashMap<String, Object>[]) data.get("carsArr"));
-        combo.setRenderer(new GenericListCellRenderer<>(new MultiButton(), new MultiButton()));
+        carsCombo = new ComboBox<>((HashMap<String, Object>[]) data.get("carsArr"));
+        carsCombo.setRenderer(new GenericListCellRenderer<>(new MultiButton(), new MultiButton()));
+        Label autoAcceptLabel = new Label("Auto Accept: ");
+        autoAcceptLabel.setUIID("ToggleButtonFirst");
+        autoAcceptLabel.setEnabled(false);
+        Picker autoAccept = new Picker();
+        autoAccept.setType(Display.PICKER_TYPE_STRINGS);
+        final String[] autoAccepts = {"No One", "Females", "Males", "All"};
+        autoAccept.setStrings(autoAccepts);
+        autoAccept.setSelectedString(autoAccepts[0]);
+        autoAccept.setUIID("ToggleButtonFirst");
+
 
         dialog.setLayout(new BorderLayout());
         dialog.setUIID("Form");
@@ -582,7 +614,7 @@ public class HomeController {
         seats.setHint("Available seats");
         notes.setHint("Notes:");
 
-//            combo.setUIID("ButtonGroupFirst");
+//            carsCombo.setUIID("ButtonGroupFirst");
         cost.setUIID("GroupElementFirst");
         toll.setUIID("GroupElement");
         seats.setUIID("GroupElement");
@@ -601,20 +633,21 @@ public class HomeController {
         confirm.setUIID("ToggleButtonLast");
 
         confirm.addActionListener(evt -> {
-            ParseObject item = (ParseObject) combo.getSelectedItem().get("object");
+            ParseObject item = (ParseObject) carsCombo.getSelectedItem().get("object");
             data.put("car", item);
             data.put("cost", Double.parseDouble(cost.getText().length() == 0 ? "0" : cost.getText()));
             data.put("toll", Double.parseDouble(toll.getText().length() == 0 ? "0" : toll.getText()));
             data.put("seats", Integer.parseInt(seats.getText().length() == 0 ? "4" : seats.getText()));
             data.put("notes", notes.getText());
             data.put("groups", (List<ParseObject>) data.get("groups"));
+            data.put("autoAccept", StringsIndexOf(autoAccepts, autoAccept.getSelectedString()));
 
             showForm("DriveSummary");
         });
 
 
         dialog.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, cancel, confirm));
-        dialog.add(BorderLayout.CENTER, FlowLayout.encloseCenterMiddle(BoxLayout.encloseY(combo, cost, toll, seats, notes)));
+        dialog.add(BorderLayout.CENTER, FlowLayout.encloseCenterMiddle(BoxLayout.encloseY(carsCombo, GridLayout.encloseIn(2, autoAcceptLabel, autoAccept), cost, toll, seats, notes)));
     }
 
     public static void exitHomeForm() {

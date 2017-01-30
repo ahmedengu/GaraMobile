@@ -96,59 +96,59 @@ public class RequestsController {
 //            URLImage.ImageAdapter adapter = URLImage.createMaskAdapter(MASK_LOCATION_ICON());
 //            URLImage image = URLImage.createToStorage(Constants.BLUE_LOCATION_ICON(), "map_" + url.substring(url.lastIndexOf("/") + 1), url, adapter);
 
+            if (location != null)
+                map.addMarker(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
 
-            map.addMarker(Constants.BLUE_LOCATION_ICON(), new Coord(location.getLatitude(), location.getLongitude()), "", "", new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent evt) {
+                        Form dialog = getRequestUserDialog(object, user, "Request");
 
-                    Form dialog = getRequestUserDialog(object, user, "Request");
+                        Container south = new Container(new GridLayout(2));
+                        Button cancel = new Button("Reject");
+                        cancel.setUIID("ToggleButtonFirst");
+                        cancel.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent evt1) {
+                                object.put("accept", 0);
+                                try {
+                                    object.save();
+                                    data.put("active", object);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    ToastBar.showErrorMessage(e.getMessage());
+                                }
+                                stateMachine.showForm("Home", null);
+                            }
+                        });
+                        south.add(cancel);
+                        Button confirm = new Button("Accept");
+                        confirm.setUIID("ToggleButtonLast");
 
-                    Container south = new Container(new GridLayout(2));
-                    Button cancel = new Button("Reject");
-                    cancel.setUIID("ToggleButtonFirst");
-                    cancel.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent evt1) {
-                            object.put("accept", 0);
+                        confirm.addActionListener(evt1 -> {
+                            object.put("accept", 1);
+
+                            ParseObject trip = object.getParseObject("trip");
                             try {
-                                object.save();
+                                trip.addUniqueToArrayField("tripRequests", object);
+                                ParseBatch batch = ParseBatch.create();
+                                batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
+                                batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
+                                batch.execute();
                                 data.put("active", object);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                                 ToastBar.showErrorMessage(e.getMessage());
                             }
-                            stateMachine.showForm("Home", null);
-                        }
-                    });
-                    south.add(cancel);
-                    Button confirm = new Button("Accept");
-                    confirm.setUIID("ToggleButtonLast");
+                            infiniteProgressForm().show();
 
-                    confirm.addActionListener(evt1 -> {
-                        object.put("accept", 1);
+                            showForm("Home");
+                        });
+                        south.add(confirm);
+                        dialog.add(BorderLayout.SOUTH, south);
+                        dialog.show();
 
-                        ParseObject trip = object.getParseObject("trip");
-                        try {
-                            trip.addUniqueToArrayField("tripRequests", object);
-                            ParseBatch batch = ParseBatch.create();
-                            batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
-                            batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
-                            batch.execute();
-                            data.put("active", object);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            ToastBar.showErrorMessage(e.getMessage());
-                        }
-                        infiniteProgressForm().show();
-
-                        showForm("Home");
-                    });
-                    south.add(confirm);
-                    dialog.add(BorderLayout.SOUTH, south);
-                    dialog.show();
-
-                }
-            });
+                    }
+                });
         }
         map.revalidate();
         hideBlocking();

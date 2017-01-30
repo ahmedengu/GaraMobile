@@ -39,6 +39,7 @@ public abstract class StateMachineBase extends UIBuilder {
         UIBuilder.registerCustomComponent("InfiniteProgress", com.codename1.components.InfiniteProgress.class);
         UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("TextArea", com.codename1.ui.TextArea.class);
+        UIBuilder.registerCustomComponent("CheckBox", com.codename1.ui.CheckBox.class);
         UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
         UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
         UIBuilder.registerCustomComponent("MultiList", com.codename1.ui.list.MultiList.class);
@@ -84,6 +85,7 @@ public abstract class StateMachineBase extends UIBuilder {
         UIBuilder.registerCustomComponent("InfiniteProgress", com.codename1.components.InfiniteProgress.class);
         UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("TextArea", com.codename1.ui.TextArea.class);
+        UIBuilder.registerCustomComponent("CheckBox", com.codename1.ui.CheckBox.class);
         UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
         UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
         UIBuilder.registerCustomComponent("MultiList", com.codename1.ui.list.MultiList.class);
@@ -290,6 +292,18 @@ public abstract class StateMachineBase extends UIBuilder {
         com.codename1.ui.Button cmp = (com.codename1.ui.Button)findByName("Search", Display.getInstance().getCurrent());
         if(cmp == null && aboutToShowThisContainer != null) {
             cmp = (com.codename1.ui.Button)findByName("Search", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
+    public com.codename1.ui.CheckBox findFemale(Component root) {
+        return (com.codename1.ui.CheckBox)findByName("female", root);
+    }
+
+    public com.codename1.ui.CheckBox findFemale() {
+        com.codename1.ui.CheckBox cmp = (com.codename1.ui.CheckBox)findByName("female", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.CheckBox)findByName("female", aboutToShowThisContainer);
         }
         return cmp;
     }
@@ -2474,6 +2488,10 @@ public abstract class StateMachineBase extends UIBuilder {
                 onRegister_MobileAction(c, event);
                 return;
             }
+            if("female".equals(c.getName())) {
+                onRegister_FemaleAction(c, event);
+                return;
+            }
             if("Register".equals(c.getName())) {
                 onRegister_RegisterAction(c, event);
                 return;
@@ -2574,6 +2592,10 @@ public abstract class StateMachineBase extends UIBuilder {
             }
             if("Mobile".equals(c.getName())) {
                 onProfile_MobileAction(c, event);
+                return;
+            }
+            if("female".equals(c.getName())) {
+                onProfile_FemaleAction(c, event);
                 return;
             }
             if("Save".equals(c.getName())) {
@@ -2684,6 +2706,9 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onRegister_MobileAction(Component c, ActionEvent event) {
       }
 
+      protected void onRegister_FemaleAction(Component c, ActionEvent event) {
+      }
+
       protected void onRegister_RegisterAction(Component c, ActionEvent event) {
       }
 
@@ -2751,6 +2776,9 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onProfile_MobileAction(Component c, ActionEvent event) {
+      }
+
+      protected void onProfile_FemaleAction(Component c, ActionEvent event) {
       }
 
       protected void onProfile_SaveAction(Component c, ActionEvent event) {

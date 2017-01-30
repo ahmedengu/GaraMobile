@@ -80,7 +80,7 @@ public class CountdownController {
         } else {
             showDelayedToastBar("Your request got accepted!");
         }
-        if (Display.getInstance().getCurrent().getName().equals("Countdown"))
+        if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals("Countdown"))
             showForm("Home");
     }
 

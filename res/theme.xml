@@ -617,6 +617,8 @@
         <val key="ToggleButton.sel#margin" value="1,1,0,0" />
         <border key="ToggleButtonFirst.border" type="image" i1="ToggleButtonFirst.borderTop_1.png" i2="ToggleButtonFirst.borderBottom_1.png" i3="ToggleButtonFirst.borderLeft_1.png" i4="ToggleButtonFirst.borderRight_1.png" i5="ToggleButtonFirst.borderTopL_1.png" i6="ToggleButtonFirst.borderTopR_1.png" i7="ToggleButtonFirst.borderBottomL_1.png" i8="ToggleButtonFirst.borderBottomR_1.png" i9="ToggleButtonFirst.borderCenter_1.png" />
         <val key="ToggleButtonFirst.derive" value="ToggleButton" />
+        <val key="ToggleButtonFirst.dis#derive" value="ToggleButtonFirst" />
+        <val key="ToggleButtonFirst.dis#fgColor" value="999999" />
         <val key="ToggleButtonFirst.fgColor" value="7aff" />
         <val key="ToggleButtonFirst.press#derive" value="ToggleButtonFirst.sel" />
         <border key="ToggleButtonFirst.sel#border" type="image" i1="ToggleButtonFirst.sel#borderTop_1.png" i2="ToggleButtonFirst.sel#borderBottom_1.png" i3="ToggleButtonFirst.sel#borderLeft_1.png" i4="ToggleButtonFirst.sel#borderRight_1.png" i5="ToggleButtonFirst.sel#borderTopL_1.png" i6="ToggleButtonFirst.sel#borderTopR_1.png" i7="ToggleButtonFirst.sel#borderBottomL_1.png" i8="ToggleButtonFirst.sel#borderBottomR_1.png" i9="ToggleButtonFirst.sel#borderCenter_1.png" />

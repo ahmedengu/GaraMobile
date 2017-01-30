@@ -33,7 +33,7 @@ public class UserController {
         filePath = null;
     }
 
-    public static void register(TextField username, TextField password, TextField name, TextField email, TextField mobile, Button pic, StateMachine stateMachine) {
+    public static void register(TextField username, TextField password, TextField name, TextField email, TextField mobile, Button pic, StateMachine stateMachine, CheckBox female) {
         if (name.getText().length() == 0 || email.getText().length() == 0 || mobile.getText().length() == 0 || username.getText().length() == 0 || password.getText().length() == 0) {
             ToastBar.showErrorMessage("Please fill all the fields");
             return;
@@ -47,6 +47,7 @@ public class UserController {
             user.put("name", name.getText());
             user.put("email", email.getText());
             user.put("mobile", mobile.getText());
+            user.put("female", female.isSelected());
             showBlocking();
             user.signUp();
             if (user.isAuthenticated()) {
@@ -60,11 +61,7 @@ public class UserController {
 
                 user.put("pic", file);
                 user.save();
-                currentParseUserSave();
-//                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
 
-//                Preferences.set("username", username.getText());
-//                Preferences.set("password", password.getText());
                 Preferences.set("sessionToken", user.getSessionToken());
                 hideBlocking();
                 stateMachine.showForm("Home", null);
@@ -131,11 +128,6 @@ public class UserController {
                 Preferences.set("sessionToken", user.getSessionToken());
                 hideBlocking();
                 stateMachine.showForm("Home", null);
-                currentParseUserSave();
-//                Storage.getInstance().writeObject("currentUser", user.asExternalizable());
-//                Preferences.set("currentUser", user.getParseData().toString());
-//                Preferences.set("username", username);
-//                Preferences.set("password", password);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -144,16 +136,16 @@ public class UserController {
         }
     }
 
-    public static void saveUser(TextField username, TextField password, TextField mobile, Button pic, StateMachine stateMachine, TextField name) {
+    public static void saveUser(TextField username, TextField password, TextField mobile, Button pic, StateMachine stateMachine, TextField name, CheckBox female) {
         try {
             showBlocking();
             ParseUser user = ParseUser.getCurrent();
             user.setUsername(username.getText());
-            if (password.getText().length() > 1)
+            if (password.getText().length() > 0)
                 user.put("password", password.getText());
             user.put("mobile", mobile.getText());
             user.put("name", name.getText());
-
+            user.put("female", female.isSelected());
             if (filePath != null) {
                 Image img = Image.createImage(filePath);
                 ImageIO imgIO = ImageIO.getImageIO();
@@ -178,7 +170,7 @@ public class UserController {
         }
     }
 
-    public static void beforeProfileForm(TextField name, TextField username, TextField password, TextField mobile, Button pic, TextField email, Form f, StateMachine stateMachine, Button save) {
+    public static void beforeProfileForm(TextField name, TextField username, TextField password, TextField mobile, Button pic, TextField email, Form f, StateMachine stateMachine, Button save, CheckBox female) {
         UserController.addUserSideMenu(f);
         filePath = null;
         FontImage.setMaterialIcon(save, FontImage.MATERIAL_SAVE);
@@ -188,6 +180,7 @@ public class UserController {
         username.setText(user.getUsername());
         mobile.setText(user.getString("mobile"));
         email.setText(user.getEmail());
+        female.setSelected(user.getBoolean("female"));
 
         EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(Display.getInstance().getDisplayWidth() / 8, Display.getInstance().getDisplayHeight() / 8, 0xffffff), false);
         String url = (user.getParseFile("pic") != null) ? user.getParseFile("pic").getUrl() : "https://static.xx.fbcdn.net/rsrc.php/v1/yi/r/odA9sNLrE86.jpg";
@@ -249,46 +242,6 @@ public class UserController {
 //            return true;
         return false;
     }
-
-    public static void currentParseUserSave() throws ParseException {
-
-        ParseUser current = ParseUser.getCurrent();
-        current.save();
-//        if (System.currentTimeMillis() - last > 5000) {
-//            ParseObject trip = current.getParseObject("trip");
-//            ParseObject tripRequest = current.getParseObject("tripRequest");
-//
-//            Object driver = null;
-//            if (trip != null) {
-//                driver = trip.get("driver");
-//                trip.remove("driver");
-//                trip.setDirty(false);
-//            }
-//
-//            Object user = null;
-//            if (tripRequest != null) {
-//                user = tripRequest.get("user");
-//                tripRequest.remove("user");
-//                tripRequest.setDirty(false);
-//            }
-//            current.setDirty(false);
-//            last = System.currentTimeMillis();
-//            Storage.getInstance().writeObject("currentUser", current.asExternalizable());
-//
-//            if (trip != null && driver != null) {
-//                trip.put("driver", driver);
-//                trip.setDirty(false);
-//
-//            }
-//
-//            if (tripRequest != null && user != null) {
-//                tripRequest.put("user", user);
-//                tripRequest.setDirty(false);
-//            }
-//            current.setDirty(false);
-//        }
-    }
-
 
     public static ParseObject getUserEmptyObject() {
         ParseObject parseEmptyObject = getParseEmptyObject(ParseUser.getCurrent());

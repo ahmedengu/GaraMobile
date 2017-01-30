@@ -118,7 +118,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onRegister_RegisterAction(Component c, ActionEvent event) {
-        register(findUsername(), findPassword(), findName(), findEmail(), findMobile(), findPic(), this);
+        register(findUsername(), findPassword(), findName(), findEmail(), findMobile(), findPic(), this,findFemale());
     }
 
 
@@ -176,13 +176,13 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onProfile_SaveAction(Component c, ActionEvent event) {
-        saveUser(findUsername(), findPassword(), findMobile(), findPic(), this, findName());
+        saveUser(findUsername(), findPassword(), findMobile(), findPic(), this, findName(),findFemale());
 
     }
 
     @Override
     protected void beforeProfile(Form f) {
-        beforeProfileForm(findName(f), findUsername(f), findPassword(f), findMobile(f), findPic(f), findEmail(f), f, this, findSave(f));
+        beforeProfileForm(findName(f), findUsername(f), findPassword(f), findMobile(f), findPic(f), findEmail(f), f, this, findSave(f),findFemale(f));
     }
 
     @Override
@@ -575,5 +575,13 @@ public class StateMachine extends StateMachineBase {
         infiniteProgressForm().show();
         showForm("Home");
 
+    }
+
+    public static int StringsIndexOf(String[] strings, String s) {
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i].equals(s))
+                return i;
+        }
+        return -1;
     }
 }

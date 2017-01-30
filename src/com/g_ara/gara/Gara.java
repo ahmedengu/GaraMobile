@@ -10,8 +10,6 @@ import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Form;
 import com.codename1.ui.Toolbar;
-import com.g_ara.gara.controller.UserController;
-import com.parse4cn1.ParseException;
 import userclasses.StateMachine;
 
 /**
@@ -50,11 +48,6 @@ public class Gara implements LocalNotificationCallback {
         if (current instanceof Dialog) {
             ((Dialog) current).dispose();
             current = Display.getInstance().getCurrent();
-        }
-        try {
-            UserController.currentParseUserSave();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 

@@ -14,6 +14,8 @@
     </component>
     <component type="TextField" name="Mobile" cloudBoundProperty="text" cloudDestinationProperty="Mobile" nextFocusDown="Save" nextFocusUp="Password" uiid="GroupElement" focusable="true" enabled="true" text="" constraint="3" hint="Mobile" >
     </component>
+    <component type="CheckBox" name="female" cloudDestinationProperty="female" uiid="GroupElement" text="Female?" >
+    </component>
     <component type="Button" name="Save" cloudDestinationProperty="Login" commandName="Save" commandId="3" commandAction="" commandBack="false" uiid="ButtonGroupLast" text="Save" >
     </component>
   </component>

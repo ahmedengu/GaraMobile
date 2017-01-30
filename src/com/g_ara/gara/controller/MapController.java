@@ -31,7 +31,6 @@ import java.util.*;
 import java.util.List;
 
 import static com.g_ara.gara.controller.ChatController.getUserChat;
-import static com.g_ara.gara.controller.UserController.currentParseUserSave;
 import static com.g_ara.gara.controller.UserController.getUserEmptyObject;
 import static com.g_ara.gara.model.Constants.*;
 import static userclasses.StateMachine.*;
@@ -112,11 +111,12 @@ public class MapController {
                             tripRequest.put("distance", distanceinkilometers);
                             tripRequest.put("from", MapController.locationCoord.getLatitude() + "," + MapController.locationCoord.getLongitude());
                             tripRequest.put("driver", (ParseUser) trip.getParseObject("driver"));
+                            tripRequest.put("female", ParseUser.getCurrent().getBoolean("female"));
                             try {
                                 showBlocking();
                                 tripRequest.save();
                                 user.put("tripRequest", tripRequest);
-                                currentParseUserSave();
+                                user.save();
 
                                 StateMachine.data.put("active", tripRequest);
                                 hideBlocking();
@@ -310,15 +310,13 @@ public class MapController {
 
     private void sendLocation(Location location) {
         if (System.currentTimeMillis() - lastLocationSent >= locationSentThreshold) {
-
             lastLocationSent = System.currentTimeMillis();
             ParseUser user = ParseUser.getCurrent();
             if (user != null && user.isAuthenticated()) {
-                ParseGeoPoint location1 = user.getParseGeoPoint("location");
-                if (location1 == null || (ParseUser.getCurrent().get("trip") != null || ParseUser.getCurrent().get("tripRequest") != null)) {
+                if (location != null) {
                     user.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
                     try {
-                        currentParseUserSave();
+                        user.save();
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -342,7 +340,6 @@ public class MapController {
             map.clearMapLayers();
             if (location != null) {
                 locationCoord = new Coord(location.getLatitude(), location.getLongitude());
-                //TODO: for mobile :
                 if (!map.isNativeMaps())
                     map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
                 lastLocationUpdate = System.currentTimeMillis();
