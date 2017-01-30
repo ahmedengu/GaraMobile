@@ -124,7 +124,7 @@ public class CarsController {
         }
     }
 
-    public static void addCar(TextField name, TextField year, Container pics, StateMachine stateMachine, TextField notes) {
+    public static void addCar(TextField name, TextField year, Container pics, StateMachine stateMachine, TextField notes, TextField plate) {
         if (pics.getComponentCount() == 1) {
             ToastBar.showErrorMessage("Please add pictures of the car");
             return;
@@ -136,7 +136,7 @@ public class CarsController {
             car.put("user", getUserEmptyObject());
             car.put("notes", notes.getText());
             car.put("archived", false);
-
+            car.put("plateNumber", plate.getText());
             showBlocking();
             car.save();
             int count = pics.getComponentCount();

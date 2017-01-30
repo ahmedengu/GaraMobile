@@ -135,7 +135,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onCar_SaveAction(Component c, ActionEvent event) {
-        addCar(findName(), findYear(), ((Container) findPics()), this, findNotes());
+        addCar(findName(), findYear(), ((Container) findPics()), this, findNotes(),findPlate());
     }
 
 

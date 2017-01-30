@@ -262,6 +262,7 @@
         <val key="ComboBoxItem.sel#fgColor" value="324e82" />
         <font key="ComboBoxItem.sel#font" type="system" face="0" style="0" size="16" />
         <val key="ComboBoxList.sel#derive" value="ComboBoxList" />
+        <border key="ComboBoxPopup.border" type="image" i1="GroupElementOnly.borderTop:1" i2="GroupElementOnly.borderBottom:1" i3="GroupElementOnly.borderLeft:1" i4="GroupElementOnly.borderRight:1" i5="GroupElementOnly.borderTopL:1" i6="GroupElementOnly.borderTopR:1" i7="GroupElementOnly.borderBottomL:1" i8="GroupElementOnly.borderBottomR:1" i9="GroupElementOnly.borderCenter:1" />
         <val key="ComboBoxPopup.derive" value="List" />
         <val key="ContentPane.margin" value="0,0,0,0" />
         <val key="ContentPane.padding" value="0,0,0,0" />
@@ -446,6 +447,22 @@
         <val key="MultiLine4.margin" value="0,0,0,0" />
         <val key="MultiLine4.press#derive" value="MultiLine4" />
         <val key="MultiLine4.sel#derive" value="MultiLine4" />
+        <val key="PopupContentPane.padUnit" value="2,2,2,2" />
+        <val key="PopupContentPane.padding" value="0,4,4,4" />
+        <border key="PopupDialog.border" type="image" i1="PopupDialog.borderTop_2.png" i2="PopupDialog.borderBottom_2.png" i3="PopupDialog.borderLeft_2.png" i4="PopupDialog.borderRight_2.png" i5="PopupDialog.borderTopL_2.png" i6="PopupDialog.borderTopR_2.png" i7="PopupDialog.borderBottomL_2.png" i8="PopupDialog.borderBottomR_2.png" i9="PopupDialog.borderCenter_2.png" />
+        <val key="PopupDialog.margin" value="0,0,0,0" />
+        <val key="PopupDialog.padUnit" value="2,2,2,2" />
+        <val key="PopupDialog.padding" value="0,0,0,0" />
+        <val key="PopupDialog.transparency" value="0" />
+        <val key="PopupDialogTitle.align" value="4" />
+        <border key="PopupDialogTitle.border" type="image" i1="PopupDialogTitle.borderTop_1.png" i2="PopupDialogTitle.borderBottom_1.png" i3="PopupDialogTitle.borderLeft_1.png" i4="PopupDialogTitle.borderRight_1.png" i5="PopupDialogTitle.borderTopL_1.png" i6="PopupDialogTitle.borderTopR_1.png" i7="PopupDialogTitle.borderBottomL_1.png" i8="PopupDialogTitle.borderBottomR_1.png" i9="PopupDialogTitle.borderCenter_1.png" />
+        <val key="PopupDialogTitle.derive" value="DialogTitle" />
+        <val key="PopupDialogTitle.fgColor" value="ffffff" />
+        <font key="PopupDialogTitle.font" type="system" face="0" style="1" size="16" />
+        <val key="PopupDialogTitle.margin" value="0,0,0,0" />
+        <val key="PopupDialogTitle.padUnit" value="2,2,0,2" />
+        <val key="PopupDialogTitle.padding" value="2,0,3,3" />
+        <val key="PopupDialogTitle.transparency" value="0" />
         <val key="Scroll.padding" value="0,0,0,0" />
         <val key="ScrollThumb.padding" value="0,0,0,0" />
         <val key="SideCommand.align" value="1" />
@@ -692,8 +709,8 @@
             <entry key="Calendar.Thursday" value="Thu" />
             <entry key="ok" value="OK" />
             <entry key="Calendar.Saturday" value="Sat" />
-            <entry key="select" value="Select" />
             <entry key="Calendar.Friday" value="Fri" />
+            <entry key="select" value="Select" />
             <entry key="edit" value="Edit" />
             <entry key="Calendar.Monday" value="Mon" />
             <entry key="cancel" value="Cancel" />
@@ -708,8 +725,8 @@
             <entry key="Calendar.Thursday" value="Thu" />
             <entry key="ok" value="OK" />
             <entry key="Calendar.Saturday" value="Sat" />
-            <entry key="Calendar.Friday" value="Fri" />
             <entry key="select" value="Select" />
+            <entry key="Calendar.Friday" value="Fri" />
             <entry key="edit" value="Edit" />
             <entry key="Calendar.Monday" value="Mon" />
             <entry key="cancel" value="Cancel" />
@@ -717,6 +734,24 @@
     </l10n>
     <ui name="Login" />
     <ui name="newGroup" />
+    <image name="PopupDialog.borderBottom_2.png" type="multi"  />
+    <image name="PopupDialog.borderBottomL_2.png" type="multi"  />
+    <image name="PopupDialog.borderBottomR_2.png" type="multi"  />
+    <image name="PopupDialog.borderCenter_2.png" type="multi"  />
+    <image name="PopupDialog.borderLeft_2.png" type="multi"  />
+    <image name="PopupDialog.borderRight_2.png" type="multi"  />
+    <image name="PopupDialog.borderTop_2.png" type="multi"  />
+    <image name="PopupDialog.borderTopL_2.png" type="multi"  />
+    <image name="PopupDialog.borderTopR_2.png" type="multi"  />
+    <image name="PopupDialogTitle.borderBottom_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderBottomL_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderBottomR_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderCenter_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderLeft_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderRight_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderTop_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderTopL_1.png" type="multi"  />
+    <image name="PopupDialogTitle.borderTopR_1.png" type="multi"  />
     <ui name="Profile" />
     <ui name="Register" />
     <ui name="Requests" />

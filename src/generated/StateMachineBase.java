@@ -608,6 +608,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.TextField findPlate(Component root) {
+        return (com.codename1.ui.TextField)findByName("Plate", root);
+    }
+
+    public com.codename1.ui.TextField findPlate() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Plate", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Plate", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.TextField findSearchField(Component root) {
         return (com.codename1.ui.TextField)findByName("SearchField", root);
     }
@@ -2646,6 +2658,10 @@ public abstract class StateMachineBase extends UIBuilder {
                 onCar_YearAction(c, event);
                 return;
             }
+            if("Plate".equals(c.getName())) {
+                onCar_PlateAction(c, event);
+                return;
+            }
             if("Notes".equals(c.getName())) {
                 onCar_NotesAction(c, event);
                 return;
@@ -2809,6 +2825,9 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onCar_YearAction(Component c, ActionEvent event) {
+      }
+
+      protected void onCar_PlateAction(Component c, ActionEvent event) {
       }
 
       protected void onCar_NotesAction(Component c, ActionEvent event) {

@@ -61,7 +61,6 @@ public class DriveSummary {
         summary.add(new Label("Tolls cost: " + data.get("toll")));
         summary.add(new Label("Cost per kilo: " + data.get("cost")));
         summary.add(new Label("Auto Accept: " + ((((int) data.get("autoAccept")) == 0) ? "No" : "Yes")));
-
     }
 
     public static void postDriveSummaryForm(Container summary, Form f) {

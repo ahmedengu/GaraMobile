@@ -9,6 +9,8 @@
   </component>
   <component type="TextField" name="Year" cloudBoundProperty="text" cloudDestinationProperty="Year" nextFocusDown="Notes" uiid="GroupElement" text="" hint="Year" >
   </component>
+  <component type="TextField" name="Plate" cloudBoundProperty="text" cloudDestinationProperty="Plate" uiid="GroupElement" text="" hint="Plate Number" >
+  </component>
   <component type="TextField" name="Notes" cloudBoundProperty="text" cloudDestinationProperty="Notes" nextFocusDown="Save" uiid="GroupElement" text="" hint="Notes" >
   </component>
   <component type="Button" name="Save" cloudDestinationProperty="Save" uiid="ButtonGroupLast" text="Save" >

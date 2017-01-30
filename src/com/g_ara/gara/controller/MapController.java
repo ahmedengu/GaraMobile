@@ -220,6 +220,7 @@ public class MapController {
 
         info.add(new Label("Car: " + car.getString("name")));
         info.add(new Label("Car Year: " + car.getString("year")));
+        info.add(new Label("Car Plate Number: " + car.getString("plateNumber")));
         info.add(new Label("Car Notes: " + car.getString("notes")));
 
         info.add(new Label("Trip Notes: " + trip.getString("notes")));
