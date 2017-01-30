@@ -235,7 +235,7 @@ public class MapController {
         components1.add(BorderLayout.NORTH, info);
         Button images = new Button("Images");
         FontImage.setMaterialIcon(images, FontImage.MATERIAL_IMAGE);
-        images.setUIID("ButtonGroupOnly");
+        images.setUIID("ToggleButtonFirst");
 
         images.addActionListener(evt -> {
             Form dialog = new Form("Images");
@@ -251,7 +251,39 @@ public class MapController {
             dialog.add(BorderLayout.SOUTH, cancel);
             dialog.show();
         });
-        components1.add(BorderLayout.CENTER, images);
+
+        Button reviews = new Button("Reviews");
+        FontImage.setMaterialIcon(reviews, FontImage.MATERIAL_RATE_REVIEW);
+        reviews.setUIID("ToggleButtonLast");
+        reviews.addActionListener(evt -> {
+            try {
+                showBlocking();
+                ParseQuery query = ParseQuery.getQuery("TripRequest");
+                query.whereExists("rate");
+                query.whereEqualTo("driver", driver);
+                final List<ParseObject> list = query.find();
+                hideBlocking();
+                Dialog reviewsDialog = new Dialog("Reviews");
+                reviewsDialog.setLayout(new BorderLayout());
+                Container reviewsContainer = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+                reviewsContainer.setScrollableX(true);
+                for (int i = 0; i < list.size(); i++) {
+                    reviewsContainer.add("Rate: " + list.get(i).getInt("rate"));
+                    reviewsContainer.add("Comment: " + list.get(i).getString("comment"));
+                }
+                reviewsDialog.add(BorderLayout.CENTER, reviewsContainer);
+                Button cancel = new Button("Cancel");
+                cancel.addActionListener(evt1 -> reviewsDialog.dispose());
+                cancel.setUIID("ToggleButtonOnly");
+                reviewsDialog.add(BorderLayout.SOUTH, cancel);
+                reviewsDialog.show();
+            } catch (ParseException e) {
+                e.printStackTrace();
+                ToastBar.showErrorMessage(e.getMessage());
+            }
+
+        });
+        components1.add(BorderLayout.CENTER, GridLayout.encloseIn(2, images, reviews));
         if (driver.getString("mobile").equals("-")) {
             components1.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, chat, report));
         } else {
