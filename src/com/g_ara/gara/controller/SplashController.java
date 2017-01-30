@@ -3,7 +3,9 @@ package com.g_ara.gara.controller;
 import com.codename1.components.SpanLabel;
 import com.codename1.io.NetworkManager;
 import com.codename1.io.Preferences;
+import com.codename1.location.Location;
 import com.codename1.location.LocationManager;
+import com.codename1.maps.Coord;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -26,25 +28,33 @@ public class SplashController {
         boolean isNotGps = (LocationManager.getLocationManager().isGPSDetectionSupported() && !LocationManager.getLocationManager().isGPSEnabled());
         if (isNotOnline || isNotGps) {
             errorMessageReload(f, loadingCnt, stateMachine, "Gara require" + ((isNotOnline && isNotGps) ? " Internet Connection & GPS" : ((isNotOnline) ? " Internet Connection" : " GPS")));
-        } else if (Preferences.get("sessionToken", "").length() > 0) {
-            try {
-                ParseUser user = ParseUser.fetchBySession(Preferences.get("sessionToken", ""));
-                if (user.isAuthenticated()) {
-                    showForm(Preferences.get("nId", "Home"));
-                    Preferences.delete("nId");
-                } else {
-                    showForm("Login");
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-                if (e.getCode() == 209) {
-                    Preferences.delete("sessionToken");
-                    showForm("Login");
-                } else
-                    errorMessageReload(f, loadingCnt, stateMachine, e.getMessage());
-            }
         } else {
-            showForm("Login");
+            try {
+                final Location currentLocationSync = LocationManager.getLocationManager().getCurrentLocationSync(10);
+                MapController.setLocationCoord(new Coord(currentLocationSync.getLatitude(), currentLocationSync.getLongitude()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (Preferences.get("sessionToken", "").length() > 0) {
+                try {
+                    ParseUser user = ParseUser.fetchBySession(Preferences.get("sessionToken", ""));
+                    if (user.isAuthenticated()) {
+                        showForm(Preferences.get("nId", "Home"));
+                        Preferences.delete("nId");
+                    } else {
+                        showForm("Login");
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    if (e.getCode() == 209) {
+                        Preferences.delete("sessionToken");
+                        showForm("Login");
+                    } else
+                        errorMessageReload(f, loadingCnt, stateMachine, e.getMessage());
+                }
+            } else {
+                showForm("Login");
+            }
         }
     }
 

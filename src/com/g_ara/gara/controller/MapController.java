@@ -569,4 +569,8 @@ public class MapController {
         }
         return locs;
     }
+
+    public static void setLocationCoord(Coord locationCoord) {
+        MapController.locationCoord = locationCoord;
+    }
 }
