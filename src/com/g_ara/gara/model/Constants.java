@@ -21,7 +21,7 @@ public class Constants {
     public static final int WITHIN_KILOMETERS = 500;
     public static final int COUNTDOWN_TIMER = 300;
     public static final int TASK_DELAY = 10000;
-    public static final int locationUpdateThreshold = 5000, locationSentThreshold = 50000;
+    public static final int locationUpdateThreshold = 5000, locationSentThreshold = 30000;
 
 //    public static String GPLUS_CLIENT = "478278768173-p03m0mn78pdp79op1c83rak5rg5auc11.apps.googleusercontent.com";
 //    public static String GPLUS_SECRET = "kGTosZIkwVA0OQPyex0ktWpS";

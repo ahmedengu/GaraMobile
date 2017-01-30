@@ -41,7 +41,7 @@ import static userclasses.StateMachine.*;
 public class MapController {
 
     private static Coord destCoord, locationCoord, lastDestCoord;
-    private static Long lastLocationUpdate = 0L, lastLocationSent = 0L;
+    private static Long lastLocationUpdate = 0L, lastLocationSent = 0L, LastRouteUpdate = 0L;
     public final MapContainer map;
     private Resources theme;
     private List<Map<String, Object>> markers = new ArrayList<Map<String, Object>>();
@@ -321,7 +321,12 @@ public class MapController {
             public void actionPerformed(ActionEvent evt) {
                 destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
                 coordsPath = null;
-                Display.getInstance().callSerially(() -> updateMarkers(map));
+                Display.getInstance().callSerially(() -> {
+                    Location location = new Location();
+                    location.setLatitude(locationCoord.getLatitude());
+                    location.setLongitude(locationCoord.getLongitude());
+                    updateMarkers(map, location);
+                });
             }
         });
     }
@@ -355,6 +360,7 @@ public class MapController {
                     }
                 }
             }
+            getRoutesCoordsAsync();
         }
     }
 
