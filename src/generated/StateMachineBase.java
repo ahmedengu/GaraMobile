@@ -37,8 +37,8 @@ public abstract class StateMachineBase extends UIBuilder {
         UIBuilder.registerCustomComponent("Slider", com.codename1.ui.Slider.class);
         UIBuilder.registerCustomComponent("Form", com.codename1.ui.Form.class);
         UIBuilder.registerCustomComponent("InfiniteProgress", com.codename1.components.InfiniteProgress.class);
-        UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("TextArea", com.codename1.ui.TextArea.class);
+        UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("CheckBox", com.codename1.ui.CheckBox.class);
         UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
         UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
@@ -83,8 +83,8 @@ public abstract class StateMachineBase extends UIBuilder {
         UIBuilder.registerCustomComponent("Slider", com.codename1.ui.Slider.class);
         UIBuilder.registerCustomComponent("Form", com.codename1.ui.Form.class);
         UIBuilder.registerCustomComponent("InfiniteProgress", com.codename1.components.InfiniteProgress.class);
-        UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("TextArea", com.codename1.ui.TextArea.class);
+        UIBuilder.registerCustomComponent("Button", com.codename1.ui.Button.class);
         UIBuilder.registerCustomComponent("CheckBox", com.codename1.ui.CheckBox.class);
         UIBuilder.registerCustomComponent("Label", com.codename1.ui.Label.class);
         UIBuilder.registerCustomComponent("TextField", com.codename1.ui.TextField.class);
@@ -2456,16 +2456,16 @@ public abstract class StateMachineBase extends UIBuilder {
             }
         }
         if(rootContainerName.equals("TripFeedback")) {
+            if("Comment".equals(c.getName())) {
+                onTripFeedback_CommentAction(c, event);
+                return;
+            }
             if("Cancel".equals(c.getName())) {
                 onTripFeedback_CancelAction(c, event);
                 return;
             }
             if("Ok".equals(c.getName())) {
                 onTripFeedback_OkAction(c, event);
-                return;
-            }
-            if("Comment".equals(c.getName())) {
-                onTripFeedback_CommentAction(c, event);
                 return;
             }
         }
@@ -2692,13 +2692,13 @@ public abstract class StateMachineBase extends UIBuilder {
       protected void onHistory_HistoryListAction(Component c, ActionEvent event) {
       }
 
+      protected void onTripFeedback_CommentAction(Component c, ActionEvent event) {
+      }
+
       protected void onTripFeedback_CancelAction(Component c, ActionEvent event) {
       }
 
       protected void onTripFeedback_OkAction(Component c, ActionEvent event) {
-      }
-
-      protected void onTripFeedback_CommentAction(Component c, ActionEvent event) {
       }
 
       protected void onGroups_GroupsAction(Component c, ActionEvent event) {

@@ -134,7 +134,7 @@ public class HomeController {
                                 data.put("active", trip);
                                 LocalNotification n = new LocalNotification();
                                 n.setId("Home");
-                                n.setAlertBody("You got a new accepted trip request");
+                                n.setAlertBody("You got a new auto accepted trip request");
                                 n.setAlertTitle("Gara | Accepted Trip Request");
 
                                 Display.getInstance().scheduleLocalNotification(
@@ -142,6 +142,8 @@ public class HomeController {
                                         System.currentTimeMillis() + 10,
                                         LocalNotification.REPEAT_NONE
                                 );
+
+                                Display.getInstance().callSerially(() -> showDelayedToastBar("You got a new auto accepted trip request"));
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -331,7 +333,9 @@ public class HomeController {
             map.put("location", new ParseGeoPoint(MapController.getLocationCoord().getLatitude(), MapController.getLocationCoord().getLongitude()));
             object.put((checkIn.getText().equals("Check Out")) ? "checkout" : "checkin", map);
             try {
+                showBlocking();
                 object.save();
+                hideBlocking();
                 if (checkIn.getText().equals("Check Out")) {
                     CancelActive(f, resources, drive, ride, active, object);
                     data.put("tripObject", object);
