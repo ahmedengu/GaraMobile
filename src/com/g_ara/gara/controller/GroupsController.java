@@ -54,7 +54,7 @@ public class GroupsController {
     }
 
 
-    public static void newGroup(TextField eMail, StateMachine stateMachine) {
+    public static void newGroup(TextField eMail, StateMachine stateMachine, TextField info) {
         try {
             showBlocking();
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Group");
@@ -77,6 +77,7 @@ public class GroupsController {
             groupUser.put("verified", false);
             groupUser.put("email", email);
             groupUser.put("archived", false);
+            groupUser.put("info", info.getText());
 
             groupUser.save();
             hideBlocking();
@@ -122,20 +123,23 @@ public class GroupsController {
         return groupQuery;
     }
 
-    public static List<ParseObject> getUserVerifiedGroups() {
+    public static List<ParseObject> getUserVerifiedGroups(List<ParseObject> list) {
         List<ParseObject> groups = new ArrayList();
-        try {
-            ParseQuery groupQuery = verifiedGroupUserQuery();
-            groupQuery.include("group");
-            List<ParseObject> list = groupQuery.find();
-            for (int i = 0; i < list.size(); i++) {
-                groups.add(list.get(i).getParseObject("group"));
-            }
+        for (int i = 0; i < list.size(); i++) {
+            groups.add(list.get(i).getParseObject("group"));
+        }
+        return groups;
+    }
 
+    public static List<ParseObject> verifiedGroupUserResult() {
+        ParseQuery groupQuery = verifiedGroupUserQuery();
+        groupQuery.include("group");
+        try {
+            return (List<ParseObject>) groupQuery.find();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return groups;
+        return new ArrayList();
     }
 
     public static void archiveGroupOnClick(ActionEvent event, MultiList groups) {

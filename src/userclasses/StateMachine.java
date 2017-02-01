@@ -129,7 +129,7 @@ public class StateMachine extends StateMachineBase {
 
     @Override
     protected void onNewGroup_NewAction(Component c, ActionEvent event) {
-        newGroup(findEmail(), this);
+        newGroup(findEmail(), this,findInfo());
     }
 
 

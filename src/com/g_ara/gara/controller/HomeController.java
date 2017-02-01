@@ -29,6 +29,7 @@ import static com.codename1.io.Util.encodeUrl;
 import static com.g_ara.gara.controller.CarsController.getCarsArr;
 import static com.g_ara.gara.controller.GroupsController.getUserVerifiedGroups;
 import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserQuery;
+import static com.g_ara.gara.controller.GroupsController.verifiedGroupUserResult;
 import static com.g_ara.gara.controller.MapController.getDriveInfoDialog;
 import static com.g_ara.gara.controller.RequestsController.getRequestUserDialog;
 import static com.g_ara.gara.model.Constants.*;
@@ -505,7 +506,8 @@ public class HomeController {
             return;
         }
         showBlocking();
-        List<ParseObject> groupUser = getUserVerifiedGroups();
+        final List<ParseObject> groupUserResult = verifiedGroupUserResult();
+        List<ParseObject> groupUser = getUserVerifiedGroups(groupUserResult);
         if (groupUser.size() == 0) {
             hideBlocking();
             showDelayedToastBar("You don't have any active groups");
@@ -546,6 +548,7 @@ public class HomeController {
                 hideBlocking();
                 infiniteProgressForm().show();
                 data.put("rides", results);
+                data.put("groupUser", groupUserResult);
                 showForm("RideMap");
             }
 
@@ -577,7 +580,8 @@ public class HomeController {
                 showDelayedToastBar("You dont have any cars");
                 return;
             }
-            List<ParseObject> groups = getUserVerifiedGroups();
+            final List<ParseObject> groupUserResult = verifiedGroupUserResult();
+            List<ParseObject> groups = getUserVerifiedGroups(groupUserResult);
             if (groups.size() == 0) {
                 hideBlocking();
                 showDelayedToastBar("You don't have any active groups");
@@ -587,6 +591,7 @@ public class HomeController {
             infiniteProgressForm().show();
             data.put("carsArr", carsArr);
             data.put("groups", groups);
+            data.put("groupUser", groupUserResult);
             showForm("DriveSettings");
         } catch (ParseException e) {
             e.printStackTrace();

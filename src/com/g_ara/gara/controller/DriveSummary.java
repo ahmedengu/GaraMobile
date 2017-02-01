@@ -35,6 +35,7 @@ public class DriveSummary {
             trip.put("notes", data.get("notes"));
             trip.put("groups", data.get("groups"));
             trip.put("autoAccept", data.get("autoAccept"));
+            trip.put("groupUser", data.get("groupUser"));
             showBlocking();
             trip.save();
             current.put("trip", trip);

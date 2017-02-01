@@ -4,6 +4,8 @@
   <component type="Container" name="Container" cloudDestinationProperty="Container" layout="BoxLayout" boxLayoutAxis="Y" >
     <component type="TextField" name="Email" cloudBoundProperty="text" cloudDestinationProperty="Email" nextFocusDown="New" uiid="GroupElementFirst" text="" constraint="1" hint="Email" >
     </component>
+    <component type="TextField" name="Info" cloudBoundProperty="text" cloudDestinationProperty="Info" uiid="GroupElement" text="" hint="Info" >
+    </component>
     <component type="Button" name="New" cloudDestinationProperty="New" nextFocusUp="Email" uiid="ButtonGroupLast" text="Add" >
     </component>
   </component>

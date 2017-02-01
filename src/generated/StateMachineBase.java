@@ -560,6 +560,18 @@ public abstract class StateMachineBase extends UIBuilder {
         return cmp;
     }
 
+    public com.codename1.ui.TextField findInfo(Component root) {
+        return (com.codename1.ui.TextField)findByName("Info", root);
+    }
+
+    public com.codename1.ui.TextField findInfo() {
+        com.codename1.ui.TextField cmp = (com.codename1.ui.TextField)findByName("Info", Display.getInstance().getCurrent());
+        if(cmp == null && aboutToShowThisContainer != null) {
+            cmp = (com.codename1.ui.TextField)findByName("Info", aboutToShowThisContainer);
+        }
+        return cmp;
+    }
+
     public com.codename1.ui.Container findPics(Component root) {
         return (com.codename1.ui.Container)findByName("Pics", root);
     }
@@ -2518,6 +2530,10 @@ public abstract class StateMachineBase extends UIBuilder {
                 onNewGroup_EmailAction(c, event);
                 return;
             }
+            if("Info".equals(c.getName())) {
+                onNewGroup_InfoAction(c, event);
+                return;
+            }
             if("New".equals(c.getName())) {
                 onNewGroup_NewAction(c, event);
                 return;
@@ -2732,6 +2748,9 @@ public abstract class StateMachineBase extends UIBuilder {
       }
 
       protected void onNewGroup_EmailAction(Component c, ActionEvent event) {
+      }
+
+      protected void onNewGroup_InfoAction(Component c, ActionEvent event) {
       }
 
       protected void onNewGroup_NewAction(Component c, ActionEvent event) {

@@ -113,6 +113,7 @@ public class MapController {
                             tripRequest.put("from", MapController.locationCoord.getLatitude() + "," + MapController.locationCoord.getLongitude());
                             tripRequest.put("driver", (ParseUser) trip.getParseObject("driver"));
                             tripRequest.put("female", ParseUser.getCurrent().getBoolean("female"));
+                            tripRequest.put("groupUser", data.get("groupUser"));
                             try {
                                 showBlocking();
                                 tripRequest.save();
