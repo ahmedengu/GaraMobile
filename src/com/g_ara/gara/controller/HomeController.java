@@ -133,7 +133,12 @@ public class HomeController {
                                 batch.addObject(object, ParseBatch.EBatchOpType.UPDATE);
                                 batch.addObject(trip, ParseBatch.EBatchOpType.UPDATE);
                                 batch.execute();
-                                data.put("active", trip);
+
+                                ParseQuery tripQuery = ParseQuery.getQuery("Trip");
+                                tripQuery.include("tripRequests");
+                                tripQuery.include("tripRequests.user");
+
+                                data.put("active", tripQuery.get(trip.getObjectId()));
                                 LocalNotification n = new LocalNotification();
                                 n.setId("Home");
                                 n.setAlertBody("You got a new auto accepted trip request");
@@ -421,8 +426,7 @@ public class HomeController {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Trip");
         query.include("tripRequests");
         query.include("tripRequests.user");
-        query.whereEqualTo("objectId", ParseUser.getCurrent().getParseObject("trip").getObjectId());
-        fetch = query.find().get(0);
+        fetch = query.get(ParseUser.getCurrent().getParseObject("trip").getObjectId());
         return fetch;
     }
 

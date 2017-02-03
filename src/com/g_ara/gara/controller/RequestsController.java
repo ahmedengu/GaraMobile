@@ -36,7 +36,7 @@ public class RequestsController {
             List<ParseObject> parseObjects = ((ParseObject) data.get("active")).getList("tripRequests");
             if (parseObjects != null) {
                 for (int i = 0; i < parseObjects.size(); i++) {
-                    if (parseObjects.get(i).getBoolean("active"))
+                    if (parseObjects.get(i).has("active") && parseObjects.get(i).getBoolean("active"))
                         count++;
                 }
             }
