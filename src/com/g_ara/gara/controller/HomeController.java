@@ -102,6 +102,7 @@ public class HomeController {
                             n.setId("Requests");
                             n.setAlertBody("You got a new trip request");
                             n.setAlertTitle("Gara | New Trip Request");
+                            n.setAlertImage("images-logo (3).png");
 
                             Display.getInstance().scheduleLocalNotification(
                                     n,
@@ -137,6 +138,7 @@ public class HomeController {
                                 n.setId("Home");
                                 n.setAlertBody("You got a new auto accepted trip request");
                                 n.setAlertTitle("Gara | Accepted Trip Request");
+                                n.setAlertImage("images-logo (3).png");
 
                                 Display.getInstance().scheduleLocalNotification(
                                         n,
@@ -171,6 +173,7 @@ public class HomeController {
                             n.setId("Chat");
                             n.setAlertBody("You got a new message");
                             n.setAlertTitle("Gara | New Message");
+                            n.setAlertImage("images-logo (3).png");
 
                             Display.getInstance().scheduleLocalNotification(
                                     n,

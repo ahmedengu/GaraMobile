@@ -542,7 +542,7 @@ public class MapController {
 
     public static void draw2MarkerMap(Coord locationCoord, Coord destCoord, Container container, String formName) {
         MapContainer map = new MapController(container, formName).map;
-        map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
+        map.addMarker(GREEN_LOCATION_ICON(), locationCoord, "Source", "", null);
         map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
         map.zoom(locationCoord, 10);
         map.setScrollableY(false);

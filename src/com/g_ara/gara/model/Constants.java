@@ -48,7 +48,7 @@ public class Constants {
     public static EncodedImage GREEN_LOCATION_ICON() {
         Style s = new Style();
         s.setBgTransparency(0);
-        s.setFgColor(0x00FF00);
+        s.setFgColor(0x008400);
         return createMaterial(FontImage.MATERIAL_LOCATION_ON, s).toEncodedImage();
     }
 

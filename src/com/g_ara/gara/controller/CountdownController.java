@@ -53,6 +53,7 @@ public class CountdownController {
                             n.setId("Home");
                             n.setAlertBody((object.getInt("accept") != 1) ? "Your request got no replay from the driver or rejected!" : "Your request got accepted!");
                             n.setAlertTitle("Gara | Driver Reply");
+                            n.setAlertImage("images-logo (3).png");
 
                             Display.getInstance().scheduleLocalNotification(
                                     n,

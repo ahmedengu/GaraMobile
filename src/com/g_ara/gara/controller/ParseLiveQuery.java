@@ -93,14 +93,14 @@ public abstract class ParseLiveQuery {
                         case "unsubscribed":
                             break;
                         case "error":
-                            wsCallback.error(json.getString(OP), json.getInt("code"), json.getString("error"), json.getBoolean("reconnect"));
+                            wsCallback.error(operation, json.getInt("code"), json.getString("error"), json.getBoolean("reconnect"));
                             break;
                         default:
                             JSONObject data = json.getJSONObject("object");
                             ParseObject parseObject = ParseObject.create(data.getString("className"));
                             parseObject.setData(data);
                             int requestId = json.getInt("requestId");
-                            lQuerys.get(requestId).event(json.getString(OP), requestId, parseObject);
+                            lQuerys.get(requestId).event(operation, requestId, parseObject);
                             break;
                     }
                 } catch (JSONException e) {
