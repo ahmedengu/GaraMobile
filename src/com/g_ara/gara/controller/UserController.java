@@ -18,6 +18,7 @@ import userclasses.StateMachine;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static com.g_ara.gara.controller.SplashController.am_i_online;
 import static userclasses.StateMachine.*;
 
 /**
@@ -277,8 +278,10 @@ public class UserController {
             f.setToolbar(tb);
             tb.setTitle(title);
         }
-
         tb.addComponentToSideMenu(sidemenuTop);
+
+        if (f.getName() != null && !f.getName().equals("Home"))
+            tb.setBackCommand("", Toolbar.BackCommandPolicy.NEVER, evt -> showForm("Home"));
 
         if (f.getName() == null || !f.getName().equals("UserSearch"))
             tb.addMaterialCommandToRightBar("", FontImage.MATERIAL_SEARCH, e -> showForm("UserSearch"));
@@ -292,5 +295,8 @@ public class UserController {
         tb.addMaterialCommandToSideMenu("Profile", FontImage.MATERIAL_EDIT, e -> showForm("Profile"));
         tb.addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> showForm("Settings"));
         tb.addMaterialCommandToSideMenu("Logout", FontImage.MATERIAL_EXIT_TO_APP, e -> logout());
+
+        if (!am_i_online())
+            showDelayedToastBar("You are offline");
     }
 }

@@ -24,7 +24,7 @@ import static userclasses.StateMachine.showForm;
  */
 public class SplashController {
     public static void refreshSplash(Form f, Container loadingCnt, StateMachine stateMachine) {
-        boolean isNotOnline = !Display.getInstance().isSimulator() && !am_i_online();
+        boolean isNotOnline = !am_i_online();
         boolean isNotGps = (LocationManager.getLocationManager().isGPSDetectionSupported() && !LocationManager.getLocationManager().isGPSEnabled());
         if (isNotOnline || isNotGps) {
             errorMessageReload(f, loadingCnt, stateMachine, "Gara require" + ((isNotOnline && isNotGps) ? " Internet Connection & GPS" : ((isNotOnline) ? " Internet Connection" : " GPS")));
@@ -92,6 +92,6 @@ public class SplashController {
         } else {
             online = true;
         }
-        return online;
+        return Display.getInstance().isSimulator() || online;
     }
 }
