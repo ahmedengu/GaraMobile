@@ -42,10 +42,12 @@ public class HomeController {
     public static boolean initLiveQuery = true;
     static ParseLiveQuery tripLiveQuery;
     static Timer timer;
+    static MapController mapController;
+
 
     public static void beforeHomeForm(Form f, Resources resources, StateMachine stateMachine) {
         UserController.addUserSideMenu(f);
-        new MapController(resources, f, f.getName()).initMap();
+        mapController = new MapController(resources, f, f.getName());
     }
 
     public static void postHomeForm(Form f, Resources resources, StateMachine stateMachine) {
@@ -82,7 +84,8 @@ public class HomeController {
         } else {
             ride.setHidden(false);
             drive.setHidden(false);
-
+            if (mapController != null)
+                mapController.initMap();
         }
         f.add(BorderLayout.SOUTH, GridLayout.encloseIn(2, ride, drive));
     }
@@ -102,7 +105,6 @@ public class HomeController {
                             n.setId("Requests");
                             n.setAlertBody("You got a new trip request");
                             n.setAlertTitle("Gara | New Trip Request");
-                            n.setAlertImage("images-logo (3).png");
 
                             Display.getInstance().scheduleLocalNotification(
                                     n,
@@ -143,7 +145,6 @@ public class HomeController {
                                 n.setId("Home");
                                 n.setAlertBody("You got a new auto accepted trip request");
                                 n.setAlertTitle("Gara | Accepted Trip Request");
-                                n.setAlertImage("images-logo (3).png");
 
                                 Display.getInstance().scheduleLocalNotification(
                                         n,
@@ -178,7 +179,6 @@ public class HomeController {
                             n.setId("Chat");
                             n.setAlertBody("You got a new message");
                             n.setAlertTitle("Gara | New Message");
-                            n.setAlertImage("images-logo (3).png");
 
                             Display.getInstance().scheduleLocalNotification(
                                     n,
@@ -272,11 +272,11 @@ public class HomeController {
             north.add(checkIn);
 
             f.add(BorderLayout.NORTH, north);
-            MapController map = new MapController(resources, f, f.getName());
-            map.initDriveMap(fetch.getParseGeoPoint("to"));
+            if (mapController != null)
+                mapController.initDriveMap(fetch.getParseGeoPoint("to"));
 
 
-            addDriverToMarkers(fetch, map, f);
+            addDriverToMarkers(fetch, mapController, f);
             if (timer == null)
                 timer = new Timer();
             TimerTask timerTask = new TimerTask() {
@@ -285,7 +285,7 @@ public class HomeController {
                     Display.getInstance().callSerially(() -> {
                         try {
                             if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals("Home")) {
-                                addDriverToMarkers(tripRequestHomeQuery(), map, f);
+                                addDriverToMarkers(tripRequestHomeQuery(), mapController, f);
                             }
 
                         } catch (Exception e) {
@@ -300,6 +300,7 @@ public class HomeController {
 
         } catch (ParseException e) {
             e.printStackTrace();
+            showDelayedToastBar(e.getMessage());
         }
     }
 
@@ -393,11 +394,11 @@ public class HomeController {
 
             north.add(checkin);
             f.add(BorderLayout.NORTH, north);
-            MapController map = new MapController(resources, f, f.getName());
-            map.initDriveMap(fetch.getParseGeoPoint("to"));
 
+            if (mapController != null)
+                mapController.initDriveMap(fetch.getParseGeoPoint("to"));
 
-            addTripRequestMarkers(fetch, map, f);
+            addTripRequestMarkers(fetch, mapController, f);
             if (timer == null)
                 timer = new Timer();
             TimerTask timerTask = new TimerTask() {
@@ -406,7 +407,7 @@ public class HomeController {
                     Display.getInstance().callSerially(() -> {
                         try {
                             if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals("Home")) {
-                                addTripRequestMarkers(tripHomeQuery(), map, f);
+                                addTripRequestMarkers(tripHomeQuery(), mapController, f);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -418,6 +419,7 @@ public class HomeController {
             data.put("active", fetch);
         } catch (ParseException e) {
             e.printStackTrace();
+            showDelayedToastBar(e.getMessage());
         }
     }
 
@@ -467,7 +469,9 @@ public class HomeController {
 
     public static void CancelActive(Form f, Resources resources, Button drive, Button ride, Button active, ParseObject object) {
         CancelActiveRequest(object);
-        new MapController(resources, f, f.getName()).initMap();
+        if (mapController != null)
+            mapController.initMap();
+
         drive.setHidden(false);
         ride.setHidden(false);
         active.getParent().remove();

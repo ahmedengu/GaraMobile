@@ -29,6 +29,7 @@ public class HistoryController {
         try {
             ParseQuery tripRequest = ParseQuery.getQuery("TripRequest");
             tripRequest.whereEqualTo("user", ParseUser.getCurrent());
+            tripRequest.setLimit(10);
             List<ParseObject> results = tripRequest.find();
 
             ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
@@ -46,6 +47,7 @@ public class HistoryController {
 
             ParseQuery trip = ParseQuery.getQuery("Trip");
             trip.whereEqualTo("driver", ParseUser.getCurrent());
+            trip.setLimit(10);
             results = trip.find();
             for (int i = 0; i < results.size(); i++) {
                 Map<String, Object> entry = new HashMap<>();

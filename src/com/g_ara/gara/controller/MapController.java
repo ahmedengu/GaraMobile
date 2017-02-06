@@ -299,22 +299,37 @@ public class MapController {
 
     public void initMap() {
         destCoord = null;
+        lastLocationUpdate = 0l;
+        coordsPath = null;
+        if (markers != null) markers.clear();
+        LastRouteUpdate = 0l;
         handleCurrentLocation(map);
         destListener(map);
     }
 
     public void initDriveMap(ParseGeoPoint to) {
         destCoord = new Coord(to.getLatitude(), to.getLongitude());
+        lastLocationUpdate = 0l;
+        coordsPath = null;
+        if (markers != null) markers.clear();
+        LastRouteUpdate = 0l;
         handleCurrentLocation(map);
     }
 
     public void handleCurrentLocation(MapContainer map) {
-        Location currentLocation = updateMarkers(map);
+        Location currentLocation;
+        try {
+            currentLocation = LocationManager.getLocationManager().getCurrentLocation();
+        } catch (IOException e) {
+            currentLocation = LocationManager.getLocationManager().getLastKnownLocation();
+        }
 
         if (currentLocation != null) {
             locationCoord = new Coord(currentLocation.getLatitude(), currentLocation.getLongitude());
             map.zoom(locationCoord, 10);
         }
+        updateMarkers(map, currentLocation);
+
         locationListener(map);
     }
 
@@ -323,12 +338,13 @@ public class MapController {
             public void actionPerformed(ActionEvent evt) {
                 destCoord = map.getCoordAtPosition(evt.getX(), evt.getY());
                 coordsPath = null;
-                Display.getInstance().callSerially(() -> {
-                    Location location = new Location();
-                    location.setLatitude(locationCoord.getLatitude());
-                    location.setLongitude(locationCoord.getLongitude());
-                    updateMarkers(map, location);
-                });
+                if (locationCoord != null)
+                    Display.getInstance().callSerially(() -> {
+                        Location location = new Location();
+                        location.setLatitude(locationCoord.getLatitude());
+                        location.setLongitude(locationCoord.getLongitude());
+                        updateMarkers(map, location);
+                    });
             }
         });
     }
@@ -341,7 +357,8 @@ public class MapController {
                 if (location != null)
                     locationCoord = new Coord(location.getLatitude(), location.getLongitude());
                 if (System.currentTimeMillis() - lastLocationUpdate >= locationUpdateThreshold) {
-                    Display.getInstance().callSerially(() -> updateMarkers(map, location));
+                    lastLocationUpdate = System.currentTimeMillis();
+                    updateMarkers(map, location);
                     sendLocation(location);
                 }
             }
@@ -369,39 +386,29 @@ public class MapController {
         }
     }
 
-    private Location updateMarkers(MapContainer map) {
-        Location currentLocation;
-        try {
-            currentLocation = LocationManager.getLocationManager().getCurrentLocation();
-        } catch (IOException e) {
-            currentLocation = LocationManager.getLocationManager().getLastKnownLocation();
-        }
-        return updateMarkers(map, currentLocation);
-    }
-
     private Location updateMarkers(MapContainer map, Location location) {
         if (Display.getInstance().getCurrent().getName() != null && Display.getInstance().getCurrent().getName().equals(formName)) {
-            map.clearMapLayers();
-            if (location != null) {
-                if (!map.isNativeMaps())
+            Display.getInstance().callSerially(() -> {
+                map.clearMapLayers();
+                if (location != null && !map.isNativeMaps()) {
                     map.addMarker(CURRENT_LOCATION_ICON(), locationCoord, "Current Location", "", null);
-                lastLocationUpdate = System.currentTimeMillis();
-            }
-            if (destCoord != null) {
-                map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
-                if (coordsPath == null && !destCoord.equals(lastDestCoord)) {
-                    lastDestCoord = destCoord;
-                    getRoutesCoordsAsync();
                 }
-            }
-            for (int i = 0; i < markers.size(); i++) {
-                Map<String, Object> m = markers.get(i);
-                map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
+                if (destCoord != null) {
+                    map.addMarker(RED_LOCATION_ICON(), destCoord, "Destination", "", null);
+                    if (coordsPath == null && !destCoord.equals(lastDestCoord)) {
+                        lastDestCoord = destCoord;
+                        getRoutesCoordsAsync();
+                    }
+                }
+                for (int i = 0; i < markers.size(); i++) {
+                    Map<String, Object> m = markers.get(i);
+                    map.addMarker((EncodedImage) m.get("icon"), (Coord) m.get("coord"), (String) m.get("title"), (String) m.get("desc"), (ActionListener) m.get("action"));
 
-            }
+                }
 
-            if (coordsPath != null && coordsPath.length > 0)
-                map.addPath(coordsPath);
+                if (coordsPath != null && coordsPath.length > 0)
+                    map.addPath(coordsPath);
+            });
         }
         return location;
     }
